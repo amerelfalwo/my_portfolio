@@ -77,6 +77,7 @@ const SocialFloatingButton = () => {
               whileHover={{ scale: 1.2 }}
               className={`absolute p-3.5 rounded-full text-white shadow-xl border border-white/10 flex items-center justify-center group ${social.color} ${social.hover}`}
               title={social.label}
+              aria-label={social.label}
             >
               <div className="relative z-10">{social.icon}</div>
               {/* Tooltip */}
@@ -93,6 +94,7 @@ const SocialFloatingButton = () => {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(!isOpen)}
+        aria-label={isOpen ? 'Close social menu' : 'Open social menu and share links'}
         className={`relative z-[100] w-14 h-14 rounded-full border transition-all duration-300 flex items-center justify-center backdrop-blur-xl ${
           isOpen 
             ? 'bg-[#7c3aed]/20 border-[#d8b4fe]/50 shadow-[0_0_30px_rgba(124,58,237,0.4)]' 

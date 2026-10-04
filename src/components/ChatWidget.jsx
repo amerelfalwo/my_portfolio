@@ -221,6 +221,7 @@ const ChatWidget = memo(() => {
                     onClick={() => setMessages([])}
                     className="p-2 text-slate-400 hover:text-white hover:bg-slate-800/60 rounded-xl transition-colors cursor-pointer"
                     title="Clear Conversation"
+                    aria-label="Clear Conversation"
                   >
                     <RefreshCw size={14} />
                   </button>
@@ -229,6 +230,7 @@ const ChatWidget = memo(() => {
                   onClick={() => setIsOpen(false)}
                   className="p-2 text-slate-400 hover:text-white hover:bg-slate-800/60 rounded-xl transition-colors cursor-pointer"
                   title="Close Assistant"
+                  aria-label="Close Assistant"
                 >
                   <Minimize2 size={16} />
                 </button>
@@ -320,6 +322,7 @@ const ChatWidget = memo(() => {
               <button
                 type="submit"
                 disabled={isLoading || !input.trim()}
+                aria-label="Send message"
                 className="p-3 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white disabled:opacity-40 transition-all cursor-pointer shadow-lg shadow-purple-500/20"
               >
                 <Send size={15} />
@@ -333,6 +336,7 @@ const ChatWidget = memo(() => {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
+        aria-label={isOpen ? 'Close AI Assistant' : 'Open AI Assistant'}
         className="pointer-events-auto relative group p-4 rounded-full bg-purple-600 hover:bg-purple-500 text-white shadow-[0_0_25px_rgba(147,51,234,0.35)] hover:shadow-[0_0_35px_rgba(147,51,234,0.5)] hover:scale-105 transition-all cursor-pointer"
         title="Toggle AI Assistant"
       >

@@ -10,27 +10,18 @@ const ITEMS_PER_PAGE = 6;
 
 // High-resolution fallback illustrations matching tech domain if imageUrl is empty
 const getProjectFallback = (project) => {
-  const p = ((project.id || '') + ' ' + (project.title || '') + ' ' + (project.category || '')).toLowerCase();
+  const p = ((project?.id || '') + ' ' + (project?.title || '') + ' ' + (project?.category || '')).toLowerCase();
 
-  if (p.includes('thyrax') || p.includes('cancer') || p.includes('mri') || p.includes('tumour') || p.includes('medical')) {
-    return 'https://res.cloudinary.com/iqldv0aa/image/upload/v1785270487/qkfmwtsyd6b2sooxe11d.png';
-  }
-  if (p.includes('erp') || p.includes('pos') || p.includes('clean') || p.includes('architecture') || p.includes('stockscan')) {
-    return 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=900&q=80';
-  }
-  if (p.includes('rag') || p.includes('pageindex') || p.includes('vector') || p.includes('llm') || p.includes('genai')) {
-    return 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=900&q=80';
-  }
-  if (p.includes('segmentation') || p.includes('wsss') || p.includes('vision') || p.includes('cv')) {
-    return 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?auto=format&fit=crop&w=900&q=80';
-  }
-  if (p.includes('structural') || p.includes('iot') || p.includes('health') || p.includes('sensor')) {
-    return 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=900&q=80';
-  }
-  if (p.includes('customer') || p.includes('analytics') || p.includes('k-means')) {
-    return 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=900&q=80';
-  }
-  return 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=900&q=80';
+  if (p.includes('thyrax') || p.includes('cancer')) return '/images/projects/thyrax.webp';
+  if (p.includes('mri') || p.includes('tumour')) return '/images/projects/brain-tumour.webp';
+  if (p.includes('erp') || p.includes('clean') || p.includes('architecture')) return '/images/projects/aura.webp';
+  if (p.includes('pageindex') || p.includes('rag') || p.includes('search')) return '/images/projects/vision.webp';
+  if (p.includes('segmentation') || p.includes('wsss')) return '/images/projects/wsss.webp';
+  if (p.includes('structural') || p.includes('sensor')) return '/images/projects/structural.webp';
+  if (p.includes('vector') || p.includes('postgres')) return '/images/projects/edge.webp';
+  if (p.includes('medical') || p.includes('report')) return '/images/projects/medical-report.webp';
+  if (p.includes('customer') || p.includes('analytics')) return '/images/projects/customer-segmentation.webp';
+  return '/images/projects/project-placeholder.webp';
 };
 
 const Projects = memo(() => {
@@ -123,7 +114,8 @@ const Projects = memo(() => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-7">
             {currentProjects.map((project) => {
-              const imageSrc = project.imageUrl || project.image || getProjectFallback(project);
+              const rawImg = (project.imageUrl || project.image || '').trim();
+              const imageSrc = rawImg || getProjectFallback(project);
               const projectLink = `/projects/${project.id}`;
 
               return (
@@ -141,9 +133,17 @@ const Projects = memo(() => {
                       src={imageSrc}
                       alt={project.title}
                       loading="lazy"
+                      decoding="async"
+                      width="450"
+                      height="208"
                       className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                       onError={(e) => {
-                        e.target.src = getProjectFallback(project);
+                        const fallback = getProjectFallback(project);
+                        if (e.target.src !== window.location.origin + fallback) {
+                          e.target.src = fallback;
+                        } else {
+                          e.target.src = '/images/projects/project-placeholder.webp';
+                        }
                       }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0c081e] via-transparent to-transparent opacity-60" />

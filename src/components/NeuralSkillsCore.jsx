@@ -14,21 +14,6 @@ import { getToolIconUrl } from '../utils/getToolIcon';
    - 60 FPS GPU-Accelerated WebGL + CSS 3D Projection
    ═══════════════════════════════════════════════════════════════════════════ */
 
-const SKILL_DETAILS = {
-  pytorch: { type: 'Deep Learning Framework', desc: 'Primary DL framework for custom neural networks, LLMs, and computer vision models.', status: 'Production Ready' },
-  tensorflow: { type: 'Machine Learning Ecosystem', desc: 'Enterprise ML framework for scalable model training and deployment.', status: 'Production Ready' },
-  opencv: { type: 'Computer Vision Library', desc: 'Real-time image processing, object tracking, and spatial vision algorithms.', status: 'High Performance' },
-  yolo: { type: 'Object Detection Engine', desc: 'Ultra-fast real-time object detection and instance segmentation.', status: 'High Performance' },
-  langchain: { type: 'LLM & Agent Framework', desc: 'Orchestrating autonomous AI agents, tool invocation, and multi-step reasoning.', status: 'Production Ready' },
-  chromadb: { type: 'Vector Database', desc: 'High-speed vector embeddings storage for RAG and semantic retrieval.', status: 'Production Ready' },
-  llamaindex: { type: 'Data Framework for LLMs', desc: 'Structured data ingestion and retrieval pipelines for enterprise RAG.', status: 'Production Ready' },
-  fastapi: { type: 'Async Backend API', desc: 'High-throughput REST APIs for serving ML models with ultra-low latency.', status: 'Production Ready' },
-  docker: { type: 'Containerization Platform', desc: 'Isolated reproducible runtime environments for AI microservices.', status: 'Production Ready' },
-  onnx: { type: 'Model Inference Optimization', desc: 'Cross-platform neural network format for hardware accelerated inference.', status: 'High Performance' },
-  python: { type: 'Core AI Language', desc: 'Primary programming language for deep learning, data science, and backend AI.', status: 'Production Ready' },
-  'next.js': { type: 'Full-Stack Web Framework', desc: 'Server-side rendered web interfaces for modern AI dashboards.', status: 'Production Ready' },
-};
-
 /* Dynamic 3D Layout Mathematics Algorithm */
 function calculateAdaptiveLayout(skillsList, isMobile) {
   const count = skillsList.length;
@@ -89,12 +74,30 @@ function calculateAdaptiveLayout(skillsList, isMobile) {
 }
 
 const NeuralSkillsCore = memo(({ skills = [], activeCategory = 'all', categoryLabel = 'All Stack' }) => {
+  const containerRef = useRef(null);
   const mountRef = useRef(null);
   const canvasLinesRef = useRef(null);
+  const [isInView, setIsInView] = useState(false);
   const [hoveredId, setHoveredId] = useState(null);
   const [selectedTech, setSelectedTech] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(620);
   const [isGrabbing, setIsGrabbing] = useState(false);
+
+  // IntersectionObserver: Only run heavy 3D WebGL loop when section is visible
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+      },
+      { rootMargin: '120px' }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
@@ -141,6 +144,14 @@ const NeuralSkillsCore = memo(({ skills = [], activeCategory = 'all', categoryLa
     selectedTechRef.current = selectedTech;
   }, [selectedTech]);
 
+  const [hasInitialized, setHasInitialized] = useState(false);
+
+  useEffect(() => {
+    if (isInView && !hasInitialized) {
+      setHasInitialized(true);
+    }
+  }, [isInView, hasInitialized]);
+
   // Sync cameraZ when layout changes
   useEffect(() => {
     targetCameraZ.current = layoutConfig.cameraZ;
@@ -148,7 +159,7 @@ const NeuralSkillsCore = memo(({ skills = [], activeCategory = 'all', categoryLa
     setZoomLevel(layoutConfig.cameraZ);
   }, [layoutConfig]);
 
-  // ── THREE.JS WEBGL SCENE SETUP (3 Structured Transparent Orbit Rings Only) ──
+  // ── THREE.JS WEBGL SCENE SETUP (Lazy-initialized only when user reaches section) ──
   const sceneRef = useRef(null);
   const cameraRef = useRef(null);
   const rendererRef = useRef(null);
@@ -156,6 +167,7 @@ const NeuralSkillsCore = memo(({ skills = [], activeCategory = 'all', categoryLa
   const coreGroupRef = useRef(null);
 
   useEffect(() => {
+    if (!hasInitialized) return;
     const mount = mountRef.current;
     if (!mount) return;
 
@@ -279,8 +291,14 @@ const NeuralSkillsCore = memo(({ skills = [], activeCategory = 'all', categoryLa
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
+      const canvas = canvasLinesRef.current;
+      if (canvas) {
+        canvas.width = w;
+        canvas.height = h;
+      }
     };
 
+    handleResize();
     window.addEventListener('resize', handleResize);
 
     return () => {
@@ -290,7 +308,7 @@ const NeuralSkillsCore = memo(({ skills = [], activeCategory = 'all', categoryLa
       }
       renderer.dispose();
     };
-  }, [layoutConfig, isMobile]);
+  }, [layoutConfig, isMobile, hasInitialized]);
 
   // ── MOUSE WHEEL ZOOM & POINTER HANDLERS ──
 
@@ -368,8 +386,10 @@ const NeuralSkillsCore = memo(({ skills = [], activeCategory = 'all', categoryLa
     setIsGrabbing(false);
   };
 
-  // ── 60 FPS ANIMATION LOOP (35s Rotation, 12s Float Cycle, Mathematical Projection) ──
+  // ── 60 FPS ANIMATION LOOP (Paused when off-screen for maximum performance) ──
   useEffect(() => {
+    if (!isInView) return;
+
     let frameId;
     let angleBase = 0;
     let time = 0;
@@ -489,7 +509,7 @@ const NeuralSkillsCore = memo(({ skills = [], activeCategory = 'all', categoryLa
 
           const zoomFactor = layoutConfig.cameraZ / cameraZ.current;
           const scale = Math.max(0.78, ((z2 + 380) / 480) * zoomFactor);
-          const alpha = Math.max(0.5, (z2 + 250) / 400);
+          const alpha = Math.max(0.72, (z2 + 250) / 400);
 
           computed.push({
             id,
@@ -524,38 +544,37 @@ const NeuralSkillsCore = memo(({ skills = [], activeCategory = 'all', categoryLa
         }
       });
 
-      // OPTIMIZATION: Draw canvas directly in the RAF loop
+      // OPTIMIZATION: Draw canvas directly in the RAF loop without forced reflow
       const canvas = canvasLinesRef.current;
-      if (canvas && canvas.parentElement) {
+      if (canvas) {
         const ctx = canvas.getContext('2d');
-        const w = canvas.width = canvas.parentElement.clientWidth || 900;
-        const h = canvas.height = canvas.parentElement.clientHeight || 600;
-        ctx.clearRect(0, 0, w, h);
-        const centerX = w / 2;
-        const centerY = h / 2;
+        if (ctx) {
+          const w = canvas.width || 900;
+          const h = canvas.height || 600;
+          ctx.clearRect(0, 0, w, h);
+          const centerX = w / 2;
+          const centerY = h / 2;
 
-        computed.forEach((node) => {
-          const isHovered = hoveredIdRef.current === node.id;
-          const isSelected = selectedTechRef.current?.id === node.id;
-          const isDragging = node.isDragging;
-          const nodeX = centerX + node.x;
-          const nodeY = centerY + node.y;
+          computed.forEach((node) => {
+            const isHovered = hoveredIdRef.current === node.id;
+            const isSelected = selectedTechRef.current?.id === node.id;
+            const isDragging = node.isDragging;
+            const nodeX = centerX + node.x;
+            const nodeY = centerY + node.y;
 
-          ctx.beginPath();
-          ctx.moveTo(centerX, centerY);
-          ctx.lineTo(nodeX, nodeY);
-          if (isDragging || isHovered || isSelected) {
-            ctx.strokeStyle = 'rgba(34, 211, 238, 0.6)';
-            ctx.lineWidth = 2;
-            ctx.shadowColor = 'rgba(34, 211, 238, 0.6)';
-            ctx.shadowBlur = 8;
-          } else {
-            ctx.strokeStyle = `rgba(168, 85, 247, ${Math.min(0.08, node.alpha * 0.15)})`;
-            ctx.lineWidth = 1;
-            ctx.shadowBlur = 0;
-          }
-          ctx.stroke();
-        });
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(nodeX, nodeY);
+            if (isDragging || isHovered || isSelected) {
+              ctx.strokeStyle = 'rgba(34, 211, 238, 0.75)';
+              ctx.lineWidth = 2;
+            } else {
+              ctx.strokeStyle = `rgba(168, 85, 247, ${Math.min(0.12, node.alpha * 0.15)})`;
+              ctx.lineWidth = 1;
+            }
+            ctx.stroke();
+          });
+        }
       }
 
       frameId = requestAnimationFrame(computePositions);
@@ -563,7 +582,7 @@ const NeuralSkillsCore = memo(({ skills = [], activeCategory = 'all', categoryLa
 
     frameId = requestAnimationFrame(computePositions);
     return () => cancelAnimationFrame(frameId);
-  }, [layoutConfig, isMobile]); // Removed hoveredId & selectedTech
+  }, [layoutConfig, isMobile, isInView]);
 
   // We no longer need the separate useEffect for canvas rendering or node state update
 
@@ -572,6 +591,7 @@ const NeuralSkillsCore = memo(({ skills = [], activeCategory = 'all', categoryLa
 
   return (
     <div
+      ref={containerRef}
       onWheel={handleWheel}
       onPointerDown={handlePointerDownContainer}
       onPointerMove={handlePointerMove}
@@ -618,19 +638,21 @@ const NeuralSkillsCore = memo(({ skills = [], activeCategory = 'all', categoryLa
                 isHovered || isSelected
                   ? 'bg-slate-900/95 border-cyan-400 text-white shadow-[0_0_25px_rgba(34,211,238,0.4)] ring-2 ring-cyan-400/50'
                   : layerIdx === 0
-                  ? 'bg-slate-900/85 border-slate-800 text-slate-200 hover:border-purple-400/50'
-                  : 'bg-slate-900/80 border-slate-800/80 text-slate-300 hover:border-cyan-400/40'
+                  ? 'bg-slate-900/90 border-slate-700/80 text-white hover:border-purple-400/50'
+                  : 'bg-slate-900/85 border-slate-700/60 text-slate-100 hover:border-cyan-400/40'
               }`}
             >
               {(getToolIconUrl(skill.name) || skill.iconUrl || skill.icon) && (
                 <img
                   src={getToolIconUrl(skill.name) || skill.iconUrl || skill.icon}
-                  alt={skill.name}
-                  className="w-5 h-5 md:w-6 md:h-6 object-contain shrink-0 opacity-90 pointer-events-none"
+                  alt={`${skill.name} icon`}
+                  width="24"
+                  height="24"
+                  className="w-5 h-5 md:w-6 md:h-6 object-contain shrink-0 opacity-95 pointer-events-none"
                   onError={(e) => { e.target.style.display = 'none'; }}
                 />
               )}
-              <span className="text-xs md:text-sm font-bold tracking-wider font-mono whitespace-nowrap pointer-events-none">
+              <span className="text-xs md:text-sm font-bold tracking-wider font-mono whitespace-nowrap pointer-events-none text-slate-100">
                 {skill.name}
               </span>
             </div>

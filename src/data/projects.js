@@ -12,7 +12,7 @@ export const projects = [
     categoryLabel: 'Medical AI & Computer Vision',
     featured: true,
     badge: 'CAPSTONE EXCELLENCE',
-    imageUrl: 'https://res.cloudinary.com/iqldv0aa/image/upload/v1785270487/qkfmwtsyd6b2sooxe11d.png',
+    imageUrl: '/images/projects/thyrax.webp',
     summary: 'A multi-stage biomedical imaging and clinical research assistant integrating deep learning segmentation, multimodal data fusion, and conversational clinical support.',
     caseStudy: {
       problem: 'Clinical diagnosis in thyroid oncology requires analyzing complex ultrasound imaging alongside multimodal patient records, where generic models suffer from high false-positive rates and lack interpretability.',
@@ -35,7 +35,7 @@ export const projects = [
     categoryLabel: 'Software Architecture & .NET 8',
     featured: true,
     badge: 'ENTERPRISE ARCHITECTURE',
-    imageUrl: 'https://res.cloudinary.com/iqldv0aa/image/upload/v1785270487/qkfmwtsyd6b2sooxe11d.png',
+    imageUrl: '/images/projects/aura.webp',
     summary: 'A modular enterprise-grade ERP backend migrated from FastAPI to .NET 8, implementing domain-driven design, multi-tenant database isolation, role-based access control, and scalable financial workflow automation.',
     caseStudy: {
       problem: 'Previous monolithic implementation created deployment bottlenecks, lacked multi-tenant database boundary guarantees, and faced performance limits during high-concurrency accounting workflows.',
@@ -58,7 +58,7 @@ export const projects = [
     categoryLabel: 'Generative AI & LLMs',
     featured: true,
     badge: 'VECTORLESS RAG',
-    imageUrl: 'https://res.cloudinary.com/iqldv0aa/image/upload/v1785270487/qkfmwtsyd6b2sooxe11d.png',
+    imageUrl: '/images/projects/vision.webp',
     summary: 'High-precision document understanding pipeline utilizing hierarchical tree-search retrieval with rolling conversation summarization and automated text-image citation endpoints.',
     caseStudy: {
       problem: 'Dense vector embeddings struggle to preserve hierarchical structure and precise numeric data in complex enterprise reports, causing semantic hallucination in retrieval-augmented generation.',
@@ -80,7 +80,7 @@ export const projects = [
     category: 'ai_ml',
     categoryLabel: 'Computer Vision & Deep Learning',
     featured: false,
-    imageUrl: '',
+    imageUrl: '/images/projects/brain-tumour.webp',
     summary: 'End-to-end deep learning framework for brain MRI scan analysis, featuring automated skull stripping, tumor localization, and pixel-level semantic mask generation.',
     caseStudy: {
       problem: 'Manual delineation of brain tumor boundaries in multi-sequence MRI is labor-intensive and prone to inter-observer variability in clinical triage.',
@@ -101,7 +101,7 @@ export const projects = [
     category: 'ai_ml',
     categoryLabel: 'Machine Learning & Signal Processing',
     featured: false,
-    imageUrl: '',
+    imageUrl: '/images/projects/structural.webp',
     summary: 'Real-time time-series telemetry analysis pipeline combining Fourier transforms, wavelet feature extraction, and unsupervised anomaly detection for infrastructure safety.',
     caseStudy: {
       problem: 'Vibration and strain sensor arrays produce high-frequency noisy time-series data where catastrophic structural defects can be easily masked by ambient environmental noise.',
@@ -122,7 +122,7 @@ export const projects = [
     category: 'ai_ml',
     categoryLabel: 'Deep Learning Research',
     featured: false,
-    imageUrl: '',
+    imageUrl: '/images/projects/wsss.webp',
     summary: 'Deep learning research framework enabling pixel-level semantic segmentation using only image-level class labels, drastically reducing medical annotation overhead.',
     caseStudy: {
       problem: 'Dense pixel-level segmentation annotations in medical imaging cost up to 50x more than simple image-level labels, severely bottlenecking model training data availability.',
@@ -143,7 +143,7 @@ export const projects = [
     category: 'genai',
     categoryLabel: 'Generative AI & Databases',
     featured: false,
-    imageUrl: '',
+    imageUrl: '/images/projects/edge.webp',
     summary: 'Production-ready RAG backend using pgvector with hybrid sparse-dense search, HNSW indexing, and LangChain integration for enterprise semantic search.',
     caseStudy: {
       problem: 'Maintaining dedicated vector databases introduces operational overhead, network latency, and synchronization headaches alongside relational application databases.',
@@ -164,7 +164,7 @@ export const projects = [
     category: 'genai',
     categoryLabel: 'Generative AI & Healthcare NLP',
     featured: false,
-    imageUrl: '',
+    imageUrl: '/images/projects/medical-report.webp',
     summary: 'Clinical NLP pipeline that converts unstructured clinical notes, lab parameters, and diagnostic summaries into structured, standardized medical reports with audit trails.',
     caseStudy: {
       problem: 'Physicians spend up to 40% of their clinical hours documenting electronic health records, leading to burnout and delayed patient communication.',
@@ -185,7 +185,7 @@ export const projects = [
     category: 'ai_ml',
     categoryLabel: 'Data Science & Machine Learning',
     featured: false,
-    imageUrl: '',
+    imageUrl: '/images/projects/customer-segmentation.webp',
     summary: 'Unsupervised machine learning system using RFM feature engineering, PCA dimensionality reduction, and K-Means clustering to uncover customer behavioral segments.',
     caseStudy: {
       problem: 'Businesses struggle to identify high-value customer patterns and churn risks across massive transactional event logs.',

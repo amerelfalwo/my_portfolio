@@ -1,54 +1,69 @@
 import { useRef, useEffect, memo } from 'react';
 
 /* ═══════════════════════════════════════════
-   GLOBAL PARTICLES CANVAS (GPU-Optimized)
+   GLOBAL PARTICLES CANVAS (Ultra-Lightweight GPU Glow)
    ═══════════════════════════════════════════ */
 const GlobalParticlesCanvas = memo(() => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
+    // Respect user's motion preferences
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
+
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true });
+    if (!ctx) return;
+
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
-    const count = 70;
+    const isMobile = width < 768;
+    const count = isMobile ? 12 : 32;
     const particles = Array.from({ length: count }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
       size: Math.random() * 2 + 1,
-      vx: (Math.random() - 0.5) * 0.35,
-      vy: (Math.random() - 0.5) * 0.35,
-      alpha: Math.random() * 0.6 + 0.25,
-      color: Math.random() > 0.5 ? 'rgba(168, 85, 247,' : 'rgba(34, 211, 238,',
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: (Math.random() - 0.5) * 0.25,
+      alpha: Math.random() * 0.4 + 0.2,
+      color: Math.random() > 0.5 ? '168, 85, 247' : '34, 211, 238',
     }));
 
     let animId;
+    let isRunning = true;
+
     const render = () => {
       ctx.clearRect(0, 0, width, height);
 
-      particles.forEach((p) => {
+      for (let i = 0; i < count; i++) {
+        const p = particles[i];
         p.x += p.vx;
         p.y += p.vy;
 
         if (p.x < 0) p.x = width;
-        if (p.x > width) p.x = 0;
+        else if (p.x > width) p.x = 0;
         if (p.y < 0) p.y = height;
-        if (p.y > height) p.y = 0;
+        else if (p.y > height) p.y = 0;
 
+        // Single optimized drawing pass with subtle glow
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `${p.color} ${p.alpha})`;
-        ctx.shadowColor = p.color + ' 0.8)';
-        ctx.shadowBlur = 8;
+        ctx.arc(p.x, p.y, p.size * 1.6, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${p.color}, ${p.alpha * 0.7})`;
         ctx.fill();
-      });
+      }
 
-      animId = requestAnimationFrame(render);
+      if (isRunning) {
+        animId = requestAnimationFrame(render);
+      }
     };
 
-    render();
+    // Defer animation start slightly until browser completes critical initial paint & hydration
+    const startTimer = setTimeout(() => {
+      animId = requestAnimationFrame(render);
+    }, 600);
 
     const handleResize = () => {
       if (!canvas) return;
@@ -56,14 +71,29 @@ const GlobalParticlesCanvas = memo(() => {
       height = canvas.height = window.innerHeight;
     };
 
-    window.addEventListener('resize', handleResize);
+    const handleVisibility = () => {
+      if (document.hidden) {
+        isRunning = false;
+        cancelAnimationFrame(animId);
+      } else if (!isRunning) {
+        isRunning = true;
+        animId = requestAnimationFrame(render);
+      }
+    };
+
+    window.addEventListener('resize', handleResize, { passive: true });
+    document.addEventListener('visibilitychange', handleVisibility);
+
     return () => {
+      isRunning = false;
+      clearTimeout(startTimer);
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', handleResize);
+      document.removeEventListener('visibilitychange', handleVisibility);
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-0 opacity-75" />;
+  return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-0 opacity-75" style={{ willChange: 'transform' }} />;
 });
 
 GlobalParticlesCanvas.displayName = 'GlobalParticlesCanvas';

@@ -6,19 +6,19 @@ import {
 import { getToolIconUrl } from '../utils/getToolIcon';
 
 const skillIcons = {
-  "PyTorch": "https://raw.githubusercontent.com/devicons/devicon/master/icons/pytorch/pytorch-original.svg",
-  "TensorFlow": "https://raw.githubusercontent.com/devicons/devicon/master/icons/tensorflow/tensorflow-original.svg",
-  "OpenCV": "https://raw.githubusercontent.com/devicons/devicon/master/icons/opencv/opencv-original.svg",
-  "YOLO v11": "https://cdn.simpleicons.org/ultralytics/white",
-  "Python": "https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg",
-  "MediaPipe": "https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/google.svg",
-  "C++": "https://raw.githubusercontent.com/devicons/devicon/master/icons/cplusplus/cplusplus-original.svg",
-  "Docker": "https://raw.githubusercontent.com/devicons/devicon/master/icons/docker/docker-original.svg",
-  "React": "https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original.svg",
-  "FastAPI": "https://raw.githubusercontent.com/devicons/devicon/master/icons/fastapi/fastapi-original.svg",
-  "NumPy": "https://raw.githubusercontent.com/devicons/devicon/master/icons/numpy/numpy-original.svg",
-  "Pandas": "https://raw.githubusercontent.com/devicons/devicon/master/icons/pandas/pandas-original.svg",
-  "Firebase": "https://raw.githubusercontent.com/devicons/devicon/master/icons/firebase/firebase-original.svg",
+  "PyTorch": "/icons/pytorch.svg",
+  "TensorFlow": "/icons/tensorflow.svg",
+  "OpenCV": "/icons/opencv.svg",
+  "YOLO v11": "/icons/yolo.svg",
+  "Python": "/icons/python.svg",
+  "MediaPipe": "/icons/mediapipe.svg",
+  "C++": "/icons/cplusplus.svg",
+  "Docker": "/icons/docker.svg",
+  "React": "/icons/react.svg",
+  "FastAPI": "/icons/fastapi.svg",
+  "NumPy": "/icons/python.svg",
+  "Pandas": "/icons/python.svg",
+  "Firebase": "/icons/fastapi.svg",
 };
 
 /**

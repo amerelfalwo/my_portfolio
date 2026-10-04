@@ -7,33 +7,23 @@ import {
   Database, Calendar, Code2
 } from 'lucide-react';
 import { useProjects } from '../hooks/useData';
-import { projects as staticProjects } from '../data/projects';
 import GlobalBackground from '../components/GlobalBackground';
 import Footer from '../components/Footer';
 
-// Fallback images matching tech domain
+// Fallback images matching tech domain if no imageUrl provided
 const getProjectFallback = (project) => {
-  const p = ((project.id || '') + ' ' + (project.title || '') + ' ' + (project.category || '')).toLowerCase();
+  const p = ((project?.id || '') + ' ' + (project?.title || '') + ' ' + (project?.category || '')).toLowerCase();
 
-  if (p.includes('thyrax') || p.includes('cancer') || p.includes('mri') || p.includes('tumour') || p.includes('medical')) {
-    return 'https://res.cloudinary.com/iqldv0aa/image/upload/v1785270487/qkfmwtsyd6b2sooxe11d.png';
-  }
-  if (p.includes('erp') || p.includes('pos') || p.includes('clean') || p.includes('architecture') || p.includes('stockscan')) {
-    return 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80';
-  }
-  if (p.includes('rag') || p.includes('pageindex') || p.includes('vector') || p.includes('llm') || p.includes('genai')) {
-    return 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80';
-  }
-  if (p.includes('segmentation') || p.includes('wsss') || p.includes('vision') || p.includes('cv')) {
-    return 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?auto=format&fit=crop&w=1200&q=80';
-  }
-  if (p.includes('structural') || p.includes('iot') || p.includes('health') || p.includes('sensor')) {
-    return 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80';
-  }
-  if (p.includes('customer') || p.includes('analytics') || p.includes('k-means')) {
-    return 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80';
-  }
-  return 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80';
+  if (p.includes('thyrax') || p.includes('cancer')) return '/images/projects/thyrax.webp';
+  if (p.includes('mri') || p.includes('tumour')) return '/images/projects/brain-tumour.webp';
+  if (p.includes('erp') || p.includes('clean') || p.includes('architecture')) return '/images/projects/aura.webp';
+  if (p.includes('pageindex') || p.includes('rag') || p.includes('search')) return '/images/projects/vision.webp';
+  if (p.includes('segmentation') || p.includes('wsss')) return '/images/projects/wsss.webp';
+  if (p.includes('structural') || p.includes('sensor')) return '/images/projects/structural.webp';
+  if (p.includes('vector') || p.includes('postgres')) return '/images/projects/edge.webp';
+  if (p.includes('medical') || p.includes('report')) return '/images/projects/medical-report.webp';
+  if (p.includes('customer') || p.includes('analytics')) return '/images/projects/customer-segmentation.webp';
+  return '/images/projects/project-placeholder.webp';
 };
 
 const ProjectDetails = () => {
@@ -45,41 +35,34 @@ const ProjectDetails = () => {
     window.scrollTo(0, 0);
   }, [id]);
 
-  // Combine and find project details from API or local repository
+  // Find project dynamically from API data
   const project = useMemo(() => {
-    if (!id) return null;
+    if (!id || !apiProjects || apiProjects.length === 0) return null;
 
-    // 1. Direct ID match from API
-    const fromApi = apiProjects?.find(p => p.id === id || p._id === id);
-
-    // 2. Direct ID or slug match from local static projects
-    const fromLocal = staticProjects.find(p => 
+    // 1. Direct ID or slug match from API
+    const match = apiProjects.find(p => 
       p.id === id || 
-      p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') === id
+      p._id === id || 
+      p.title?.toLowerCase().replace(/[^a-z0-9]+/g, '-') === id
     );
 
-    // 3. Fuzzy title match between API item and static item to enrich data
-    if (fromApi) {
-      const matchInLocal = staticProjects.find(sp => 
-        sp.title.toLowerCase().includes(fromApi.title.toLowerCase().slice(0, 15)) ||
-        fromApi.title.toLowerCase().includes(sp.title.toLowerCase().slice(0, 15))
-      );
+    if (match) {
       return {
-        ...matchInLocal,
-        ...fromApi,
-        caseStudy: fromApi.caseStudy || matchInLocal?.caseStudy,
-        metrics: fromApi.metrics || matchInLocal?.metrics,
-        tags: fromApi.tags || matchInLocal?.caseStudy?.stack || []
+        ...match,
+        tags: match.tags || match.caseStudy?.stack || match.techStack || []
       };
     }
 
-    if (fromLocal) return fromLocal;
+    // 2. Fallback search by title keyword
+    const fuzzy = apiProjects.find(p => p.title?.toLowerCase().includes(id.toLowerCase()));
+    if (fuzzy) {
+      return {
+        ...fuzzy,
+        tags: fuzzy.tags || fuzzy.caseStudy?.stack || fuzzy.techStack || []
+      };
+    }
 
-    // 4. Fallback search by title keyword
-    const fuzzy = apiProjects?.find(p => p.title.toLowerCase().includes(id.toLowerCase()));
-    if (fuzzy) return fuzzy;
-
-    return staticProjects[0];
+    return null;
   }, [id, apiProjects]);
 
   if (!project && isLoading) {
@@ -106,7 +89,8 @@ const ProjectDetails = () => {
     );
   }
 
-  const imageSrc = project.imageUrl || project.image || getProjectFallback(project);
+  const rawImg = (project?.imageUrl || project?.image || '').trim();
+  const imageSrc = rawImg || getProjectFallback(project);
   const techStack = project.tags || project.caseStudy?.stack || [];
 
   return (

@@ -17,7 +17,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -28,16 +28,18 @@ const Navbar = () => {
     { name: 'Certificates', href: '#education', icon: <Award size={13} /> },
   ];
 
-  const siteLogoUrl = settings?.siteLogoUrl || '';
+  const siteLogoUrl = (settings?.siteLogoUrl && !settings.siteLogoUrl.includes('nszvb6wnbfzyfcuvvt7n'))
+    ? settings.siteLogoUrl
+    : '/logo.webp';
   const siteTitle = settings?.siteTitle || '';
 
   useEffect(() => {
     if (siteTitle) {
       document.title = siteTitle;
     }
-    if (siteLogoUrl) {
-      const favicon = document.querySelector("link[rel='icon']");
-      if (favicon) favicon.href = siteLogoUrl;
+    const favicon = document.querySelector("link[rel='icon']");
+    if (favicon) {
+      favicon.href = (siteLogoUrl && !siteLogoUrl.includes('nszvb6wnbfzyfcuvvt7n')) ? siteLogoUrl : '/favicon.ico';
     }
   }, [siteTitle, siteLogoUrl]);
 
@@ -99,7 +101,11 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Toggle */}
-        <button className="md:hidden text-purple-400 p-2" onClick={() => setIsOpen(!isOpen)}>
+        <button 
+          className="md:hidden text-purple-400 p-2" 
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
+        >
           {isOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
       </m.div>
@@ -129,6 +135,7 @@ const Navbar = () => {
                 </span>
                 <button
                   onClick={() => setIsOpen(false)}
+                  aria-label="Close navigation menu"
                   className="p-2 bg-white/[0.03] rounded-full text-white/40 hover:text-white border border-white/[0.06] transition-colors"
                 >
                   <X size={18} />
