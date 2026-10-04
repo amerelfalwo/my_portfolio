@@ -52,19 +52,6 @@ const ProfessionalDevelopment = memo(() => {
       <div className="max-w-6xl mx-auto px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div className="text-center mb-20 md:mb-28">
-          <m.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-80px' }}
-            transition={tween}
-            className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full border border-purple-500/20 bg-purple-500/10 mb-6 backdrop-blur-md shadow-lg"
-          >
-            <Briefcase className="w-4 h-4 text-cyan-400" />
-            <span className="text-[10px] md:text-xs font-bold tracking-[0.25em] uppercase text-purple-200 font-mono">
-              Continuous Growth & Tracks
-            </span>
-          </m.div>
-
           <m.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

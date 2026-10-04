@@ -37,17 +37,6 @@ const About = memo(() => {
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div className="flex flex-col items-center mb-24 text-center">
-          <m.div
-            initial={{ opacity: 0, scale: 0.9, y: 10 }}
-            whileInView={{ opacity: 1, scale: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={tween}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/80 border border-slate-800 shadow-xl mb-6 backdrop-blur-md"
-          >
-            <User size={14} className="text-cyan-400" />
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-slate-300 font-mono">System Intel</span>
-          </m.div>
-
           <m.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

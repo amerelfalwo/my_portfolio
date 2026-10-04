@@ -40,6 +40,7 @@ function localApiPlugin() {
             const { default: handler } = await import(moduleUrl);
             
             const mockReq = {
+              url: req.url,
               method: req.method,
               headers: req.headers,
               query: parsedUrl.query,
@@ -53,6 +54,9 @@ function localApiPlugin() {
                 this.headers[name.toLowerCase()] = value;
                 res.setHeader(name, value);
                 return this;
+              },
+              getHeader(name) {
+                return this.headers[name.toLowerCase()] || (res.getHeader ? res.getHeader(name) : undefined);
               },
               status(code) {
                 this.statusCode = code;

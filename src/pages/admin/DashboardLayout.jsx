@@ -3,14 +3,12 @@ import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { m } from 'framer-motion';
 import { 
   FolderKanban, Cpu, Award, Settings, LogOut, Hexagon, ExternalLink, Menu, X, ShieldCheck,
-  Briefcase, BookOpen, GraduationCap, User, Layers
+  GraduationCap
 } from 'lucide-react';
 
 const NAV_ITEMS = [
   { path: '/admin/dashboard/projects', label: 'Projects', icon: FolderKanban },
   { path: '/admin/dashboard/skills', label: 'Skills', icon: Cpu },
-  { path: '/admin/dashboard/about', label: 'About Info', icon: User },
-  { path: '/admin/dashboard/trainings', label: 'Training', icon: BookOpen },
   { path: '/admin/dashboard/education', label: 'Education', icon: GraduationCap },
   { path: '/admin/dashboard/certificates', label: 'Certificates', icon: Award },
   { path: '/admin/dashboard/settings', label: 'Settings', icon: Settings },

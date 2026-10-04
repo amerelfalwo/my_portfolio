@@ -3,7 +3,7 @@ import { useSettings } from '../../hooks/useData';
 import { m } from 'framer-motion';
 import { 
   Settings as SettingsIcon, Save, CheckCircle2, ShieldAlert, User, Briefcase, 
-  FileText, Link2, Github, Linkedin, Twitter, Image as ImageIcon, Sparkles, Globe,
+  FileText, Link2, Github, Linkedin, Twitter, Facebook, Instagram, Image as ImageIcon, Sparkles, Globe,
   Brain, Award, Terminal, Cpu, Code, Zap, Layers, Plus, Trash2, Bot
 } from 'lucide-react';
 import { authFetch } from '../../lib/authFetch';
@@ -46,6 +46,8 @@ const ManageSettings = () => {
   const [githubUrl, setGithubUrl] = useState('');
   const [linkedinUrl, setLinkedinUrl] = useState('');
   const [twitterUrl, setTwitterUrl] = useState('');
+  const [facebookUrl, setFacebookUrl] = useState('');
+  const [instagramUrl, setInstagramUrl] = useState('');
 
   const [heroStats, setHeroStats] = useState(DEFAULT_HERO_STATS);
 
@@ -72,8 +74,10 @@ const ManageSettings = () => {
 
       const socials = settings.socialLinks || {};
       setGithubUrl(socials.github || settings.githubUrl || '');
-      setLinkedinUrl(socials.linkedin || '');
+      setLinkedinUrl(socials.linkedin || 'https://www.linkedin.com/in/amir-elrefai-b3a3212b8/?isSelfProfile=true');
       setTwitterUrl(socials.twitter || '');
+      setFacebookUrl(socials.facebook || 'https://www.facebook.com/amir.elref3i');
+      setInstagramUrl(socials.instagram || 'https://www.instagram.com/amir.elref3i/');
 
       if (Array.isArray(settings.heroStats) && settings.heroStats.length > 0) {
         setHeroStats(settings.heroStats);
@@ -131,6 +135,8 @@ const ManageSettings = () => {
         github: githubUrl,
         linkedin: linkedinUrl,
         twitter: twitterUrl,
+        facebook: facebookUrl,
+        instagram: instagramUrl,
       },
     };
 
@@ -452,19 +458,6 @@ const ManageSettings = () => {
           <div className="grid md:grid-cols-3 gap-6">
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1 font-mono flex items-center gap-1.5">
-                <Github size={12} /> GitHub
-              </label>
-              <input 
-                type="url" 
-                value={githubUrl} 
-                onChange={(e) => setGithubUrl(e.target.value)} 
-                className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-3.5 px-4 text-white text-xs font-mono focus:border-purple-400 focus:outline-none" 
-                placeholder="https://github.com/username" 
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1 font-mono flex items-center gap-1.5">
                 <Linkedin size={12} /> LinkedIn
               </label>
               <input 
@@ -473,6 +466,45 @@ const ManageSettings = () => {
                 onChange={(e) => setLinkedinUrl(e.target.value)} 
                 className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-3.5 px-4 text-white text-xs font-mono focus:border-cyan-400 focus:outline-none" 
                 placeholder="https://linkedin.com/in/username" 
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1 font-mono flex items-center gap-1.5">
+                <Facebook size={12} /> Facebook
+              </label>
+              <input 
+                type="url" 
+                value={facebookUrl} 
+                onChange={(e) => setFacebookUrl(e.target.value)} 
+                className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-3.5 px-4 text-white text-xs font-mono focus:border-purple-400 focus:outline-none" 
+                placeholder="https://facebook.com/username" 
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1 font-mono flex items-center gap-1.5">
+                <Instagram size={12} /> Instagram
+              </label>
+              <input 
+                type="url" 
+                value={instagramUrl} 
+                onChange={(e) => setInstagramUrl(e.target.value)} 
+                className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-3.5 px-4 text-white text-xs font-mono focus:border-pink-400 focus:outline-none" 
+                placeholder="https://instagram.com/username" 
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1 font-mono flex items-center gap-1.5">
+                <Github size={12} /> GitHub
+              </label>
+              <input 
+                type="url" 
+                value={githubUrl} 
+                onChange={(e) => setGithubUrl(e.target.value)} 
+                className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-3.5 px-4 text-white text-xs font-mono focus:border-purple-400 focus:outline-none" 
+                placeholder="https://github.com/username" 
               />
             </div>
 
@@ -573,7 +605,7 @@ CONVERSATION INSTRUCTIONS:
           <button
             type="submit"
             disabled={saving}
-            className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-cyan-500 hover:opacity-95 text-white text-xs font-black uppercase tracking-[0.2em] shadow-lg shadow-purple-500/20 disabled:opacity-50 transition-all cursor-pointer"
+            className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-[0.2em] shadow-lg shadow-purple-500/20 disabled:opacity-50 transition-all cursor-pointer"
           >
             <Save size={16} />
             <span>{saving ? 'Saving Changes...' : 'Save Settings & Knowledge Base'}</span>

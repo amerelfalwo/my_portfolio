@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState, useMemo, memo } from 'react';
 import * as THREE from 'three';
 import { m, AnimatePresence } from 'framer-motion';
-import {
-  Brain, CheckCircle2, ShieldCheck, Sparkles, X, ZoomIn, Move
-} from 'lucide-react';
+import { Brain } from 'lucide-react';
 import { getToolIconUrl } from '../utils/getToolIcon';
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -61,22 +59,22 @@ function calculateAdaptiveLayout(skillsList, isMobile) {
   // Rule 3: N = 5 to 17 technologies -> 2 Layers
   if (count <= 17) {
     const mid = Math.ceil(count / 2);
-    const innerRadius = isMobile ? 120 : 180;
-    const outerRadius = isMobile ? 200 : 300;
+    const innerRadius = isMobile ? 110 : 155;
+    const outerRadius = isMobile ? 180 : 245;
     return {
       ringCount: 2,
       layers: [skillsList.slice(0, mid), skillsList.slice(mid)],
       radii: [innerRadius, outerRadius],
-      cameraZ: isMobile ? 560 : 650,
+      cameraZ: isMobile ? 600 : 760,
     };
   }
 
   // Rule 4: N >= 18 technologies -> 3 Layers
   const l1 = Math.ceil(count * 0.25);
   const l2 = Math.ceil(count * 0.35);
-  const innerRadius = isMobile ? 100 : 155;
-  const midRadius = isMobile ? 175 : 245;
-  const outerRadius = isMobile ? 250 : 345;
+  const innerRadius = isMobile ? 120 : 180;
+  const midRadius = isMobile ? 200 : 285;
+  const outerRadius = isMobile ? 280 : 395;
 
   return {
     ringCount: 3,
@@ -86,7 +84,7 @@ function calculateAdaptiveLayout(skillsList, isMobile) {
       skillsList.slice(l1 + l2),
     ],
     radii: [innerRadius, midRadius, outerRadius],
-    cameraZ: isMobile ? 640 : 740,
+    cameraZ: isMobile ? 540 : 620,
   };
 }
 
@@ -181,7 +179,7 @@ const NeuralSkillsCore = memo(({ skills = [], activeCategory = 'all', categoryLa
     const coreGroup = new THREE.Group();
     coreGroupRef.current = coreGroup;
 
-    const coreGeo = new THREE.IcosahedronGeometry(42, 1);
+    const coreGeo = new THREE.IcosahedronGeometry(52, 1);
     const coreMat = new THREE.MeshBasicMaterial({
       color: 0xa855f7,
       wireframe: true,
@@ -190,7 +188,7 @@ const NeuralSkillsCore = memo(({ skills = [], activeCategory = 'all', categoryLa
     });
     coreGroup.add(new THREE.Mesh(coreGeo, coreMat));
 
-    const innerGeo = new THREE.IcosahedronGeometry(22, 1);
+    const innerGeo = new THREE.IcosahedronGeometry(28, 1);
     const innerMat = new THREE.MeshBasicMaterial({
       color: 0x22d3ee,
       wireframe: true,
@@ -199,7 +197,7 @@ const NeuralSkillsCore = memo(({ skills = [], activeCategory = 'all', categoryLa
     });
     coreGroup.add(new THREE.Mesh(innerGeo, innerMat));
 
-    const sphereGeo = new THREE.SphereGeometry(11, 16, 16);
+    const sphereGeo = new THREE.SphereGeometry(14, 16, 16);
     const sphereMat = new THREE.MeshBasicMaterial({
       color: 0xec4899,
       transparent: true,
@@ -213,9 +211,9 @@ const NeuralSkillsCore = memo(({ skills = [], activeCategory = 'all', categoryLa
     const ringsGroup = new THREE.Group();
     ringsGroupRef.current = ringsGroup;
 
-    const r0 = layoutConfig.radii[0] || 160;
-    const r1 = layoutConfig.radii[1] || r0 * 1.5;
-    const r2 = layoutConfig.radii[2] || r1 * 1.35;
+    const r0 = layoutConfig.radii[0] || (isMobile ? 120 : 180);
+    const r1 = layoutConfig.radii[1] || (isMobile ? 200 : 285);
+    const r2 = layoutConfig.radii[2] || (isMobile ? 280 : 395);
 
     // Ring 1: Inner Pink (Opacity 0.2)
     const ring1Geo = new THREE.TorusGeometry(r0, 1.2, 16, 120);
@@ -299,7 +297,7 @@ const NeuralSkillsCore = memo(({ skills = [], activeCategory = 'all', categoryLa
   const handleWheel = (e) => {
     e.preventDefault();
     const zoomDelta = e.deltaY * 0.35;
-    targetCameraZ.current = Math.min(950, Math.max(320, targetCameraZ.current + zoomDelta));
+    targetCameraZ.current = Math.min(850, Math.max(380, targetCameraZ.current + zoomDelta));
     setZoomLevel(Math.round(targetCameraZ.current));
   };
 
@@ -579,7 +577,7 @@ const NeuralSkillsCore = memo(({ skills = [], activeCategory = 'all', categoryLa
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerUp}
-      className={`relative w-full max-w-[1000px] h-[550px] md:h-[620px] mx-auto flex items-center justify-center select-none overflow-hidden my-2 group/core ${
+      className={`relative w-full max-w-[1400px] h-[720px] md:h-[820px] mx-auto flex items-center justify-center select-none my-2 group/core ${
         isGrabbing ? 'cursor-grabbing' : 'cursor-grab'
       }`}
     >
@@ -589,35 +587,15 @@ const NeuralSkillsCore = memo(({ skills = [], activeCategory = 'all', categoryLa
       {/* 2D Connecting Laser Lines Overlay */}
       <canvas ref={canvasLinesRef} className="absolute inset-0 z-10 pointer-events-none" />
 
-      {/* Status HUD Header (Top Left) */}
-      <div className="absolute top-4 left-6 z-30 flex items-center gap-3 px-4 py-2 rounded-2xl bg-slate-900/80 border border-slate-800 backdrop-blur-xl shadow-lg">
-        <span className="relative flex h-2 w-2">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400" />
-        </span>
-        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-300 font-mono">
-          AI CORE ACTIVE :: {categoryLabel}
-        </span>
-      </div>
-
-      {/* Zoom HUD Readout (Top Right) */}
-      <div className="absolute top-4 right-6 z-30 flex items-center gap-3 px-4 py-2 rounded-2xl bg-slate-900/80 border border-slate-800 backdrop-blur-xl text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
-        <ZoomIn className="w-3.5 h-3.5 text-cyan-400" />
-        <span>ZOOM :: {zoomLevel}px</span>
-      </div>
-
       {/* Ambient Center Glow */}
-      <div className="absolute w-72 h-72 rounded-full bg-gradient-to-r from-purple-500/8 via-cyan-500/8 to-pink-500/8 blur-[80px] pointer-events-none -z-10" />
+      <div className="absolute w-[500px] h-[500px] rounded-full bg-gradient-to-r from-purple-500/15 via-cyan-500/15 to-pink-500/15 blur-[120px] pointer-events-none -z-10" />
 
       {/* ── CENTER AI CORE EMBLEM ── */}
       <div className="absolute z-20 flex flex-col items-center justify-center pointer-events-none">
-        <div className="relative w-18 h-18 md:w-22 md:h-22 rounded-3xl bg-slate-900/90 border border-purple-500/40 backdrop-blur-2xl flex items-center justify-center shadow-xl group-hover/core:border-cyan-400 transition-colors duration-500">
-          <Brain className="w-9 h-9 md:w-11 md:h-11 text-cyan-400 animate-pulse drop-shadow-[0_0_10px_rgba(34,211,238,0.6)]" />
+        <div className="relative w-22 h-22 md:w-26 md:h-26 rounded-3xl bg-slate-900/90 border border-purple-500/40 backdrop-blur-2xl flex items-center justify-center shadow-xl group-hover/core:border-cyan-400 transition-colors duration-500">
+          <Brain className="w-11 h-11 md:w-13 md:h-13 text-cyan-400 animate-pulse drop-shadow-[0_0_12px_rgba(34,211,238,0.7)]" />
           <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-pink-500/10 blur-sm -z-10" />
         </div>
-        <span className="mt-2.5 text-[10px] md:text-xs font-bold uppercase tracking-[0.25em] text-slate-300 font-mono backdrop-blur-md px-3.5 py-1 rounded-full border border-slate-800 bg-slate-950/80">
-          AI CORE ENGINE
-        </span>
       </div>
 
       {/* ── 3D ORBITING & DRAGGABLE TECHNOLOGY BADGES ── */}
@@ -636,7 +614,7 @@ const NeuralSkillsCore = memo(({ skills = [], activeCategory = 'all', categoryLa
               onMouseEnter={() => setHoveredId(id)}
               onMouseLeave={() => setHoveredId(null)}
               style={{ willChange: 'transform, opacity' }}
-              className={`tech-node-badge absolute pointer-events-auto flex items-center gap-2.5 px-4 py-2.5 rounded-2xl border transition-colors duration-150 backdrop-blur-xl cursor-grab ${
+              className={`tech-node-badge absolute pointer-events-auto flex items-center gap-2.5 px-4 py-2 md:px-5 md:py-2.5 rounded-2xl border transition-colors duration-150 backdrop-blur-xl cursor-grab ${
                 isHovered || isSelected
                   ? 'bg-slate-900/95 border-cyan-400 text-white shadow-[0_0_25px_rgba(34,211,238,0.4)] ring-2 ring-cyan-400/50'
                   : layerIdx === 0
@@ -652,23 +630,12 @@ const NeuralSkillsCore = memo(({ skills = [], activeCategory = 'all', categoryLa
                   onError={(e) => { e.target.style.display = 'none'; }}
                 />
               )}
-              <span className="text-xs font-bold tracking-wider font-mono whitespace-nowrap pointer-events-none">
+              <span className="text-xs md:text-sm font-bold tracking-wider font-mono whitespace-nowrap pointer-events-none">
                 {skill.name}
               </span>
             </div>
           );
         })}
-      </div>
-
-      {/* HUD Footer Readout */}
-      <div className="absolute bottom-4 right-6 z-30 flex items-center gap-4 text-[10px] font-mono text-slate-400 font-bold uppercase tracking-widest bg-slate-950/80 px-4 py-1.5 rounded-full border border-slate-800 backdrop-blur-md pointer-events-none">
-        <span className="flex items-center gap-1.5 text-cyan-400">
-          <Move className="w-3.5 h-3.5 animate-pulse" /> DRAG TO ROTATE
-        </span>
-        <span className="text-slate-600">|</span>
-        <span className="text-emerald-400 flex items-center gap-1">
-          <Sparkles className="w-3 h-3" /> 60 FPS GPU
-        </span>
       </div>
     </div>
   );

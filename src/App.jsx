@@ -11,12 +11,11 @@ import ChatWidget from './components/ChatWidget';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Lazy-loaded below-fold public sections
-const About = React.lazy(() => import('./components/About'));
 const Skills = React.lazy(() => import('./components/Skills'));
 const Projects = React.lazy(() => import('./components/Projects'));
-const ProfessionalDevelopment = React.lazy(() => import('./components/ProfessionalDevelopment'));
 const Education = React.lazy(() => import('./components/Education'));
 const Contact = React.lazy(() => import('./components/Contact'));
+const ProjectDetails = React.lazy(() => import('./pages/ProjectDetails'));
 
 // Aura CMS Admin pages
 const AdminLogin = React.lazy(() => import('./pages/admin/Login'));
@@ -25,8 +24,6 @@ const ManageProjects = React.lazy(() => import('./pages/admin/ManageProjects'));
 const ManageSkills = React.lazy(() => import('./pages/admin/ManageSkills'));
 const ManageCertificates = React.lazy(() => import('./pages/admin/ManageCertificates'));
 const ManageSettings = React.lazy(() => import('./pages/admin/ManageSettings'));
-const ManageAbout = React.lazy(() => import('./pages/admin/ManageAbout'));
-const ManageTrainings = React.lazy(() => import('./pages/admin/ManageTrainings'));
 const ManageEducation = React.lazy(() => import('./pages/admin/ManageEducation'));
 
 // Shared loading fallback
@@ -44,9 +41,7 @@ function Portfolio() {
       <main className="relative z-10">
         <Hero />
         <Suspense fallback={<SectionLoader />}>
-          <About />
           <Skills />
-          <ProfessionalDevelopment />
           <Projects />
           <Education />
           <Contact />
@@ -67,6 +62,9 @@ function App() {
         {/* Public Portfolio Route */}
         <Route path="/" element={<Portfolio />} />
 
+        {/* Project Details Page */}
+        <Route path="/projects/:id" element={<ProjectDetails />} />
+
         {/* Aura CMS Admin Authentication */}
         <Route path="/admin/login" element={<AdminLogin />} />
 
@@ -86,8 +84,6 @@ function App() {
           <Route path="projects" element={<ManageProjects />} />
           <Route path="skills" element={<ManageSkills />} />
           <Route path="certificates" element={<ManageCertificates />} />
-          <Route path="about" element={<ManageAbout />} />
-          <Route path="trainings" element={<ManageTrainings />} />
           <Route path="education" element={<ManageEducation />} />
           <Route path="settings" element={<ManageSettings />} />
         </Route>

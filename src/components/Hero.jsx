@@ -82,7 +82,7 @@ const Hero = memo(() => {
   const displayLastName = rawName.length > 1 ? rawName[rawName.length - 1] : '';
   const displayName = rawName.slice(0, rawName.length > 1 ? -1 : 1).join(' ');
   const displayBio = heroData?.bio || 'Building Next-Generation Autonomous AI Agents, Deep Neural Networks, and High-Performance Multimodal Computer Vision Systems.';
-  const cvUrl = heroData?.resumeUrl || heroData?.cvUrl || '#';
+  const cvUrl = heroData?.resumeUrl || heroData?.cvUrl || 'https://drive.google.com/file/d/1EwA9JlGdJhmg2H5YR6u9ld8l8jKCfrnd/view?usp=sharing';
   const githubUrl = heroData?.socialLinks?.github || heroData?.githubUrl || '#';
   const profileImage = heroData?.profileImageUrl?.trim() || heroData?.heroImage?.trim() || '';
 
@@ -224,12 +224,11 @@ const Hero = memo(() => {
               href={cvUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-purple-600 via-fuchsia-600 to-cyan-500 text-white rounded-2xl font-black uppercase tracking-wider transition-all flex items-center justify-center gap-3 text-xs md:text-sm shadow-[0_0_30px_rgba(168,85,247,0.35)] hover:shadow-[0_0_50px_rgba(34,211,238,0.5)] overflow-hidden cursor-pointer"
+              className="group relative w-full sm:w-auto px-8 py-4 bg-purple-600 hover:bg-purple-500 text-white rounded-2xl font-black uppercase tracking-wider transition-all flex items-center justify-center gap-3 text-xs md:text-sm shadow-[0_0_25px_rgba(147,51,234,0.35)] hover:shadow-[0_0_35px_rgba(147,51,234,0.5)] cursor-pointer"
             >
               <span className="relative z-10 flex items-center gap-2">
                 Download CV <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
               </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </m.a>
 
             <m.a

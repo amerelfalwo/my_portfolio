@@ -20,11 +20,11 @@ const SocialFloatingButton = () => {
   }, []);
 
   const gh = contactData?.github || contactData?.githubUrl || 'https://github.com/amerelfalwo';
-  const li = contactData?.linkedin || contactData?.linkedinUrl || 'https://www.linkedin.com/in/amir-elrefai/';
+  const li = contactData?.linkedin || contactData?.linkedinUrl || 'https://www.linkedin.com/in/amir-elrefai-b3a3212b8/?isSelfProfile=true';
   const wa = contactData?.phone ? `https://wa.me/${contactData.phone.replace(/[^0-9]/g, '')}` : 'https://wa.me/201023524477';
   const tg = contactData?.telegram || 'https://t.me/Amirelfalw';
-  const fb = contactData?.facebook;
-  const ig = contactData?.instagram;
+  const fb = contactData?.facebook || 'https://www.facebook.com/amir.elref3i';
+  const ig = contactData?.instagram || 'https://www.instagram.com/amir.elref3i/';
   const tw = contactData?.xTwitter || contactData?.twitter;
 
   const socials = [

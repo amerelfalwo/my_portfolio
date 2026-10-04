@@ -71,21 +71,21 @@ const Contact = memo(() => {
 
   const getSocialList = () => {
     const gh = contactData?.github || contactData?.githubUrl || contactData?.socialLinks?.github || 'https://github.com/amerelfalwo';
-    const li = contactData?.linkedin || contactData?.linkedinUrl || contactData?.socialLinks?.linkedin || 'https://www.linkedin.com/in/amir-elrefai/';
+    const li = contactData?.linkedin || contactData?.linkedinUrl || contactData?.socialLinks?.linkedin || 'https://www.linkedin.com/in/amir-elrefai-b3a3212b8/?isSelfProfile=true';
     const wa = contactData?.phone ? `https://wa.me/${contactData.phone.replace(/[^0-9]/g, '')}` : 'https://wa.me/201023524477';
-    const fb = contactData?.facebook || contactData?.socialLinks?.facebook;
-    const ig = contactData?.instagram || contactData?.socialLinks?.instagram;
+    const fb = contactData?.facebook || contactData?.socialLinks?.facebook || 'https://www.facebook.com/amir.elref3i';
+    const ig = contactData?.instagram || contactData?.socialLinks?.instagram || 'https://www.instagram.com/amir.elref3i/';
     const tw = contactData?.xTwitter || contactData?.twitter || contactData?.socialLinks?.twitter;
     const kh = contactData?.khamsat;
 
     const s = [
-      { name: "GitHub", icon: <Github size={20} />, href: gh, color: "text-white border-white/30 hover:bg-white/10" },
       { name: "LinkedIn", icon: <Linkedin size={20} />, href: li, color: "text-[#0A66C2] border-[#0A66C2]/30 hover:bg-[#0A66C2]/10" },
+      { name: "Facebook", icon: <Facebook size={20} />, href: fb, color: "text-[#1877F2] border-[#1877F2]/30 hover:bg-[#1877F2]/10" },
+      { name: "Instagram", icon: <Instagram size={20} />, href: ig, color: "text-[#E4405F] border-[#E4405F]/30 hover:bg-[#E4405F]/10" },
+      { name: "GitHub", icon: <Github size={20} />, href: gh, color: "text-white border-white/30 hover:bg-white/10" },
       { name: "WhatsApp", icon: <Phone size={20} />, href: wa, color: "text-[#25D366] border-[#25D366]/30 hover:bg-[#25D366]/10" }
     ];
 
-    if (fb) s.push({ name: "Facebook", icon: <Facebook size={20} />, href: fb, color: "text-[#1877F2] border-[#1877F2]/30 hover:bg-[#1877F2]/10" });
-    if (ig) s.push({ name: "Instagram", icon: <Instagram size={20} />, href: ig, color: "text-[#E4405F] border-[#E4405F]/30 hover:bg-[#E4405F]/10" });
     if (tw) s.push({ name: "X (Twitter)", icon: <Twitter size={20} />, href: tw, color: "text-[#06b6d4] border-[#06b6d4]/30 hover:bg-[#06b6d4]/10" });
     if (kh) s.push({ name: "Khamsat", icon: <Briefcase size={20} />, href: kh, color: "text-[#1dbf73] border-[#1dbf73]/30 hover:bg-[#1dbf73]/10" });
 
@@ -118,8 +118,8 @@ const Contact = memo(() => {
             <div className="group relative flex flex-col p-10 bg-white/[0.02] border border-white/[0.06] rounded-3xl hover:border-purple-500/20 transition-all duration-500 overflow-hidden">
                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                
-               <h3 className="text-2xl font-black uppercase mb-8 flex items-center gap-3 relative z-10 text-white">
-                 Reach Out <ArrowUpRight className="text-purple-400" />
+               <h3 className="text-2xl font-black uppercase mb-8 relative z-10 text-white">
+                 Reach Out
                </h3>
                
                <div className="space-y-6 relative z-10">
@@ -239,7 +239,7 @@ const Contact = memo(() => {
                 type="submit"
                 disabled={status.loading}
                 className={`w-full py-6 font-black uppercase tracking-[0.4em] rounded-[2rem] transition-all flex items-center justify-center gap-4 group border-none ${
-                  status.loading ? 'bg-purple-500/40 text-white/60 cursor-not-allowed' : 'bg-gradient-to-r from-purple-600 to-purple-500 text-white hover:opacity-90 shadow-[0_0_30px_rgba(168,85,247,0.2)] hover:shadow-[0_0_40px_rgba(168,85,247,0.3)] hover:scale-[1.02] active:scale-[0.98]'
+                  status.loading ? 'bg-purple-500/40 text-white/60 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-500 text-white shadow-[0_0_25px_rgba(147,51,234,0.3)] hover:shadow-[0_0_35px_rgba(147,51,234,0.45)] hover:scale-[1.02] active:scale-[0.98]'
                 }`}
               >
                 {status.loading ? 'Sending...' : 'Send Message'}

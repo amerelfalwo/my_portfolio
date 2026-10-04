@@ -320,7 +320,7 @@ const ChatWidget = memo(() => {
               <button
                 type="submit"
                 disabled={isLoading || !input.trim()}
-                className="p-3 rounded-2xl bg-gradient-to-r from-purple-600 to-cyan-500 hover:opacity-95 text-white disabled:opacity-40 transition-all cursor-pointer shadow-lg shadow-purple-500/20"
+                className="p-3 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white disabled:opacity-40 transition-all cursor-pointer shadow-lg shadow-purple-500/20"
               >
                 <Send size={15} />
               </button>
@@ -333,7 +333,7 @@ const ChatWidget = memo(() => {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="pointer-events-auto relative group p-4 rounded-full bg-gradient-to-tr from-purple-600 via-fuchsia-600 to-cyan-400 text-white shadow-[0_0_30px_rgba(168,85,247,0.4)] hover:shadow-[0_0_45px_rgba(34,211,238,0.5)] hover:scale-105 transition-all cursor-pointer"
+        className="pointer-events-auto relative group p-4 rounded-full bg-purple-600 hover:bg-purple-500 text-white shadow-[0_0_25px_rgba(147,51,234,0.35)] hover:shadow-[0_0_35px_rgba(147,51,234,0.5)] hover:scale-105 transition-all cursor-pointer"
         title="Toggle AI Assistant"
       >
         {isOpen ? <X size={24} /> : <Bot size={24} />}

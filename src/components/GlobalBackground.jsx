@@ -70,11 +70,16 @@ GlobalParticlesCanvas.displayName = 'GlobalParticlesCanvas';
 
 /* ═══════════════════════════════════════════
    GLOBAL BACKGROUND — Dark Cyberpunk Grid & Particles
-   No over-lit background purple radial gradients.
+   Unified ambient glow across entire portfolio
+   (Zero section clipping, completely seamless)
    ═══════════════════════════════════════════ */
 const GlobalBackground = () => {
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none bg-[#05050b]">
+      {/* ── UNIFIED AMBIENT GLOW (Fixed, never clipped by section boundaries) ── */}
+      <div className="absolute top-1/4 -left-40 w-[650px] h-[650px] bg-purple-600/[0.08] rounded-full blur-[160px] pointer-events-none" />
+      <div className="absolute top-2/3 -right-40 w-[650px] h-[650px] bg-cyan-600/[0.08] rounded-full blur-[160px] pointer-events-none" />
+
       {/* ── SEAMLESS CYBERPUNK GRID ── */}
       <div 
         className="absolute inset-0 pointer-events-none z-0 opacity-70"

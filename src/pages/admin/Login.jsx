@@ -20,12 +20,12 @@ const Login = () => {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ email: username, username, password }),
       });
 
       const data = await res.json();
 
-      if (!res.ok || !data.success) {
+      if (!res.ok || (!data.success && !data.token)) {
         throw new Error(data.error || 'Authentication failed. Invalid credentials.');
       }
 
@@ -121,7 +121,7 @@ const Login = () => {
           <button 
             type="submit" 
             disabled={loading} 
-            className="w-full py-4 mt-6 bg-gradient-to-r from-purple-600 via-fuchsia-600 to-cyan-500 hover:opacity-95 text-white rounded-xl font-black uppercase tracking-[0.3em] text-xs flex items-center justify-center gap-3 transition-all outline-none disabled:opacity-50 group shadow-lg shadow-purple-500/25 hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+            className="w-full py-4 mt-6 bg-purple-600 hover:bg-purple-500 text-white rounded-xl font-black uppercase tracking-[0.3em] text-xs flex items-center justify-center gap-3 transition-all outline-none disabled:opacity-50 group shadow-lg shadow-purple-500/25 hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
           >
             {loading ? 'Authenticating...' : 'Initialize Session'}
             {!loading && <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}

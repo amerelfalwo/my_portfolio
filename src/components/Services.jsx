@@ -98,10 +98,6 @@ const Services = memo(() => {
           transition={tween}
           className="mb-20 md:mb-24 text-center"
         >
-          <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full border border-purple-500/15 bg-purple-500/5 mb-8">
-            <LucideIcons.Layers className="w-3.5 h-3.5 text-cyan-400" />
-            <span className="text-[10px] font-bold tracking-[0.25em] uppercase text-purple-300/70 font-mono">Value Proposition</span>
-          </div>
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-black uppercase tracking-[-0.03em] mb-5 text-white">
             Core{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-fuchsia-400 to-cyan-400">

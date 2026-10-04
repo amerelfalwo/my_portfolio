@@ -228,7 +228,7 @@ const ManageSkills = () => {
 
         <button
           onClick={openCreateModal}
-          className="flex items-center gap-2.5 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-purple-600 to-cyan-500 hover:opacity-95 text-white text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-purple-500/20 cursor-pointer"
+          className="flex items-center gap-2.5 px-6 py-3.5 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-purple-500/20 cursor-pointer"
         >
           <Plus size={18} />
           <span>Add New Skill</span>
@@ -449,7 +449,7 @@ const ManageSkills = () => {
                   <button 
                     type="submit" 
                     disabled={submitting || !name.trim()} 
-                    className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-cyan-500 hover:opacity-95 text-white text-xs font-black uppercase tracking-wider disabled:opacity-40 transition-all shadow-lg shadow-purple-500/20"
+                    className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-wider disabled:opacity-40 transition-all shadow-lg shadow-purple-500/20"
                   >
                     {submitting ? 'Saving...' : (editingId ? 'Update Skill' : 'Add Skill')}
                   </button>

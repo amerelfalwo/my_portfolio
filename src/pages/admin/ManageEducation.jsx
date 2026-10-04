@@ -180,7 +180,7 @@ const ManageEducation = () => {
             <button
               type="submit"
               disabled={savingDegree}
-              className="flex items-center gap-2.5 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-purple-600 to-cyan-500 hover:opacity-95 text-white text-xs font-black uppercase tracking-wider disabled:opacity-50 transition-all shadow-lg shadow-purple-500/20 cursor-pointer"
+              className="flex items-center gap-2.5 px-8 py-3.5 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-wider disabled:opacity-50 transition-all shadow-lg shadow-purple-500/20 cursor-pointer"
             >
               <Save size={16} />
               {savingDegree ? 'Saving...' : 'Save Degree Info'}

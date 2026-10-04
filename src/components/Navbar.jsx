@@ -25,7 +25,7 @@ const Navbar = () => {
     { name: 'About', href: '#about', icon: <User size={13} /> },
     { name: 'Skills', href: '#skills', icon: <Code size={13} /> },
     { name: 'Projects', href: '#projects', icon: <Briefcase size={13} /> },
-    { name: 'Credentials', href: '#education', icon: <Award size={13} /> },
+    { name: 'Certificates', href: '#education', icon: <Award size={13} /> },
   ];
 
   const siteLogoUrl = settings?.siteLogoUrl || '';
@@ -92,7 +92,7 @@ const Navbar = () => {
         <div className="hidden md:flex flex-1 justify-end items-center">
           <a
             href="#contact"
-            className="px-7 py-2.5 rounded-full bg-gradient-to-r from-purple-600 to-purple-500 text-white text-[10px] font-bold uppercase tracking-[0.2em] transition-all hover:scale-105 shadow-[0_0_25px_rgba(168,85,247,0.2)] hover:shadow-[0_0_35px_rgba(168,85,247,0.3)]"
+            className="px-7 py-2.5 rounded-full bg-purple-600 hover:bg-purple-500 text-white text-[10px] font-bold uppercase tracking-[0.2em] transition-all hover:scale-105 shadow-[0_0_20px_rgba(147,51,234,0.3)] hover:shadow-[0_0_30px_rgba(147,51,234,0.45)]"
           >
             Connect
           </a>
@@ -157,7 +157,7 @@ const Navbar = () => {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ ...spring, delay: 0.4 }}
-                className="mt-auto bg-gradient-to-r from-purple-600 to-purple-500 text-white py-4 rounded-2xl text-center font-bold uppercase tracking-[0.2em] text-sm shadow-[0_0_30px_rgba(168,85,247,0.2)] transition-all hover:shadow-[0_0_40px_rgba(168,85,247,0.3)]"
+                className="mt-auto bg-purple-600 hover:bg-purple-500 text-white py-4 rounded-2xl text-center font-bold uppercase tracking-[0.2em] text-sm shadow-[0_0_20px_rgba(147,51,234,0.3)] transition-all hover:shadow-[0_0_30px_rgba(147,51,234,0.45)]"
                 onClick={() => setIsOpen(false)}
               >
                 Get In Touch

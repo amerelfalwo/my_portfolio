@@ -30,3 +30,6 @@ dist-ssr
 .stitch
 .stitch/*
 .agents-skills
+.playwright-mcp
+
+.agent
