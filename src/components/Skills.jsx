@@ -2,84 +2,13 @@ import { useMemo, memo } from 'react';
 import { useSkills } from '../hooks/useData';
 import NeuralSkillsCore from './NeuralSkillsCore';
 
-/* Default Preset Technologies per Category */
-const PRESET_SKILLS = {
-  computer_vision: [
-    { name: 'OpenCV' },
-    { name: 'YOLO' },
-    { name: 'TensorFlow' },
-    { name: 'PyTorch' },
-    { name: 'ONNX' },
-    { name: 'MediaPipe' },
-  ],
-  nlp_ai: [
-    { name: 'LangChain' },
-    { name: 'ChromaDB' },
-    { name: 'Hugging Face' },
-    { name: 'LlamaIndex' },
-    { name: 'Pinecone' },
-    { name: 'OpenAI' },
-  ],
-  development: [
-    { name: 'FastAPI' },
-    { name: 'Next.js' },
-    { name: 'Docker' },
-    { name: 'PostgreSQL' },
-    { name: 'React' },
-    { name: 'Python' },
-    { name: 'C++' },
-  ],
-  deep_learning: [
-    { name: 'PyTorch' },
-    { name: 'TensorFlow' },
-    { name: 'Keras' },
-    { name: 'ONNX' },
-    { name: 'Python' },
-    { name: 'Scikit-Learn' },
-  ],
-  devops: [
-    { name: 'Docker' },
-    { name: 'Linux' },
-    { name: 'Git' },
-    { name: 'UV' },
-    { name: 'PostgreSQL' },
-    { name: 'MongoDB' },
-  ],
-  all: [
-    { name: 'PyTorch' },
-    { name: 'TensorFlow' },
-    { name: 'OpenCV' },
-    { name: 'YOLO' },
-    { name: 'LangChain' },
-    { name: 'ChromaDB' },
-    { name: 'LlamaIndex' },
-    { name: 'FastAPI' },
-    { name: 'Next.js' },
-    { name: 'Docker' },
-    { name: 'Python' },
-    { name: 'C++' },
-  ]
-};
-
 const Skills = memo(() => {
-  const { skills: rawSkills } = useSkills();
+  const { skills: rawSkills, isLoading } = useSkills();
 
+  // Deduplicate and process skills directly from MongoDB Atlas
   const allSkills = useMemo(() => {
-    if (!rawSkills || rawSkills.length === 0) return PRESET_SKILLS.all;
-
-    // Deduplicate
-    const unique = Array.from(new Map(rawSkills.map((s) => [s.name, s])).values());
-    const existingNames = new Set(unique.map((x) => x.name.toLowerCase()));
-
-    // Merge preset skills if not present
-    const combined = [...unique];
-    PRESET_SKILLS.all.forEach((preset) => {
-      if (!existingNames.has(preset.name.toLowerCase())) {
-        combined.push(preset);
-      }
-    });
-
-    return combined;
+    if (!rawSkills || rawSkills.length === 0) return [];
+    return Array.from(new Map(rawSkills.map((s) => [s.name.toLowerCase(), s])).values());
   }, [rawSkills]);
 
   return (

@@ -169,6 +169,35 @@
   animation: orb-secondary 10s ease-in-out 2s infinite;
 }
 
+@keyframes hero-portrait-float {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+
+.animate-hero-float {
+  animation: hero-portrait-float 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.hero-fade-up {
+  animation: hero-fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 /* ═══════════════════════════════════════════
    MOBILE PERFORMANCE: disable backdrop-blur
    on small screens to prevent GPU stutter.

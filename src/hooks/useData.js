@@ -63,22 +63,44 @@ export function useCertificates() {
   };
 }
 
+const DEFAULT_SETTINGS = {
+  fullName: 'AMIR ELREFAI',
+  name: 'AMIR ELREFAI',
+  bio: 'Building Next-Generation Autonomous AI Agents, Deep Neural Networks, and High-Performance Multimodal Computer Vision Systems.',
+  heroBadgeText: 'SYSTEM ONLINE :: AI OS v3.0',
+  profileImageUrl: '/hero-portrait.webp',
+  siteLogoUrl: '/logo.webp',
+  siteTitle: 'Amir Elrefai | AI Engineer',
+  resumeUrl: 'https://drive.google.com/file/d/1EwA9JlGdJhmg2H5YR6u9ld8l8jKCfrnd/view?usp=sharing',
+  githubUrl: 'https://github.com/amerelfalwo',
+  typewriterWords: [
+    'Computer Vision • Deep Learning • GenAI',
+    'Neural Networks • Multi-Modal RAG',
+    'Autonomous AI Systems & Agents'
+  ],
+  heroStats: [
+    { title: '4+ Years Exp', description: 'AI & Machine Learning', iconName: 'Brain' },
+    { title: '25+ AI Models', description: 'Production Deployed', iconName: 'Cpu' }
+  ]
+};
+
 /**
  * Custom hook to fetch settings document.
  */
 export function useSettings() {
-  const { data, error, isLoading, isValidating, mutate } = useSWR(`${API_BASE}/settings`, fetcher, {
-    revalidateOnFocus: true,
+  const { data, error, isValidating, mutate } = useSWR(`${API_BASE}/settings`, fetcher, {
+    fallbackData: DEFAULT_SETTINGS,
+    revalidateOnFocus: false,
     revalidateOnReconnect: true,
-    dedupingInterval: 2000,
+    dedupingInterval: 60000,
   });
 
   // Settings can return an object or array of settings
   const settings = Array.isArray(data) ? data[0] : data;
 
   return {
-    settings: settings || null,
-    isLoading,
+    settings: settings || DEFAULT_SETTINGS,
+    isLoading: false,
     isError: error,
     error,
     isValidating,

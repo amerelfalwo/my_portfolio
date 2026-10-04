@@ -1,6 +1,5 @@
 import { useState, useEffect, memo } from 'react';
 import { m } from 'framer-motion';
-import emailjs from '@emailjs/browser';
 import { Send, MessageSquare, Phone, Github, Linkedin, Mail, ArrowUpRight, Zap, Briefcase, Facebook, Instagram, Twitter } from 'lucide-react';
 import { getContactRelay, addMessage } from '../api';
 
@@ -37,7 +36,7 @@ const Contact = memo(() => {
     setStatus({ loading: true, success: false, error: '' });
     
     try {
-      // 1. Send via EmailJS
+      // 1. Send via EmailJS (loaded on demand)
       const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
       const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
       const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
@@ -49,6 +48,7 @@ const Contact = memo(() => {
         message: formData.message,
       };
 
+      const emailjs = (await import('@emailjs/browser')).default;
       await emailjs.send(serviceId, templateId, templateParams, publicKey);
 
       // 2. Save using API for Inbox Manager

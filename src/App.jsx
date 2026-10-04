@@ -3,12 +3,14 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Footer from './components/Footer';
-import ScrollToTop from './components/ScrollToTop';
-import SocialFloatingButton from './components/SocialFloatingButton';
 import GlobalBackground from './components/GlobalBackground';
-import ChatWidget from './components/ChatWidget';
 
 import ProtectedRoute from './components/ProtectedRoute';
+
+// Lazy-loaded auxiliary widgets
+const ChatWidget = React.lazy(() => import('./components/ChatWidget'));
+const ScrollToTop = React.lazy(() => import('./components/ScrollToTop'));
+const SocialFloatingButton = React.lazy(() => import('./components/SocialFloatingButton'));
 
 // Lazy-loaded below-fold public sections
 const Skills = React.lazy(() => import('./components/Skills'));
@@ -26,6 +28,8 @@ const ManageCertificates = React.lazy(() => import('./pages/admin/ManageCertific
 const ManageSettings = React.lazy(() => import('./pages/admin/ManageSettings'));
 const ManageEducation = React.lazy(() => import('./pages/admin/ManageEducation'));
 
+import LazySection from './components/LazySection';
+
 // Shared loading fallback
 const SectionLoader = () => (
   <div className="min-h-[40vh] w-full flex items-center justify-center">
@@ -40,17 +44,33 @@ function Portfolio() {
       <Navbar />
       <main className="relative z-10">
         <Hero />
-        <Suspense fallback={<SectionLoader />}>
-          <Skills />
-          <Projects />
-          <Education />
-          <Contact />
-        </Suspense>
+        <LazySection minHeight="600px">
+          <Suspense fallback={<SectionLoader />}>
+            <Skills />
+          </Suspense>
+        </LazySection>
+        <LazySection minHeight="600px">
+          <Suspense fallback={<SectionLoader />}>
+            <Projects />
+          </Suspense>
+        </LazySection>
+        <LazySection minHeight="500px">
+          <Suspense fallback={<SectionLoader />}>
+            <Education />
+          </Suspense>
+        </LazySection>
+        <LazySection minHeight="500px">
+          <Suspense fallback={<SectionLoader />}>
+            <Contact />
+          </Suspense>
+        </LazySection>
       </main>
       <Footer />
-      <ScrollToTop />
-      <SocialFloatingButton />
-      <ChatWidget />
+      <Suspense fallback={null}>
+        <ScrollToTop />
+        <SocialFloatingButton />
+        <ChatWidget />
+      </Suspense>
     </div>
   );
 }
