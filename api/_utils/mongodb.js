@@ -18,11 +18,11 @@ if (!cached) {
  * @returns {Promise<mongoose.Connection>}
  */
 export async function connectDb() {
-  if (cached.conn) {
+  if (cached.conn && mongoose.connection.readyState === 1) {
     return cached.conn;
   }
 
-  if (!cached.promise) {
+  if (!cached.promise || mongoose.connection.readyState === 0 || mongoose.connection.readyState === 3) {
     if (!MONGO_URI) {
       throw new Error('Please define the MONGO_URI environment variable inside .env or Vercel settings.');
     }
@@ -30,6 +30,10 @@ export async function connectDb() {
     const opts = {
       dbName: DB_NAME,
       bufferCommands: false,
+      serverSelectionTimeoutMS: 8000,
+      connectTimeoutMS: 15000,
+      socketTimeoutMS: 45000,
+      maxPoolSize: 10,
     };
 
     cached.promise = mongoose.connect(MONGO_URI, opts).then((m) => m.connection);
@@ -39,6 +43,7 @@ export async function connectDb() {
     cached.conn = await cached.promise;
   } catch (e) {
     cached.promise = null;
+    cached.conn = null;
     throw e;
   }
 

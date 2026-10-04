@@ -10,6 +10,7 @@ const projectSchema = new mongoose.Schema({
   category: { type: String, trim: true, default: '' },
 }, {
   timestamps: true,
+  strict: false,
   toJSON: {
     virtuals: true,
     transform: (_doc, ret) => {

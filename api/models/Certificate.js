@@ -8,6 +8,7 @@ const certificateSchema = new mongoose.Schema({
   imageUrl: { type: String, trim: true, default: '' },
 }, {
   timestamps: true,
+  strict: false,
   toJSON: {
     virtuals: true,
     transform: (_doc, ret) => {

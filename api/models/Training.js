@@ -12,6 +12,7 @@ const trainingSchema = new mongoose.Schema({
   verifiedAt: { type: Date, default: null },
 }, {
   timestamps: true,
+  strict: false,
   toJSON: {
     virtuals: true,
     transform: (_doc, ret) => {

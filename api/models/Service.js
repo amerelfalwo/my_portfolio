@@ -8,6 +8,7 @@ const serviceSchema = new mongoose.Schema({
   order: { type: Number, default: 0 },
 }, {
   timestamps: true,
+  strict: false,
   toJSON: {
     virtuals: true,
     transform: (_doc, ret) => {

@@ -7,6 +7,7 @@ const skillSchema = new mongoose.Schema({
   importance: { type: Number, default: 1 },
 }, {
   timestamps: true,
+  strict: false,
   toJSON: {
     virtuals: true,
     transform: (_doc, ret) => {

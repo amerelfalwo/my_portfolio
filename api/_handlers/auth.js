@@ -39,40 +39,50 @@ export default async function handler(req, res) {
     const envUser = (process.env.ADMIN_USERNAME || 'admin').toLowerCase().trim();
     const envPass = process.env.ADMIN_PASSWORD || 'admin123';
 
-    await connectDb();
+    let user = null;
+    try {
+      await connectDb();
 
-    // 1. Direct search by email
-    let user = await AdminUser.findOne({ email: rawIdentifier }).select('+password');
+      // 1. Direct search by email
+      user = await AdminUser.findOne({ email: rawIdentifier }).select('+password');
 
-    // 2. Fallback aliases for master admin
-    if (!user && (rawIdentifier === 'admin' || rawIdentifier === envUser || rawIdentifier === envEmail || rawIdentifier === 'amir@pro.dev')) {
-      user = await AdminUser.findOne({
-        email: { $in: [envEmail, 'admin@aura.dev', 'amir@pro.dev', 'admin'] }
-      }).select('+password');
-    }
+      // 2. Fallback aliases for master admin
+      if (!user && (rawIdentifier === 'admin' || rawIdentifier === envUser || rawIdentifier === envEmail || rawIdentifier === 'amir@pro.dev')) {
+        user = await AdminUser.findOne({
+          email: { $in: [envEmail, 'admin@aura.dev', 'amir@pro.dev', 'admin'] }
+        }).select('+password');
+      }
 
-    // 3. Auto-seed if still not found
-    if (!user) {
-      const hashedPassword = await bcrypt.hash(envPass, 12);
-      user = await AdminUser.create({
-        email: rawIdentifier.includes('@') ? rawIdentifier : envEmail,
-        password: hashedPassword,
-        role: 'admin',
-      });
-      console.log(`Auto-created admin user: ${user.email}`);
+      // 3. Auto-seed if still not found
+      if (!user && (rawIdentifier === 'admin' || rawIdentifier === envUser || rawIdentifier === envEmail || rawIdentifier === 'amir@pro.dev')) {
+        const hashedPassword = await bcrypt.hash(envPass, 12);
+        user = await AdminUser.create({
+          email: rawIdentifier.includes('@') ? rawIdentifier : envEmail,
+          password: hashedPassword,
+          role: 'admin',
+        }).catch(() => null);
+      }
+    } catch (dbErr) {
+      console.warn('DB warning during auth (using fallback auth):', dbErr.message);
     }
 
     // 4. Verify password (check bcrypt hash OR direct match with envPass)
-    const isBcryptValid = await bcrypt.compare(password, user.password).catch(() => false);
+    const isBcryptValid = user ? await bcrypt.compare(password, user.password).catch(() => false) : false;
     const isDirectMatch = (password === envPass || password === 'admin123');
 
-    if (!isBcryptValid && !isDirectMatch) {
+    const isMasterIdentifier = (rawIdentifier === 'admin' || rawIdentifier === envUser || rawIdentifier === envEmail || rawIdentifier === 'amir@pro.dev');
+
+    if (!isBcryptValid && !(isMasterIdentifier && isDirectMatch)) {
       return res.status(401).json({ success: false, error: 'Invalid credentials.' });
     }
 
+    const effectiveUserId = user?._id?.toString() || 'admin-master-id';
+    const effectiveEmail = user?.email || rawIdentifier || envEmail;
+    const effectiveRole = user?.role || 'admin';
+
     // 5. Sign JWT (24h expiry)
     const token = jwt.sign(
-      { userId: user._id.toString(), email: user.email, role: user.role || 'admin' },
+      { userId: effectiveUserId, email: effectiveEmail, role: effectiveRole },
       ACTUAL_JWT_SECRET,
       { expiresIn: '24h' }
     );
@@ -80,7 +90,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       success: true,
       token,
-      user: { email: user.email, role: user.role || 'admin' }
+      user: { email: effectiveEmail, role: effectiveRole }
     });
   } catch (error) {
     console.error('Auth error:', error);
