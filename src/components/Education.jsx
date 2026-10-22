@@ -27,16 +27,16 @@ const Education = memo(() => {
 
   return (
     <section id="education" className="py-24 sm:py-32 relative bg-transparent border-t border-border/60">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      <div className="page-container">
         
-        {/* Section Header Centered per Screenshot 2 Pattern: "● Certificates" pill + "Latest Credentials" */}
+        {/* Section Header Centered per Pattern: "● Certificates" pill + "Latest Credentials" */}
         <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-border text-xs font-medium text-foreground tracking-wide mb-4 bg-surface shadow-xs">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-border text-xs font-medium text-foreground tracking-wide mb-4 bg-surface">
             <span className="text-[7px] text-foreground" aria-hidden="true">●</span>
             <span>Certificates</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight text-foreground leading-[1.12]">
+          <h2 className="text-4xl md:text-5xl font-light tracking-tight text-foreground leading-[1.12]">
             Latest Credentials
           </h2>
 
@@ -45,7 +45,7 @@ const Education = memo(() => {
           </p>
         </div>
 
-        {/* 3-Column Aspect-[4/3] Grid Matching Projects per User Request ("الشهادات زي البروجيكتات") */}
+        {/* 3-Column Aspect-[4/3] Grid Matching Projects */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {certifications.map((cert) => {
             const imgSrc = cert.imageUrl || cert.image;
@@ -57,7 +57,7 @@ const Education = memo(() => {
                 className="group flex flex-col text-start cursor-pointer"
               >
                 {/* 4/3 Aspect Ratio Card with Hover Dark Circle & Arrow */}
-                <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden border border-border bg-surface-muted transition-all duration-300 group-hover:shadow-md">
+                <div className="relative aspect-[4/3] w-full rounded-lg overflow-hidden border border-border bg-surface-muted transition-colors">
                   {imgSrc ? (
                     <img
                       src={imgSrc}
@@ -67,7 +67,7 @@ const Education = memo(() => {
                     />
                   ) : (
                     /* Minimalist editorial certificate plaque */
-                    <div className="w-full h-full p-6 sm:p-7 flex flex-col justify-between bg-gradient-to-br from-surface to-surface-muted/70 transition-transform duration-500 ease-out group-hover:scale-[1.02]">
+                    <div className="w-full h-full p-6 sm:p-7 flex flex-col justify-between bg-surface transition-transform duration-500 ease-out group-hover:scale-[1.02]">
                       <div className="flex items-center justify-between gap-2">
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-medium uppercase tracking-wider bg-surface-muted border border-border text-foreground">
                           <Award className="w-3 h-3 text-foreground" />
@@ -99,11 +99,11 @@ const Education = memo(() => {
                   <div className="absolute inset-0 flex flex-col justify-between p-4 bg-foreground/25 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div />
                     <div className="flex items-center justify-center">
-                      <div className="w-12 h-12 rounded-full bg-foreground text-surface flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300">
+                      <div className="w-12 h-12 rounded-full bg-foreground text-surface flex items-center justify-center transform scale-90 group-hover:scale-100 transition-transform duration-300">
                         <span className="inline-block rtl:-scale-x-100 text-lg leading-none" aria-hidden="true">↗</span>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between text-[11px] text-surface font-medium drop-shadow-xs">
+                    <div className="flex items-center justify-between text-[11px] text-surface font-medium">
                       <span>Verified Certificate</span>
                       <span>View details ↗</span>
                     </div>
@@ -132,7 +132,7 @@ const Education = memo(() => {
             <span>Academic Background</span>
           </div>
 
-          <div className="bg-surface rounded-2xl border border-border p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xs">
+          <div className="bg-surface rounded-lg border border-border p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
               <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[11px] font-medium bg-surface-muted text-foreground mb-3">
                 <span>Very Good Honors</span>
@@ -174,7 +174,7 @@ const Education = memo(() => {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative max-w-2xl w-full bg-surface border border-border rounded-2xl p-6 sm:p-7 shadow-2xl text-start"
+            className="relative max-w-2xl w-full bg-surface border border-border rounded-lg p-6 sm:p-7 text-start"
           >
             <div className="flex items-start justify-between gap-4 pb-4 border-b border-border">
               <div>
@@ -204,15 +204,15 @@ const Education = memo(() => {
 
             {/* Certificate Visual or Preview Image */}
             {(selectedCert.imageUrl || selectedCert.image) ? (
-              <div className="mt-5 max-h-[60vh] overflow-auto rounded-xl border border-border bg-surface-muted flex items-center justify-center">
+              <div className="mt-5 max-h-[60vh] overflow-auto rounded-lg border border-border bg-surface-muted flex items-center justify-center">
                 <img
                   src={selectedCert.imageUrl || selectedCert.image}
                   alt={selectedCert.title}
-                  className="w-full h-auto max-h-[58vh] object-contain rounded-xl"
+                  className="w-full h-auto max-h-[58vh] object-contain rounded-lg"
                 />
               </div>
             ) : (
-              <div className="mt-5 p-6 rounded-xl border border-border bg-surface-muted/40">
+              <div className="mt-5 p-6 rounded-lg border border-border bg-surface-muted/40">
                 <p className="text-sm text-foreground/85 leading-relaxed font-normal">
                   {selectedCert.description}
                 </p>

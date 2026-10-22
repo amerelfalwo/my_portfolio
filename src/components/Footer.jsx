@@ -12,7 +12,7 @@ const Footer = () => {
 
   return (
     <footer className="border-t border-border bg-background py-16">
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+      <div className="page-container">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
           <div>
             <h2 className="text-xl font-bold tracking-tight text-foreground mb-1">

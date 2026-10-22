@@ -47,7 +47,7 @@ const Navbar = () => {
           : 'bg-background/60 backdrop-blur-sm border-b border-transparent'
       }`}
     >
-      <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-20 h-16 sm:h-20 flex items-center justify-between">
+      <div className="page-container h-16 sm:h-20 flex items-center justify-between">
         {/* Brand / Logo Mark per Reference Image 2 */}
         <a
           href="#"

@@ -12,13 +12,18 @@ const About = memo(() => {
 
   return (
     <section id="about" className="py-24 sm:py-32 relative bg-transparent border-t border-border/60">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      <div className="page-container">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-start">
           
           {/* ── Left Column (4 cols): About Me Headline, Intro & Curved Arrow ── */}
           <div className="lg:col-span-4 flex flex-col justify-between h-full text-start pt-2">
             <div>
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight text-foreground leading-[1.08]">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-border text-xs font-medium text-foreground tracking-wide mb-4 bg-surface">
+                <span className="text-[7px] text-foreground" aria-hidden="true">●</span>
+                <span>About</span>
+              </div>
+
+              <h2 className="text-4xl md:text-5xl font-light tracking-tight text-foreground leading-[1.08]">
                 About Me
               </h2>
 
@@ -50,7 +55,7 @@ const About = memo(() => {
 
           {/* ── Middle Column (4 cols): Tall Card with Icon, Stat & about-portrait.webp ── */}
           <div className="lg:col-span-4">
-            <div className="bg-surface rounded-3xl border border-border p-6 sm:p-7 shadow-xs flex flex-col justify-between text-start">
+            <div className="bg-surface rounded-lg border border-border p-6 sm:p-7 flex flex-col justify-between text-start">
               <div>
                 {/* Globe Icon in Circle */}
                 <div className="w-12 h-12 rounded-full border border-border bg-surface-muted/50 flex items-center justify-center mb-6">
@@ -69,7 +74,7 @@ const About = memo(() => {
               </div>
 
               {/* Bottom Image: about-portrait.webp */}
-              <div className="mt-8 rounded-2xl overflow-hidden aspect-[4/5] w-full border border-border/50 bg-surface-muted">
+              <div className="mt-8 rounded-lg overflow-hidden aspect-[4/5] w-full border border-border bg-surface-muted">
                 <img
                   src="/about-portrait.webp"
                   alt={profile.name}
@@ -82,8 +87,8 @@ const About = memo(() => {
 
           {/* ── Right Column (4 cols): Square Face Crop (about-face.webp) + Bullet Points ── */}
           <div className="lg:col-span-4 flex flex-col justify-between text-start pt-2">
-            {/* Top: Square Image Card with Center Arrow Button */}
-            <div className="relative w-full max-w-[280px] aspect-square rounded-3xl overflow-hidden border border-border bg-surface-muted group mb-8 sm:mb-10 shadow-xs">
+            {/* Top: Square Image Card with Bottom-End Link Button */}
+            <div className="relative w-full max-w-[280px] aspect-square rounded-lg overflow-hidden border border-border bg-surface-muted group mb-8 sm:mb-10">
               <img
                 src="/about-face.webp"
                 alt={profile.name}
@@ -91,12 +96,16 @@ const About = memo(() => {
                 className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
               />
 
-              {/* Center White Circle Button with Arrow ↗ */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-12 h-12 rounded-full bg-surface text-foreground shadow-md flex items-center justify-center">
-                  <span className="inline-block rtl:-scale-x-100 text-lg font-medium" aria-hidden="true">↗</span>
-                </div>
-              </div>
+              {/* Bottom-End Link Arrow: never over face, visible on hover/focus and on touch */}
+              <a
+                href={profile.links.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="View Amir's GitHub profile"
+                className="absolute bottom-3 end-3 w-10 h-10 rounded-full bg-surface border border-border text-foreground flex items-center justify-center transition-opacity duration-200 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100 focus-visible:opacity-100 hover:bg-foreground hover:text-surface"
+              >
+                <span className="inline-block rtl:-scale-x-100 text-sm font-medium" aria-hidden="true">↗</span>
+              </a>
             </div>
 
             {/* Bottom: Two Bullet Points with Dark Circle Star Badges */}

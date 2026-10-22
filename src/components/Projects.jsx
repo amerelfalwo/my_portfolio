@@ -45,16 +45,16 @@ const Projects = memo(() => {
 
   return (
     <section id="projects" className="py-24 sm:py-32 relative bg-transparent border-t border-border/60">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      <div className="page-container">
         
-        {/* Section Header Centered per Screenshot 2: "● Portfolio" pill + "Latest Works" heading */}
+        {/* Section Header Centered per Pattern: "● Portfolio" pill + "Latest Works" heading */}
         <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-border text-xs font-medium text-foreground tracking-wide mb-4 bg-surface shadow-xs">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-border text-xs font-medium text-foreground tracking-wide mb-4 bg-surface">
             <span className="text-[7px] text-foreground" aria-hidden="true">●</span>
             <span>Portfolio</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight text-foreground leading-[1.12]">
+          <h2 className="text-4xl md:text-5xl font-light tracking-tight text-foreground leading-[1.12]">
             Latest Works
           </h2>
 
@@ -86,7 +86,7 @@ const Projects = memo(() => {
           </div>
         </div>
 
-        {/* 3-Column Aspect-[4/3] Image Grid per Screenshot 2 */}
+        {/* 3-Column Aspect-[4/3] Image Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {visibleProjects.map((project) => {
             const imgSrc = project.imageUrl || getProjectFallbackImage(project);
@@ -98,7 +98,7 @@ const Projects = memo(() => {
                 className="group flex flex-col text-start"
               >
                 {/* 4/3 Aspect Ratio Image Frame with Hover Dark Circle & Arrow */}
-                <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden border border-border bg-surface-muted transition-all duration-300 group-hover:shadow-md">
+                <div className="relative aspect-[4/3] w-full rounded-lg overflow-hidden border border-border bg-surface-muted transition-colors">
                   <img
                     src={imgSrc}
                     alt={project.title}
@@ -112,15 +112,15 @@ const Projects = memo(() => {
                     }}
                   />
 
-                  {/* Hover Overlay: Dark Translucent Tint with Center Circle Arrow & Bottom Meta per Screenshot 2 */}
+                  {/* Hover Overlay: Dark Translucent Tint with Center Circle Arrow & Bottom Meta */}
                   <div className="absolute inset-0 flex flex-col justify-between p-4 bg-foreground/25 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div />
                     <div className="flex items-center justify-center">
-                      <div className="w-12 h-12 rounded-full bg-foreground text-surface flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300">
+                      <div className="w-12 h-12 rounded-full bg-foreground text-surface flex items-center justify-center transform scale-90 group-hover:scale-100 transition-transform duration-300">
                         <span className="inline-block rtl:-scale-x-100 text-lg leading-none" aria-hidden="true">↗</span>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between text-[11px] text-surface font-medium drop-shadow-xs">
+                    <div className="flex items-center justify-between text-[11px] text-surface font-medium">
                       <span>Case Study</span>
                       <span>{project.repoUrl ? 'github.com ↗' : 'overview ↗'}</span>
                     </div>

@@ -5,6 +5,11 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+    borderRadius: {
+      none: '0',
+      lg: '0.5rem',
+      full: '9999px',
+    },
     extend: {
       colors: {
         background: "#F8F8F8",
@@ -19,10 +24,6 @@ export default {
       },
       fontFamily: {
         sans: ['Inter', 'Noto Sans Arabic', 'system-ui', '-apple-system', 'sans-serif'],
-      },
-      borderRadius: {
-        lg: "0.5rem",
-        full: "9999px",
       },
     },
   },

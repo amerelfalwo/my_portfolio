@@ -118,7 +118,7 @@ const ManageCertificates = () => {
 
         <button
           onClick={openCreateModal}
-          className="flex items-center gap-2.5 px-6 py-3.5 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-purple-500/20 cursor-pointer"
+          className="flex items-center gap-2.5 px-6 py-3.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-purple-500/20 cursor-pointer"
         >
           <Plus size={18} />
           <span>Add Certificate</span>
@@ -129,11 +129,11 @@ const ManageCertificates = () => {
       {isLoading ? (
         <div className="grid md:grid-cols-2 gap-6 animate-pulse">
           {[1, 2].map((i) => (
-            <div key={i} className="h-64 rounded-3xl bg-slate-900/40 border border-slate-800" />
+            <div key={i} className="h-64 rounded-lg bg-slate-900/40 border border-slate-800" />
           ))}
         </div>
       ) : certificates.length === 0 ? (
-        <div className="text-center py-20 border border-slate-800 rounded-3xl bg-slate-900/20">
+        <div className="text-center py-20 border border-slate-800 rounded-lg bg-slate-900/20">
           <Award className="w-12 h-12 text-slate-600 mx-auto mb-4" />
           <h3 className="text-lg font-bold text-slate-300">No Certificates Found</h3>
           <p className="text-slate-500 text-xs mt-1">Click "Add Certificate" above to record your credentials.</p>
@@ -145,7 +145,7 @@ const ManageCertificates = () => {
               key={cert.id || cert._id}
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              className="group relative rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-purple-500/40 p-6 flex flex-col justify-between transition-all duration-300 backdrop-blur-md shadow-lg"
+              className="group relative rounded-lg bg-slate-900/60 border border-slate-800 hover:border-purple-500/40 p-6 flex flex-col justify-between transition-all duration-300 backdrop-blur-md shadow-lg"
             >
               <div>
                 {/* Header row: Verified badge & Date */}
@@ -172,7 +172,7 @@ const ManageCertificates = () => {
 
                 {/* Preview Link if present */}
                 {(cert.imageUrl || cert.verificationUrl) && (
-                  <div className="w-full h-36 rounded-2xl bg-slate-950 border border-slate-800 overflow-hidden mb-4 relative">
+                  <div className="w-full h-36 rounded-lg bg-slate-950 border border-slate-800 overflow-hidden mb-4 relative">
                     <img 
                       src={cert.imageUrl || cert.verificationUrl} 
                       alt={cert.title} 
@@ -200,14 +200,14 @@ const ManageCertificates = () => {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => openEditModal(cert)}
-                    className="p-2 rounded-xl bg-slate-800/60 border border-slate-700 hover:border-cyan-400 text-cyan-300 transition-colors cursor-pointer"
+                    className="p-2 rounded-lg bg-slate-800/60 border border-slate-700 hover:border-cyan-400 text-cyan-300 transition-colors cursor-pointer"
                     title="Edit Certificate"
                   >
                     <Edit2 size={14} />
                   </button>
                   <button
                     onClick={() => handleDelete(cert.id || cert._id)}
-                    className="p-2 rounded-xl bg-slate-800/60 border border-slate-700 hover:border-red-500 text-red-400 transition-colors cursor-pointer"
+                    className="p-2 rounded-lg bg-slate-800/60 border border-slate-700 hover:border-red-500 text-red-400 transition-colors cursor-pointer"
                     title="Delete Certificate"
                   >
                     <Trash2 size={14} />
@@ -227,19 +227,19 @@ const ManageCertificates = () => {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6"
+              className="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-lg p-6 md:p-8 shadow-2xl space-y-6"
             >
               <div className="flex items-center justify-between border-b border-slate-800 pb-4">
                 <h3 className="text-lg font-bold text-white uppercase font-mono">
                   {editingId ? 'Edit Certificate' : 'Add New Certificate'}
                 </h3>
-                <button onClick={closeModal} className="p-2 text-slate-400 hover:text-white rounded-xl bg-slate-800/50">
+                <button onClick={closeModal} className="p-2 text-slate-400 hover:text-white rounded-lg bg-slate-800/50">
                   <X size={18} />
                 </button>
               </div>
 
               {errorMessage && (
-                <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-mono font-bold">
+                <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-mono font-bold">
                   {errorMessage}
                 </div>
               )}
@@ -252,7 +252,7 @@ const ManageCertificates = () => {
                     value={title} 
                     onChange={(e) => setTitle(e.target.value)} 
                     required 
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none" 
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none" 
                     placeholder="Deep Learning Specialization" 
                   />
                 </div>
@@ -264,7 +264,7 @@ const ManageCertificates = () => {
                     value={issuer} 
                     onChange={(e) => setIssuer(e.target.value)} 
                     required 
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white text-sm focus:border-purple-400 focus:outline-none" 
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 text-white text-sm focus:border-purple-400 focus:outline-none" 
                     placeholder="DeepLearning.AI / Coursera" 
                   />
                 </div>
@@ -276,12 +276,12 @@ const ManageCertificates = () => {
                       type="date" 
                       value={date} 
                       onChange={(e) => setDate(e.target.value)} 
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none" 
+                      className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none" 
                     />
                   </div>
 
                   <div className="space-y-1.5 flex flex-col justify-end">
-                    <label className="flex items-center gap-3 p-3 rounded-xl bg-slate-950 border border-slate-800 cursor-pointer">
+                    <label className="flex items-center gap-3 p-3 rounded-lg bg-slate-950 border border-slate-800 cursor-pointer">
                       <input 
                         type="checkbox" 
                         checked={isVerified} 
@@ -303,14 +303,14 @@ const ManageCertificates = () => {
                   <button 
                     type="button" 
                     onClick={closeModal} 
-                    className="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider"
+                    className="px-5 py-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider"
                   >
                     Cancel
                   </button>
                   <button 
                     type="submit" 
                     disabled={submitting} 
-                    className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-wider disabled:opacity-50"
+                    className="px-6 py-3 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-wider disabled:opacity-50"
                   >
                     {submitting ? 'Saving...' : (editingId ? 'Update Certificate' : 'Add Certificate')}
                   </button>

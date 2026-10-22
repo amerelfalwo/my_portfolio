@@ -40,7 +40,7 @@ const DashboardLayout = () => {
       <aside className="hidden lg:flex w-72 flex-col bg-slate-900/60 backdrop-blur-2xl border-r border-slate-800/60 p-6 relative z-20 shrink-0">
         {/* Brand */}
         <div className="flex items-center gap-3 px-2 mb-10">
-          <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.2)]">
+          <div className="w-10 h-10 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.2)]">
             <Hexagon className="w-5 h-5 text-cyan-400" />
           </div>
           <div>
@@ -61,7 +61,7 @@ const DashboardLayout = () => {
               <NavLink
                 key={item.path}
                 to={item.path}
-                className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl text-xs font-bold transition-all duration-200 ${
+                className={`flex items-center gap-3 px-4 py-3.5 rounded-lg text-xs font-bold transition-all duration-200 ${
                   isActive
                     ? 'bg-gradient-to-r from-purple-600/20 to-cyan-500/10 text-white border border-purple-500/30 shadow-[0_0_20px_rgba(168,85,247,0.15)]'
                     : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/40 border border-transparent'
@@ -76,7 +76,7 @@ const DashboardLayout = () => {
 
         {/* User & Logout */}
         <div className="pt-6 border-t border-slate-800/80 space-y-4">
-          <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-slate-800/30 border border-slate-800">
+          <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-slate-800/30 border border-slate-800">
             <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
             </div>
@@ -88,7 +88,7 @@ const DashboardLayout = () => {
 
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
           >
             <LogOut size={16} />
             <span>Logout Session</span>
@@ -103,7 +103,7 @@ const DashboardLayout = () => {
           <div className="flex items-center gap-4">
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="lg:hidden p-2 rounded-xl bg-slate-800/50 border border-slate-700 text-slate-300"
+              className="lg:hidden p-2 rounded-lg bg-slate-800/50 border border-slate-700 text-slate-300"
             >
               {mobileOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -133,7 +133,7 @@ const DashboardLayout = () => {
                   key={item.path}
                   to={item.path}
                   onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold text-slate-300 hover:bg-slate-800"
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg text-xs font-bold text-slate-300 hover:bg-slate-800"
                 >
                   <Icon size={18} />
                   <span>{item.label}</span>
@@ -142,7 +142,7 @@ const DashboardLayout = () => {
             })}
             <button
               onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-red-500/10 text-red-400 text-xs font-bold mt-4"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-lg bg-red-500/10 text-red-400 text-xs font-bold mt-4"
             >
               <LogOut size={16} />
               Logout

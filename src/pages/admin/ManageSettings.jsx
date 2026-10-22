@@ -169,8 +169,8 @@ const ManageSettings = () => {
   if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto space-y-6 animate-pulse">
-        <div className="h-10 w-48 bg-slate-900/60 rounded-xl" />
-        <div className="h-96 w-full bg-slate-900/40 rounded-3xl border border-slate-800" />
+        <div className="h-10 w-48 bg-slate-900/60 rounded-lg" />
+        <div className="h-96 w-full bg-slate-900/40 rounded-lg border border-slate-800" />
       </div>
     );
   }
@@ -189,7 +189,7 @@ const ManageSettings = () => {
         <m.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center gap-3 text-emerald-400 text-xs font-bold font-mono uppercase"
+          className="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center gap-3 text-emerald-400 text-xs font-bold font-mono uppercase"
         >
           <CheckCircle2 size={18} />
           <span>{successMsg}</span>
@@ -200,7 +200,7 @@ const ManageSettings = () => {
         <m.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-4 rounded-2xl bg-red-500/10 border border-red-500/30 flex items-center gap-3 text-red-400 text-xs font-mono font-bold uppercase"
+          className="p-4 rounded-lg bg-red-500/10 border border-red-500/30 flex items-center gap-3 text-red-400 text-xs font-mono font-bold uppercase"
         >
           <ShieldAlert size={18} />
           <span>{errorMsg}</span>
@@ -208,7 +208,7 @@ const ManageSettings = () => {
       )}
 
       {/* Settings Form Card */}
-      <form onSubmit={handleSave} className="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 md:p-10 space-y-8 shadow-2xl">
+      <form onSubmit={handleSave} className="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-lg p-6 md:p-10 space-y-8 shadow-2xl">
         
         {/* Section 1: Hero Media & Branding (Avatar + Site Logo) */}
         <div className="space-y-6">
@@ -252,7 +252,7 @@ const ManageSettings = () => {
                 type="text" 
                 value={heroBadgeText} 
                 onChange={(e) => setHeroBadgeText(e.target.value)} 
-                className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-3.5 px-4 text-white text-sm font-mono focus:border-cyan-400 focus:outline-none transition-all" 
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-sm font-mono focus:border-cyan-400 focus:outline-none transition-all" 
                 placeholder="AI COMMAND CENTER" 
               />
             </div>
@@ -265,7 +265,7 @@ const ManageSettings = () => {
                 type="text" 
                 value={siteTitle} 
                 onChange={(e) => setSiteTitle(e.target.value)} 
-                className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-3.5 px-4 text-white text-sm font-mono focus:border-purple-400 focus:outline-none transition-all" 
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-sm font-mono focus:border-purple-400 focus:outline-none transition-all" 
                 placeholder="Amir Elrefai | AI & ML Engineer Portfolio" 
               />
             </div>
@@ -280,7 +280,7 @@ const ManageSettings = () => {
                 type="text" 
                 value={logoText} 
                 onChange={(e) => setLogoText(e.target.value)} 
-                className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-3.5 px-4 text-white text-sm font-mono focus:border-cyan-400 focus:outline-none transition-all" 
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-sm font-mono focus:border-cyan-400 focus:outline-none transition-all" 
                 placeholder="AMIR.AURA" 
               />
               <p className="text-[10px] text-slate-500 mt-1 ml-1">Appears in the Navbar and Footer</p>
@@ -297,7 +297,7 @@ const ManageSettings = () => {
                 value={fullName} 
                 onChange={(e) => setFullName(e.target.value)} 
                 required 
-                className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-3.5 px-4 text-white text-sm font-bold focus:border-purple-400 focus:outline-none transition-all" 
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-sm font-bold focus:border-purple-400 focus:outline-none transition-all" 
                 placeholder="Amir Elrefai" 
               />
             </div>
@@ -311,7 +311,7 @@ const ManageSettings = () => {
                 value={jobTitle} 
                 onChange={(e) => setJobTitle(e.target.value)} 
                 required 
-                className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-3.5 px-4 text-white text-sm font-bold focus:border-cyan-400 focus:outline-none transition-all" 
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-sm font-bold focus:border-cyan-400 focus:outline-none transition-all" 
                 placeholder="AI Architecture & Engineering" 
               />
             </div>
@@ -335,7 +335,7 @@ const ManageSettings = () => {
               type="text" 
               value={typewriterInput} 
               onChange={(e) => setTypewriterInput(e.target.value)} 
-              className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-3.5 px-4 text-white text-sm font-mono focus:border-cyan-400 focus:outline-none transition-all" 
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-sm font-mono focus:border-cyan-400 focus:outline-none transition-all" 
               placeholder="Deep Learning Specialist, Computer Vision Expert, AI Agent Architect" 
             />
           </div>
@@ -349,7 +349,7 @@ const ManageSettings = () => {
               value={bio} 
               onChange={(e) => setBio(e.target.value)} 
               required 
-              className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-3.5 px-4 text-white text-sm font-medium focus:border-purple-400 focus:outline-none transition-all leading-relaxed" 
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-sm font-medium focus:border-purple-400 focus:outline-none transition-all leading-relaxed" 
               placeholder="Passionate AI Engineer specializing in Deep Learning, Computer Vision, and Generative AI..." 
             />
           </div>
@@ -367,7 +367,7 @@ const ManageSettings = () => {
             <button
               type="button"
               onClick={handleAddStatCard}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 text-[10px] font-bold uppercase font-mono transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 text-[10px] font-bold uppercase font-mono transition-all cursor-pointer"
             >
               <Plus size={14} /> Add Card
             </button>
@@ -375,7 +375,7 @@ const ManageSettings = () => {
 
           <div className="grid md:grid-cols-2 gap-4">
             {heroStats.map((stat, idx) => (
-              <div key={idx} className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3 relative group">
+              <div key={idx} className="p-4 rounded-lg bg-slate-950 border border-slate-800 space-y-3 relative group">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-mono font-bold uppercase text-purple-400">
                     Stat Card #{idx + 1}
@@ -399,7 +399,7 @@ const ManageSettings = () => {
                       type="text"
                       value={stat.title}
                       onChange={(e) => handleStatChange(idx, 'title', e.target.value)}
-                      className="w-full bg-slate-900 border border-slate-800 rounded-xl py-2 px-3 text-white text-xs font-bold focus:border-cyan-400 focus:outline-none"
+                      className="w-full bg-slate-900 border border-slate-800 rounded-lg py-2 px-3 text-white text-xs font-bold focus:border-cyan-400 focus:outline-none"
                       placeholder="1+ Year XP"
                     />
                   </div>
@@ -409,7 +409,7 @@ const ManageSettings = () => {
                     <select
                       value={stat.iconName || 'Brain'}
                       onChange={(e) => handleStatChange(idx, 'iconName', e.target.value)}
-                      className="w-full bg-slate-900 border border-slate-800 rounded-xl py-2 px-3 text-white text-xs font-mono focus:border-cyan-400 focus:outline-none"
+                      className="w-full bg-slate-900 border border-slate-800 rounded-lg py-2 px-3 text-white text-xs font-mono focus:border-cyan-400 focus:outline-none"
                     >
                       {ICON_OPTIONS.map((opt) => (
                         <option key={opt.id} value={opt.id}>{opt.label}</option>
@@ -424,7 +424,7 @@ const ManageSettings = () => {
                     type="text"
                     value={stat.description}
                     onChange={(e) => handleStatChange(idx, 'description', e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-xl py-2 px-3 text-white text-xs font-medium focus:border-purple-400 focus:outline-none"
+                    className="w-full bg-slate-900 border border-slate-800 rounded-lg py-2 px-3 text-white text-xs font-medium focus:border-purple-400 focus:outline-none"
                     placeholder="AI & CV Specialist"
                   />
                 </div>
@@ -450,7 +450,7 @@ const ManageSettings = () => {
               type="url" 
               value={resumeUrl} 
               onChange={(e) => setResumeUrl(e.target.value)} 
-              className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-3.5 px-4 text-white text-sm font-mono focus:border-cyan-400 focus:outline-none transition-all" 
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-sm font-mono focus:border-cyan-400 focus:outline-none transition-all" 
               placeholder="https://drive.google.com/file/d/..." 
             />
           </div>
@@ -464,7 +464,7 @@ const ManageSettings = () => {
                 type="url" 
                 value={linkedinUrl} 
                 onChange={(e) => setLinkedinUrl(e.target.value)} 
-                className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-3.5 px-4 text-white text-xs font-mono focus:border-cyan-400 focus:outline-none" 
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-xs font-mono focus:border-cyan-400 focus:outline-none" 
                 placeholder="https://linkedin.com/in/username" 
               />
             </div>
@@ -477,7 +477,7 @@ const ManageSettings = () => {
                 type="url" 
                 value={facebookUrl} 
                 onChange={(e) => setFacebookUrl(e.target.value)} 
-                className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-3.5 px-4 text-white text-xs font-mono focus:border-purple-400 focus:outline-none" 
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-xs font-mono focus:border-purple-400 focus:outline-none" 
                 placeholder="https://facebook.com/username" 
               />
             </div>
@@ -490,7 +490,7 @@ const ManageSettings = () => {
                 type="url" 
                 value={instagramUrl} 
                 onChange={(e) => setInstagramUrl(e.target.value)} 
-                className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-3.5 px-4 text-white text-xs font-mono focus:border-pink-400 focus:outline-none" 
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-xs font-mono focus:border-pink-400 focus:outline-none" 
                 placeholder="https://instagram.com/username" 
               />
             </div>
@@ -503,7 +503,7 @@ const ManageSettings = () => {
                 type="url" 
                 value={githubUrl} 
                 onChange={(e) => setGithubUrl(e.target.value)} 
-                className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-3.5 px-4 text-white text-xs font-mono focus:border-purple-400 focus:outline-none" 
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-xs font-mono focus:border-purple-400 focus:outline-none" 
                 placeholder="https://github.com/username" 
               />
             </div>
@@ -516,7 +516,7 @@ const ManageSettings = () => {
                 type="url" 
                 value={twitterUrl} 
                 onChange={(e) => setTwitterUrl(e.target.value)} 
-                className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-3.5 px-4 text-white text-xs font-mono focus:border-purple-400 focus:outline-none" 
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-xs font-mono focus:border-purple-400 focus:outline-none" 
                 placeholder="https://x.com/username" 
               />
             </div>
@@ -561,7 +561,7 @@ CONVERSATION INSTRUCTIONS:
 - Be polite, encouraging, and invite visitors to connect with Amir via LinkedIn or GitHub.`);
                 }
               }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-600/20 hover:bg-purple-600/40 border border-purple-500/30 text-purple-300 text-[10px] font-bold uppercase font-mono transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-600/20 hover:bg-purple-600/40 border border-purple-500/30 text-purple-300 text-[10px] font-bold uppercase font-mono transition-all cursor-pointer"
             >
               <Sparkles size={13} /> Load Sample Template
             </button>
@@ -575,7 +575,7 @@ CONVERSATION INSTRUCTIONS:
               rows={6} 
               value={cvText} 
               onChange={(e) => setCvText(e.target.value)} 
-              className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-3.5 px-4 text-white text-xs font-mono focus:border-purple-400 focus:outline-none transition-all leading-relaxed" 
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-xs font-mono focus:border-purple-400 focus:outline-none transition-all leading-relaxed" 
               placeholder="Paste or write full CV details here (Work History, AI Achievements, Key Projects, Tech Stack, Education, Certifications)..." 
             />
             <p className="text-[10px] text-slate-500 ml-1">
@@ -591,7 +591,7 @@ CONVERSATION INSTRUCTIONS:
               rows={6} 
               value={chatbotKnowledge} 
               onChange={(e) => setChatbotKnowledge(e.target.value)} 
-              className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-3.5 px-4 text-white text-xs font-mono focus:border-cyan-400 focus:outline-none transition-all leading-relaxed" 
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-xs font-mono focus:border-cyan-400 focus:outline-none transition-all leading-relaxed" 
               placeholder="Add extra background info, career objectives, salary expectations, preferred work modes (Remote/Onsite), or specific answers for the AI Assistant..." 
             />
             <p className="text-[10px] text-slate-500 ml-1">
@@ -605,7 +605,7 @@ CONVERSATION INSTRUCTIONS:
           <button
             type="submit"
             disabled={saving}
-            className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-[0.2em] shadow-lg shadow-purple-500/20 disabled:opacity-50 transition-all cursor-pointer"
+            className="flex items-center gap-3 px-8 py-4 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-[0.2em] shadow-lg shadow-purple-500/20 disabled:opacity-50 transition-all cursor-pointer"
           >
             <Save size={16} />
             <span>{saving ? 'Saving Changes...' : 'Save Settings & Knowledge Base'}</span>

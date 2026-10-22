@@ -228,7 +228,7 @@ const ManageSkills = () => {
 
         <button
           onClick={openCreateModal}
-          className="flex items-center gap-2.5 px-6 py-3.5 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-purple-500/20 cursor-pointer"
+          className="flex items-center gap-2.5 px-6 py-3.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-purple-500/20 cursor-pointer"
         >
           <Plus size={18} />
           <span>Add New Skill</span>
@@ -239,11 +239,11 @@ const ManageSkills = () => {
       {isLoading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 animate-pulse">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="h-36 rounded-3xl bg-slate-900/40 border border-slate-800" />
+            <div key={i} className="h-36 rounded-lg bg-slate-900/40 border border-slate-800" />
           ))}
         </div>
       ) : skills.length === 0 ? (
-        <div className="text-center py-20 border border-slate-800 rounded-3xl bg-slate-900/20">
+        <div className="text-center py-20 border border-slate-800 rounded-lg bg-slate-900/20">
           <Cpu className="w-12 h-12 text-slate-600 mx-auto mb-4" />
           <h3 className="text-lg font-bold text-slate-300">No Skills Found</h3>
           <p className="text-slate-500 text-xs mt-1">Click "Add New Skill" above to add your first technology.</p>
@@ -257,10 +257,10 @@ const ManageSkills = () => {
                 key={skill.id || skill._id}
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="group relative rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-cyan-400/40 p-5 flex flex-col items-center justify-between text-center transition-all duration-300 backdrop-blur-md shadow-lg"
+                className="group relative rounded-lg bg-slate-900/60 border border-slate-800 hover:border-cyan-400/40 p-5 flex flex-col items-center justify-between text-center transition-all duration-300 backdrop-blur-md shadow-lg"
               >
                 {/* Icon Preview */}
-                <div className="w-12 h-12 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center mb-3 mt-2 group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-center mb-3 mt-2 group-hover:scale-110 transition-transform">
                   {skillIcon ? (
                     <img
                       src={skillIcon}
@@ -309,20 +309,20 @@ const ManageSkills = () => {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6 relative overflow-visible"
+              className="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-lg p-6 md:p-8 shadow-2xl space-y-6 relative overflow-visible"
             >
               <div className="flex items-center justify-between border-b border-slate-800 pb-4">
                 <h3 className="text-lg font-bold text-white uppercase font-mono flex items-center gap-2">
                   <Sparkles size={18} className="text-cyan-400" />
                   {editingId ? 'Edit Skill Entry' : 'Add New Skill'}
                 </h3>
-                <button onClick={closeModal} className="p-2 text-slate-400 hover:text-white rounded-xl bg-slate-800/50">
+                <button onClick={closeModal} className="p-2 text-slate-400 hover:text-white rounded-lg bg-slate-800/50">
                   <X size={18} />
                 </button>
               </div>
 
               {errorMessage && (
-                <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-mono font-bold">
+                <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-mono font-bold">
                   {errorMessage}
                 </div>
               )}
@@ -348,7 +348,7 @@ const ManageSkills = () => {
                       onChange={(e) => handleNameChange(e.target.value)}
                       onFocus={() => setShowSuggestions(true)}
                       required 
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 pl-12 text-white text-sm focus:border-cyan-400 focus:outline-none transition-all" 
+                      className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 pl-12 text-white text-sm focus:border-cyan-400 focus:outline-none transition-all" 
                       placeholder="Type tool name (e.g. PyTorch, OpenCV, Docker...)" 
                     />
 
@@ -372,7 +372,7 @@ const ManageSkills = () => {
                     <m.div
                       initial={{ opacity: 0, y: -5 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="absolute left-0 right-0 top-full mt-1.5 bg-slate-950 border border-slate-800 rounded-2xl p-2 z-50 shadow-2xl space-y-1 max-h-48 overflow-y-auto"
+                      className="absolute left-0 right-0 top-full mt-1.5 bg-slate-950 border border-slate-800 rounded-lg p-2 z-50 shadow-2xl space-y-1 max-h-48 overflow-y-auto"
                     >
                       <div className="text-[9px] font-mono text-slate-500 px-3 py-1 uppercase font-bold tracking-wider">
                         Suggested Technologies
@@ -382,7 +382,7 @@ const ManageSkills = () => {
                           key={s.name}
                           type="button"
                           onClick={() => selectSuggestion(s)}
-                          className="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-900/90 text-white text-xs flex items-center justify-between transition-colors cursor-pointer"
+                          className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-900/90 text-white text-xs flex items-center justify-between transition-colors cursor-pointer"
                         >
                           <div className="flex items-center gap-2.5">
                             <img 
@@ -393,7 +393,7 @@ const ManageSkills = () => {
                             />
                             <span className="font-bold">{s.name}</span>
                           </div>
-                          <span className="text-[9px] font-mono text-purple-400 uppercase tracking-widest bg-purple-500/10 px-2 py-0.5 rounded-md border border-purple-500/20">
+                          <span className="text-[9px] font-mono text-purple-400 uppercase tracking-widest bg-purple-500/10 px-2 py-0.5 rounded-lg border border-purple-500/20">
                             {CATEGORY_OPTIONS.find((c) => c.id === s.category)?.label || s.category}
                           </span>
                         </button>
@@ -415,7 +415,7 @@ const ManageSkills = () => {
                   <select 
                     value={category} 
                     onChange={(e) => setCategory(e.target.value)} 
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none transition-all font-medium"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none transition-all font-medium"
                   >
                     {CATEGORY_OPTIONS.map((cat) => (
                       <option key={cat.id} value={cat.id}>{cat.label}</option>
@@ -432,7 +432,7 @@ const ManageSkills = () => {
                     type="text" 
                     value={icon} 
                     onChange={(e) => setIcon(e.target.value)} 
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white text-xs font-mono focus:border-cyan-400 focus:outline-none" 
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 text-white text-xs font-mono focus:border-cyan-400 focus:outline-none" 
                     placeholder={getToolIconUrl(name) || 'https://cdn.simpleicons.org/...'} 
                   />
                 </div>
@@ -442,14 +442,14 @@ const ManageSkills = () => {
                   <button 
                     type="button" 
                     onClick={closeModal} 
-                    className="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider"
+                    className="px-5 py-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider"
                   >
                     Cancel
                   </button>
                   <button 
                     type="submit" 
                     disabled={submitting || !name.trim()} 
-                    className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-wider disabled:opacity-40 transition-all shadow-lg shadow-purple-500/20"
+                    className="px-6 py-3 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-wider disabled:opacity-40 transition-all shadow-lg shadow-purple-500/20"
                   >
                     {submitting ? 'Saving...' : (editingId ? 'Update Skill' : 'Add Skill')}
                   </button>

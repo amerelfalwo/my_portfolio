@@ -7,7 +7,8 @@ const ScrollToTop = () => {
 
   useEffect(() => {
     const toggleVisibility = () => {
-      if (window.pageYOffset > 300) {
+      const heroThreshold = typeof window !== 'undefined' ? window.innerHeight * 0.75 : 600;
+      if (window.pageYOffset > heroThreshold) {
         setIsVisible(true);
       } else {
         setIsVisible(false);
@@ -29,16 +30,16 @@ const ScrollToTop = () => {
     <AnimatePresence>
       {isVisible && (
         <m.button
-          initial={{ opacity: 0, scale: 0.8, y: 20 }}
+          initial={{ opacity: 0, scale: 0.85, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.8, y: 20 }}
-          whileHover={{ scale: 1.1, y: -5 }}
-          whileTap={{ scale: 0.9 }}
+          exit={{ opacity: 0, scale: 0.85, y: 10 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={scrollToTop}
-          className="fixed bottom-24 right-6 z-40 w-12 h-12 flex items-center justify-center bg-[#0a0a0a]/80 backdrop-blur-xl rounded-full shadow-[0_0_30px_rgba(124,58,237,0.15)] border border-white/10 hover:border-[#d8b4fe]/50 hover:bg-[#7c3aed]/20 transition-all duration-300 group"
+          className="fixed bottom-20 end-6 z-40 w-11 h-11 flex items-center justify-center bg-surface border border-border text-foreground hover:bg-surface-muted rounded-full transition-colors cursor-pointer group"
           aria-label="Scroll to top"
         >
-          <ArrowUp className="text-[#d8b4fe] w-6 h-6 group-hover:animate-bounce drop-shadow-[0_0_8px_rgba(216,180,254,0.5)] group-hover:drop-shadow-[0_0_12px_rgba(216,180,254,0.8)]" />
+          <ArrowUp className="w-4 h-4 text-foreground transition-transform group-hover:-translate-y-0.5" />
         </m.button>
       )}
     </AnimatePresence>

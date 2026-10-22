@@ -10,7 +10,6 @@ import ProtectedRoute from './components/ProtectedRoute';
 // Lazy-loaded auxiliary widgets
 const ChatWidget = React.lazy(() => import('./components/ChatWidget'));
 const ScrollToTop = React.lazy(() => import('./components/ScrollToTop'));
-const SocialFloatingButton = React.lazy(() => import('./components/SocialFloatingButton'));
 
 // Lazy-loaded below-fold public sections
 const About = React.lazy(() => import('./components/About'));
@@ -74,7 +73,6 @@ function Portfolio() {
       <Footer />
       <Suspense fallback={null}>
         <ScrollToTop />
-        <SocialFloatingButton />
         <ChatWidget />
       </Suspense>
     </div>

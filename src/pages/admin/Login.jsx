@@ -53,14 +53,14 @@ const Login = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md bg-slate-900/60 backdrop-blur-2xl border border-slate-700/50 p-8 md:p-10 rounded-[2.5rem] shadow-[0_0_80px_rgba(168,85,247,0.15)] relative z-10"
+        className="w-full max-w-md bg-slate-900/60 backdrop-blur-2xl border border-slate-700/50 p-8 md:p-10 rounded-lg shadow-[0_0_80px_rgba(168,85,247,0.15)] relative z-10"
       >
         <div className="text-center mb-8">
           <m.div 
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-            className="w-16 h-16 bg-purple-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5 border border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.2)]"
+            className="w-16 h-16 bg-purple-500/10 rounded-lg flex items-center justify-center mx-auto mb-5 border border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.2)]"
           >
             <Hexagon className="text-cyan-400 w-8 h-8 animate-pulse" />
           </m.div>
@@ -76,7 +76,7 @@ const Login = () => {
           <m.div 
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
-            className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center gap-3 text-red-400 text-xs font-bold tracking-wider uppercase font-mono"
+            className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/30 flex items-center gap-3 text-red-400 text-xs font-bold tracking-wider uppercase font-mono"
           >
             <ShieldAlert className="w-5 h-5 shrink-0" />
             <span>{error}</span>
@@ -95,7 +95,7 @@ const Login = () => {
                 value={username} 
                 onChange={(e) => setUsername(e.target.value)} 
                 required 
-                className="w-full bg-slate-900/80 border border-slate-700/60 rounded-xl py-3.5 pl-12 pr-4 text-white focus:outline-none focus:border-cyan-400 focus:bg-slate-900 transition-all text-sm font-bold placeholder:text-slate-600" 
+                className="w-full bg-slate-900/80 border border-slate-700/60 rounded-lg py-3.5 pl-12 pr-4 text-white focus:outline-none focus:border-cyan-400 focus:bg-slate-900 transition-all text-sm font-bold placeholder:text-slate-600" 
                 placeholder="admin" 
               />
             </div>
@@ -112,7 +112,7 @@ const Login = () => {
                 value={password} 
                 onChange={(e) => setPassword(e.target.value)} 
                 required 
-                className="w-full bg-slate-900/80 border border-slate-700/60 rounded-xl py-3.5 pl-12 pr-4 text-white focus:outline-none focus:border-purple-400 focus:bg-slate-900 transition-all text-sm font-bold placeholder:text-slate-600" 
+                className="w-full bg-slate-900/80 border border-slate-700/60 rounded-lg py-3.5 pl-12 pr-4 text-white focus:outline-none focus:border-purple-400 focus:bg-slate-900 transition-all text-sm font-bold placeholder:text-slate-600" 
                 placeholder="••••••••••••" 
               />
             </div>
@@ -121,7 +121,7 @@ const Login = () => {
           <button 
             type="submit" 
             disabled={loading} 
-            className="w-full py-4 mt-6 bg-purple-600 hover:bg-purple-500 text-white rounded-xl font-black uppercase tracking-[0.3em] text-xs flex items-center justify-center gap-3 transition-all outline-none disabled:opacity-50 group shadow-lg shadow-purple-500/25 hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+            className="w-full py-4 mt-6 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-black uppercase tracking-[0.3em] text-xs flex items-center justify-center gap-3 transition-all outline-none disabled:opacity-50 group shadow-lg shadow-purple-500/25 hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
           >
             {loading ? 'Authenticating...' : 'Initialize Session'}
             {!loading && <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}

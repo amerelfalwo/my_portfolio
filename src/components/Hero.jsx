@@ -27,8 +27,8 @@ const Hero = memo(() => {
         </span>
       </div>
 
-      {/* ── Main Hero Content Grid (Full Bleed Space Exploitation) ── */}
-      <div className="w-full flex-1 flex flex-col justify-between px-6 sm:px-12 lg:ps-24 lg:pe-10 xl:ps-32 xl:pe-16 relative z-10">
+      {/* ── Main Hero Content Grid ── */}
+      <div className="page-container flex-1 flex flex-col justify-between relative z-10">
         
         {/* Top/Middle Area: Left Content + Right Bottom-Anchored Portrait */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4 items-end flex-1 my-auto">

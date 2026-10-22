@@ -83,7 +83,7 @@ const ManageAbout = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
               <User className="text-cyan-400" size={24} />
             </div>
             <div>
@@ -95,7 +95,7 @@ const ManageAbout = () => {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-2 px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold uppercase tracking-wider transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(34,211,238,0.2)]"
+            className="flex items-center gap-2 px-6 py-3 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold uppercase tracking-wider transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(34,211,238,0.2)]"
           >
             {saving ? <div className="w-5 h-5 border-2 border-slate-900/30 border-t-slate-900 rounded-full animate-spin" /> : <Save size={18} />}
             {saving ? 'Saving...' : 'Save Config'}
@@ -104,14 +104,14 @@ const ManageAbout = () => {
 
         {/* Notifications */}
         {successMsg && (
-          <m.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-3 text-emerald-400">
+          <m.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-3 text-emerald-400">
             <CheckCircle2 size={18} />
             <span className="font-medium">{successMsg}</span>
           </m.div>
         )}
 
         {errorMsg && (
-          <m.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center gap-3 text-red-400">
+          <m.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="p-4 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center gap-3 text-red-400">
             <ShieldAlert size={18} />
             <span className="font-medium">{errorMsg}</span>
           </m.div>
@@ -121,7 +121,7 @@ const ManageAbout = () => {
         <div className="grid grid-cols-1 gap-8">
           
           {/* Main Info Box */}
-          <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900/50 space-y-6">
+          <div className="p-6 rounded-lg border border-slate-800 bg-slate-900/50 space-y-6">
             <h3 className="text-lg font-bold text-white uppercase tracking-wider mb-4 border-b border-slate-800 pb-3">Primary Info</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -131,7 +131,7 @@ const ManageAbout = () => {
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono text-sm"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono text-sm"
                   placeholder="e.g. The Architect"
                 />
               </div>
@@ -142,7 +142,7 @@ const ManageAbout = () => {
                   type="text"
                   value={subtitle}
                   onChange={(e) => setSubtitle(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono text-sm"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono text-sm"
                   placeholder="e.g. I build high-performance systems..."
                 />
               </div>
@@ -154,7 +154,7 @@ const ManageAbout = () => {
                 value={paragraph1}
                 onChange={(e) => setParagraph1(e.target.value)}
                 rows={3}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all text-sm leading-relaxed"
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all text-sm leading-relaxed"
                 placeholder="First paragraph of identity..."
               />
             </div>
@@ -165,7 +165,7 @@ const ManageAbout = () => {
                 value={paragraph2}
                 onChange={(e) => setParagraph2(e.target.value)}
                 rows={3}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all text-sm leading-relaxed"
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all text-sm leading-relaxed"
                 placeholder="Second paragraph of identity..."
               />
             </div>
@@ -176,7 +176,7 @@ const ManageAbout = () => {
                 type="text"
                 value={quote}
                 onChange={(e) => setQuote(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono text-sm"
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono text-sm"
                 placeholder="e.g. 'Efficiency is doing things right...'"
               />
             </div>
@@ -184,7 +184,7 @@ const ManageAbout = () => {
 
           {/* Stats & Availability Box */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900/50 space-y-6">
+            <div className="p-6 rounded-lg border border-slate-800 bg-slate-900/50 space-y-6">
               <h3 className="text-lg font-bold text-white uppercase tracking-wider mb-4 border-b border-slate-800 pb-3">Stats</h3>
               
               <div className="space-y-4">
@@ -194,7 +194,7 @@ const ManageAbout = () => {
                     type="text"
                     value={yearsExp}
                     onChange={(e) => setYearsExp(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono text-sm"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono text-sm"
                     placeholder="e.g. 5+"
                   />
                 </div>
@@ -205,14 +205,14 @@ const ManageAbout = () => {
                     type="text"
                     value={deployments}
                     onChange={(e) => setDeployments(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono text-sm"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono text-sm"
                     placeholder="e.g. 50+"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900/50 space-y-6">
+            <div className="p-6 rounded-lg border border-slate-800 bg-slate-900/50 space-y-6">
               <h3 className="text-lg font-bold text-white uppercase tracking-wider mb-4 border-b border-slate-800 pb-3">Status</h3>
               
               <div className="space-y-4">
@@ -222,7 +222,7 @@ const ManageAbout = () => {
                     type="text"
                     value={availability}
                     onChange={(e) => setAvailability(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono text-sm"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono text-sm"
                     placeholder="e.g. Available for new opportunities"
                   />
                 </div>
@@ -233,7 +233,7 @@ const ManageAbout = () => {
                     type="text"
                     value={workTypes}
                     onChange={(e) => setWorkTypes(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono text-sm"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono text-sm"
                     placeholder="e.g. REMOTE / ONSITE / RELOCATION"
                   />
                 </div>

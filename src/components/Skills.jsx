@@ -93,20 +93,20 @@ const Skills = memo(() => {
 
   return (
     <section id="skills" className="py-24 sm:py-32 relative bg-transparent border-t border-border/60">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      <div className="page-container">
         
         {/* Section Header */}
-        <div className="max-w-3xl mb-16 sm:mb-20 text-start">
-          <div className="inline-flex items-center gap-2 text-xs font-medium text-muted tracking-wide mb-3">
-            <span className="text-[8px] text-foreground" aria-hidden="true">●</span>
-            <span>Skills &amp; Expertise</span>
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-border text-xs font-medium text-foreground tracking-wide mb-4 bg-surface">
+            <span className="text-[7px] text-foreground" aria-hidden="true">●</span>
+            <span>Skills</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight text-foreground leading-[1.12]">
+          <h2 className="text-4xl md:text-5xl font-light tracking-tight text-foreground leading-[1.12]">
             Technologies &amp; tools
           </h2>
 
-          <p className="text-muted text-base sm:text-lg font-normal leading-relaxed mt-4">
+          <p className="text-muted text-sm sm:text-base font-normal leading-relaxed mt-4 max-w-xl mx-auto">
             Tools and frameworks I use for deep learning, computer vision, LLM applications, and backend services.
           </p>
         </div>
@@ -115,8 +115,8 @@ const Skills = memo(() => {
         <div className="space-y-12 sm:space-y-14">
           {groups.map((group) => (
             <div key={group.id} className="text-start">
-              {/* Category Heading */}
-              <h3 className="text-sm uppercase tracking-wider text-muted font-medium mb-4">
+              {/* Category Heading in Sentence Case */}
+              <h3 className="text-sm font-medium text-muted mb-4">
                 {group.title}
               </h3>
 
@@ -133,7 +133,7 @@ const Skills = memo(() => {
                         <img
                           src={iconUrl}
                           alt=""
-                          className="w-4 h-4 object-contain shrink-0"
+                          className="w-4 h-4 object-contain shrink-0 grayscale"
                           loading="lazy"
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';

@@ -135,7 +135,7 @@ const ManageTrainings = () => {
 
         <button
           onClick={openCreateModal}
-          className="flex items-center gap-2.5 px-6 py-3.5 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-purple-500/20 cursor-pointer"
+          className="flex items-center gap-2.5 px-6 py-3.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-purple-500/20 cursor-pointer"
         >
           <Plus size={18} />
           <span>Add Training</span>
@@ -146,11 +146,11 @@ const ManageTrainings = () => {
       {isLoading ? (
         <div className="grid md:grid-cols-2 gap-6 animate-pulse">
           {[1, 2].map((i) => (
-            <div key={i} className="h-64 rounded-3xl bg-slate-900/40 border border-slate-800" />
+            <div key={i} className="h-64 rounded-lg bg-slate-900/40 border border-slate-800" />
           ))}
         </div>
       ) : trainings.length === 0 ? (
-        <div className="text-center py-20 border border-slate-800 rounded-3xl bg-slate-900/20">
+        <div className="text-center py-20 border border-slate-800 rounded-lg bg-slate-900/20">
           <BookOpen className="w-12 h-12 text-slate-600 mx-auto mb-4" />
           <h3 className="text-lg font-bold text-slate-300">No Trainings Found</h3>
           <p className="text-slate-500 text-xs mt-1">Click "Add Training" above to record your courses.</p>
@@ -162,7 +162,7 @@ const ManageTrainings = () => {
               key={training.id || training._id}
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              className="group relative rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-purple-500/40 p-6 flex flex-col justify-between transition-all duration-300 backdrop-blur-md shadow-lg"
+              className="group relative rounded-lg bg-slate-900/60 border border-slate-800 hover:border-purple-500/40 p-6 flex flex-col justify-between transition-all duration-300 backdrop-blur-md shadow-lg"
             >
               <div>
                 {/* Header row: Status & Duration */}
@@ -229,14 +229,14 @@ const ManageTrainings = () => {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => openEditModal(training)}
-                    className="p-2 rounded-xl bg-slate-800/60 border border-slate-700 hover:border-cyan-400 text-cyan-300 transition-colors cursor-pointer"
+                    className="p-2 rounded-lg bg-slate-800/60 border border-slate-700 hover:border-cyan-400 text-cyan-300 transition-colors cursor-pointer"
                     title="Edit Training"
                   >
                     <Edit2 size={14} />
                   </button>
                   <button
                     onClick={() => handleDelete(training.id || training._id)}
-                    className="p-2 rounded-xl bg-slate-800/60 border border-slate-700 hover:border-red-500 text-red-400 transition-colors cursor-pointer"
+                    className="p-2 rounded-lg bg-slate-800/60 border border-slate-700 hover:border-red-500 text-red-400 transition-colors cursor-pointer"
                     title="Delete Training"
                   >
                     <Trash2 size={14} />
@@ -256,19 +256,19 @@ const ManageTrainings = () => {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto"
+              className="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-lg p-6 md:p-8 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto"
             >
               <div className="flex items-center justify-between border-b border-slate-800 pb-4">
                 <h3 className="text-lg font-bold text-white uppercase font-mono">
                   {editingId ? 'Edit Training' : 'Add New Training'}
                 </h3>
-                <button onClick={closeModal} className="p-2 text-slate-400 hover:text-white rounded-xl bg-slate-800/50">
+                <button onClick={closeModal} className="p-2 text-slate-400 hover:text-white rounded-lg bg-slate-800/50">
                   <X size={18} />
                 </button>
               </div>
 
               {errorMessage && (
-                <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-mono font-bold">
+                <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-mono font-bold">
                   {errorMessage}
                 </div>
               )}
@@ -281,7 +281,7 @@ const ManageTrainings = () => {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     required
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none"
                     placeholder="Deep Learning Specialization"
                   />
                 </div>
@@ -293,7 +293,7 @@ const ManageTrainings = () => {
                     value={provider}
                     onChange={(e) => setProvider(e.target.value)}
                     required
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white text-sm focus:border-purple-400 focus:outline-none"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 text-white text-sm focus:border-purple-400 focus:outline-none"
                     placeholder="Coursera / Udemy / DeepLearning.AI"
                   />
                 </div>
@@ -305,7 +305,7 @@ const ManageTrainings = () => {
                       type="text"
                       value={duration}
                       onChange={(e) => setDuration(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none"
                       placeholder="3 months / 40 hours"
                     />
                   </div>
@@ -315,7 +315,7 @@ const ManageTrainings = () => {
                     <select
                       value={status}
                       onChange={(e) => setStatus(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none"
                     >
                       <option value="Actively Relevant">Actively Relevant</option>
                       <option value="In Progress">In Progress</option>
@@ -331,7 +331,7 @@ const ManageTrainings = () => {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     rows={3}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white text-sm focus:border-purple-400 focus:outline-none resize-none"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 text-white text-sm focus:border-purple-400 focus:outline-none resize-none"
                     placeholder="Comprehensive deep learning specialization covering CNNs, RNNs, and Transformers..."
                   />
                 </div>
@@ -342,7 +342,7 @@ const ManageTrainings = () => {
                     type="text"
                     value={skillsListed}
                     onChange={(e) => setSkillsListed(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none"
                     placeholder="Python, TensorFlow, Neural Networks"
                   />
                 </div>
@@ -353,13 +353,13 @@ const ManageTrainings = () => {
                     type="url"
                     value={certificateUrl}
                     onChange={(e) => setCertificateUrl(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none"
                     placeholder="https://coursera.org/verify/..."
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="flex items-center gap-3 p-3 rounded-xl bg-slate-950 border border-slate-800 cursor-pointer">
+                  <label className="flex items-center gap-3 p-3 rounded-lg bg-slate-950 border border-slate-800 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={isCompleted}
@@ -374,14 +374,14 @@ const ManageTrainings = () => {
                   <button
                     type="button"
                     onClick={closeModal}
-                    className="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider"
+                    className="px-5 py-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-wider disabled:opacity-50"
+                    className="px-6 py-3 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-wider disabled:opacity-50"
                   >
                     {submitting ? 'Saving...' : editingId ? 'Update Training' : 'Add Training'}
                   </button>

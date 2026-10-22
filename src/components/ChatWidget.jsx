@@ -337,7 +337,7 @@ const ChatWidget = memo(() => {
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         aria-label={isOpen ? 'Close AI Assistant' : 'Open AI Assistant'}
-        className="pointer-events-auto relative group p-3.5 rounded-full bg-foreground text-surface hover:opacity-90 shadow-md transition-all cursor-pointer"
+        className="pointer-events-auto relative group p-3.5 rounded-full bg-foreground text-surface hover:opacity-90 transition-opacity cursor-pointer"
         title="Toggle AI Assistant"
       >
         {isOpen ? <X size={20} /> : <Bot size={20} />}

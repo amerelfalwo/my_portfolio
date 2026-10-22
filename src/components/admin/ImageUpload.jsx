@@ -106,7 +106,7 @@ const ImageUpload = ({ value, onUploadComplete, label = 'Image Asset' }) => {
 
       {/* Error Notice */}
       {error && (
-        <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[11px] font-mono flex items-center gap-2">
+        <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[11px] font-mono flex items-center gap-2">
           <AlertCircle size={14} className="shrink-0" />
           <span>{error}</span>
         </div>
@@ -114,11 +114,11 @@ const ImageUpload = ({ value, onUploadComplete, label = 'Image Asset' }) => {
 
       {/* Image Preview Active State */}
       {value ? (
-        <div className="relative group rounded-2xl bg-slate-950 border border-slate-800 overflow-hidden p-2 flex items-center gap-4">
+        <div className="relative group rounded-lg bg-slate-950 border border-slate-800 overflow-hidden p-2 flex items-center gap-4">
           <img
             src={value}
             alt="Preview"
-            className="w-16 h-16 object-cover rounded-xl border border-slate-800"
+            className="w-16 h-16 object-cover rounded-lg border border-slate-800"
             onError={(e) => { e.target.style.display = 'none'; }}
           />
           <div className="flex-1 min-w-0">
@@ -132,7 +132,7 @@ const ImageUpload = ({ value, onUploadComplete, label = 'Image Asset' }) => {
           <button
             type="button"
             onClick={clearImage}
-            className="p-2 rounded-xl bg-slate-800/80 hover:bg-red-500/20 hover:border-red-500/40 text-slate-400 hover:text-red-400 border border-slate-700 transition-all cursor-pointer mr-1"
+            className="p-2 rounded-lg bg-slate-800/80 hover:bg-red-500/20 hover:border-red-500/40 text-slate-400 hover:text-red-400 border border-slate-700 transition-all cursor-pointer mr-1"
             title="Remove Image"
           >
             <X size={16} />
@@ -146,13 +146,13 @@ const ImageUpload = ({ value, onUploadComplete, label = 'Image Asset' }) => {
             value={manualUrl}
             onChange={(e) => setManualUrl(e.target.value)}
             placeholder="https://images.unsplash.com/..."
-            className="flex-1 bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white text-xs font-mono focus:border-cyan-400 focus:outline-none"
+            className="flex-1 bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 text-white text-xs font-mono focus:border-cyan-400 focus:outline-none"
           />
           <button
             type="button"
             onClick={handleManualUrlSubmit}
             disabled={!manualUrl.trim()}
-            className="px-4 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs font-mono uppercase disabled:opacity-40 transition-all cursor-pointer"
+            className="px-4 py-3 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs font-mono uppercase disabled:opacity-40 transition-all cursor-pointer"
           >
             Apply
           </button>
@@ -165,7 +165,7 @@ const ImageUpload = ({ value, onUploadComplete, label = 'Image Asset' }) => {
           onDragOver={handleDrag}
           onDrop={handleDrop}
           onClick={() => fileInputRef.current?.click()}
-          className={`relative cursor-pointer rounded-2xl border-2 border-dashed transition-all p-6 flex flex-col items-center justify-center text-center ${
+          className={`relative cursor-pointer rounded-lg border-2 border-dashed transition-all p-6 flex flex-col items-center justify-center text-center ${
             dragActive
               ? 'border-cyan-400 bg-cyan-500/10'
               : 'border-slate-800 hover:border-slate-700 bg-slate-950/60'
@@ -186,7 +186,7 @@ const ImageUpload = ({ value, onUploadComplete, label = 'Image Asset' }) => {
             </div>
           ) : (
             <div className="flex flex-col items-center gap-2">
-              <div className="w-10 h-10 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+              <div className="w-10 h-10 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
                 <UploadCloud size={20} />
               </div>
               <div>
