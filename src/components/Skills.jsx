@@ -103,11 +103,11 @@ const Skills = memo(() => {
           </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight text-foreground leading-[1.12]">
-            Technologies &amp; toolstack
+            Technologies &amp; tools
           </h2>
 
           <p className="text-muted text-base sm:text-lg font-normal leading-relaxed mt-4">
-            A comprehensive overview of frameworks, neural libraries, system runtimes, and languages used across production systems.
+            Tools and frameworks I use for deep learning, computer vision, LLM applications, and backend services.
           </p>
         </div>
 

@@ -62,9 +62,9 @@ const Hero = memo(() => {
               Hello
             </h1>
 
-            {/* Subtitle with Dash per Reference Image 2: "— It's D.Nova a design wizerd" */}
+            {/* Subtitle with Dash */}
             <p className="text-base sm:text-lg md:text-xl text-foreground font-normal tracking-wide mt-4 sm:mt-6">
-              — It&apos;s {profile.name} an AI Engineer
+              — I&apos;m {profile.name}, an AI Engineer &amp; Systems Analyst.
             </p>
 
           </div>

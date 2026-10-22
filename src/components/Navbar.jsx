@@ -81,13 +81,13 @@ const Navbar = () => {
           ))}
         </nav>
 
-        {/* Desktop Right CTA: "Book A Call ↗" per Reference Image 2 */}
+        {/* Desktop Right CTA: "Contact ↗" */}
         <div className="hidden md:flex items-center">
           <a
             href="#contact"
             className="text-xs sm:text-sm font-normal text-foreground underline underline-offset-4 hover:text-muted transition-colors duration-200 inline-flex items-center gap-1"
           >
-            <span>Book A Call</span>
+            <span>Contact</span>
             <span className="inline-block rtl:-scale-x-100 text-xs" aria-hidden="true">↗</span>
           </a>
         </div>

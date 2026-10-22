@@ -1,8 +1,15 @@
 import { memo } from 'react';
 import { Globe, Sparkles } from 'lucide-react';
 import { profile } from '../data/profile';
+import { useProjects } from '../hooks/useData';
+import { projects as staticProjects } from '../data/projects';
 
 const About = memo(() => {
+  const { projects: liveProjects } = useProjects();
+  const projectCount = (liveProjects && liveProjects.length > 0)
+    ? liveProjects.length
+    : staticProjects.length;
+
   return (
     <section id="about" className="py-24 sm:py-32 relative bg-transparent border-t border-border/60">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -16,7 +23,7 @@ const About = memo(() => {
               </h2>
 
               <p className="text-muted text-sm sm:text-base leading-relaxed mt-5 max-w-sm font-normal">
-                I specialize in turning complex problems into scalable neural solutions. My approach blends deep learning rigor with clean architectural design to deliver AI systems that not only look great but work seamlessly. Ready to build your next project?
+                I build deep learning, computer vision, and autonomous agent systems, and structure them with Clean Architecture so they stay maintainable. I have 2+ years building AI projects.
               </p>
             </div>
 
@@ -52,12 +59,12 @@ const About = memo(() => {
 
                 {/* Big Stat Number */}
                 <div className="text-5xl sm:text-6xl font-light text-foreground tracking-tight leading-none">
-                  100%
+                  {projectCount}
                 </div>
 
                 {/* Stat Description */}
                 <p className="text-xs sm:text-sm text-muted mt-3.5 leading-relaxed font-normal">
-                  Production-ready systems engineered with domain-driven Clean Architecture and resilient pipelines.
+                  Projects across computer vision, LLM agents, and backend systems.
                 </p>
               </div>
 
@@ -100,7 +107,7 @@ const About = memo(() => {
                   <Sparkles size={14} className="fill-current text-surface" />
                 </div>
                 <p className="text-xs sm:text-sm text-foreground/85 leading-relaxed font-normal">
-                  With 2+ years of experience, I specialize in architecting deep learning, computer vision, and autonomous agent systems that solve real-world problems and deliver seamless digital experiences.
+                  Hands-on background developing medical computer vision, multi-agent systems, advanced RAG, and real-time detection pipelines.
                 </p>
               </div>
 
@@ -110,7 +117,7 @@ const About = memo(() => {
                   <Sparkles size={14} className="fill-current text-surface" />
                 </div>
                 <p className="text-xs sm:text-sm text-foreground/85 leading-relaxed font-normal">
-                  I thrive on working closely with engineering teams and clients, blending algorithmic rigor with domain-driven design to bring intelligent systems to life.
+                  Focused on Clean Architecture: keeping domain logic separate from frameworks, APIs, and storage.
                 </p>
               </div>
             </div>
