@@ -105,7 +105,7 @@ export const projects = [
     categoryLabel: 'Generative AI & LLMs',
     featured: true,
     badge: 'VECTORLESS RAG',
-    imageUrl: '/images/projects/vision.webp',
+    imageUrl: '/images/projects/project-placeholder.webp',
     summary: 'Production-ready, editorial research workspace for hierarchical tree-based document intelligence and Vectorless RAG, eliminating embedding drift and providing 100% verifiable citations.',
     caseStudy: {
       problem: 'Dense vector embeddings struggle to preserve hierarchical structure and precise numeric data in complex financial and enterprise reports, leading to semantic hallucination in retrieval-augmented generation.',
@@ -128,7 +128,7 @@ export const projects = [
     categoryLabel: 'Software Architecture & .NET 8',
     featured: true,
     badge: 'ENTERPRISE ARCHITECTURE',
-    imageUrl: '/images/projects/aura.webp',
+    imageUrl: '/images/projects/project-placeholder.webp',
     summary: 'A modular enterprise-grade ERP backend migrated from FastAPI to .NET 8, implementing domain-driven design, multi-tenant database isolation, role-based access control, and scalable financial workflow automation.',
     caseStudy: {
       problem: 'Previous monolithic implementation created deployment bottlenecks, lacked multi-tenant database boundary guarantees, and faced performance limits during high-concurrency accounting workflows.',
@@ -355,7 +355,7 @@ export const projects = [
     categoryLabel: 'Generative AI & Databases',
     featured: false,
     badge: 'PGVECTOR PRODUCTION',
-    imageUrl: '/images/projects/edge.webp',
+    imageUrl: '/images/projects/project-placeholder.webp',
     summary: 'Production-ready RAG backend using PostgreSQL pgvector with hybrid sparse-dense search, HNSW indexing, and LangChain integration for automated e-commerce customer support.',
     caseStudy: {
       problem: 'Maintaining dedicated vector databases introduces operational overhead, network latency, and synchronization headaches alongside relational application databases.',
@@ -399,7 +399,7 @@ export const projects = [
     categoryLabel: 'RAG & Document Intelligence',
     featured: false,
     badge: 'DOCUMENT RESEARCH RAG',
-    imageUrl: '/images/projects/vision.webp',
+    imageUrl: '/images/projects/project-placeholder.webp',
     summary: 'A modular conversational AI research assistant enabling users to upload technical documents, query them through dense vector search, and generate comprehensive synthesis reports.',
     caseStudy: {
       problem: 'Users need to extract actionable takeaways from lengthy multi-hundred-page research documents without losing context or encountering repetitive responses.',

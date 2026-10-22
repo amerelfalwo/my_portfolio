@@ -103,7 +103,7 @@ const Projects = memo(() => {
                     src={imgSrc}
                     alt={project.title}
                     loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                    className="w-full h-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-105"
                     onError={(e) => {
                       if (!e.currentTarget.dataset.fallbackTried) {
                         e.currentTarget.dataset.fallbackTried = 'true';
@@ -127,13 +127,13 @@ const Projects = memo(() => {
                   </div>
                 </div>
 
-                {/* Caption Below the Card per Screenshot 2 */}
-                <div className="mt-3.5 flex items-baseline justify-between gap-3">
-                  <h3 className="text-sm sm:text-base font-medium text-foreground tracking-tight group-hover:text-muted transition-colors line-clamp-1">
+                {/* Caption Below the Card */}
+                <div className="mt-3.5 flex flex-col gap-1">
+                  <h3 className="text-sm font-normal text-foreground leading-snug line-clamp-2 group-hover:text-muted transition-colors">
                     {project.title}
                   </h3>
 
-                  <span className="text-xs text-muted font-normal shrink-0">
+                  <span className="text-xs text-muted font-normal">
                     {project.categoryLabel || project.category}
                   </span>
                 </div>

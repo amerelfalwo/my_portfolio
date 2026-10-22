@@ -24,11 +24,8 @@ const getProjectFallback = (project) => {
   if (p.includes('cv-inference') || p.includes('depi_back') || p.includes('yolo') || p.includes('vehicle') || p.includes('traffic')) return '/images/projects/cv-yolo.webp';
   if (p.includes('thyrax') || p.includes('cancer')) return '/images/projects/thyrax.webp';
   if (p.includes('mri') || p.includes('tumour')) return '/images/projects/brain-tumour.webp';
-  if (p.includes('erp') || p.includes('clean') || p.includes('architecture') || p.includes('erb')) return '/images/projects/aura.webp';
-  if (p.includes('pageindex') || p.includes('atlas') || p.includes('rag') || p.includes('search')) return '/images/projects/vision.webp';
   if (p.includes('segmentation') || p.includes('wsss')) return '/images/projects/wsss.webp';
   if (p.includes('structural') || p.includes('sensor')) return '/images/projects/structural.webp';
-  if (p.includes('vector') || p.includes('postgres')) return '/images/projects/edge.webp';
   if (p.includes('medical') || p.includes('report')) return '/images/projects/medical-report.webp';
   if (p.includes('customer') || p.includes('analytics')) return '/images/projects/customer-segmentation.webp';
   return '/images/projects/project-placeholder.webp';

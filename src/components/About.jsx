@@ -102,7 +102,7 @@ const About = memo(() => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="View Amir's GitHub profile"
-                className="absolute bottom-3 end-3 w-10 h-10 rounded-full bg-surface border border-border text-foreground flex items-center justify-center transition-opacity duration-200 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100 focus-visible:opacity-100 hover:bg-foreground hover:text-surface"
+                className="absolute bottom-3 end-3 w-10 h-10 rounded-full bg-surface border border-border text-foreground flex items-center justify-center transition-opacity duration-200 hover:bg-foreground hover:text-surface sm:opacity-0 sm:group-hover:opacity-100 focus-visible:opacity-100"
               >
                 <span className="inline-block rtl:-scale-x-100 text-sm font-medium" aria-hidden="true">↗</span>
               </a>
@@ -112,7 +112,7 @@ const About = memo(() => {
             <div className="space-y-6">
               {/* Bullet 1 */}
               <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full bg-foreground text-surface flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                <div className="w-8 h-8 rounded-full bg-foreground text-surface flex items-center justify-center shrink-0 mt-0.5">
                   <Sparkles size={14} className="fill-current text-surface" />
                 </div>
                 <p className="text-xs sm:text-sm text-foreground/85 leading-relaxed font-normal">
@@ -122,7 +122,7 @@ const About = memo(() => {
 
               {/* Bullet 2 */}
               <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full bg-foreground text-surface flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                <div className="w-8 h-8 rounded-full bg-foreground text-surface flex items-center justify-center shrink-0 mt-0.5">
                   <Sparkles size={14} className="fill-current text-surface" />
                 </div>
                 <p className="text-xs sm:text-sm text-foreground/85 leading-relaxed font-normal">
