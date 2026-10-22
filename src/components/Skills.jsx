@@ -1,5 +1,4 @@
-import { useMemo, memo } from 'react';
-import { useSkills } from '../hooks/useData';
+import { memo } from 'react';
 import { getToolIconUrl } from '../utils/getToolIcon';
 
 const STATIC_GROUPS = [
@@ -23,6 +22,7 @@ const STATIC_GROUPS = [
     title: 'Generative AI & Agentic Workflows',
     tools: [
       { name: 'LangChain' },
+      { name: 'LangGraph' },
       { name: 'LlamaIndex' },
       { name: 'ChromaDB' },
       { name: 'Hugging Face' },
@@ -32,6 +32,7 @@ const STATIC_GROUPS = [
     id: 'backend-systems',
     title: 'Backend & Systems Engineering',
     tools: [
+      { name: 'Python' },
       { name: 'FastAPI' },
       { name: 'C++' },
       { name: 'PostgreSQL' },
@@ -55,42 +56,7 @@ const STATIC_GROUPS = [
 ];
 
 const Skills = memo(() => {
-  const { skills: liveSkills } = useSkills();
-
-  // Merge live skills if any with static groups, ensuring all tools and logos are retained
-  const groups = useMemo(() => {
-    if (!liveSkills || liveSkills.length === 0) return STATIC_GROUPS;
-
-    // Create a normalized map of tools already present in static groups
-    const staticMap = new Map();
-    STATIC_GROUPS.forEach(g => {
-      g.tools.forEach(t => {
-        staticMap.set(t.name.toLowerCase().replace(/[^a-z0-9]/g, ''), true);
-      });
-    });
-
-    // Check for any extra dynamic skills added in CMS
-    const extras = [];
-    liveSkills.forEach(s => {
-      const key = s.name.toLowerCase().replace(/[^a-z0-9]/g, '');
-      if (!staticMap.has(key)) {
-        extras.push({ name: s.name, icon: s.icon });
-      }
-    });
-
-    if (extras.length > 0) {
-      return [
-        ...STATIC_GROUPS,
-        {
-          id: 'additional',
-          title: 'Additional Libraries & Tools',
-          tools: extras
-        }
-      ];
-    }
-
-    return STATIC_GROUPS;
-  }, [liveSkills]);
+  const groups = STATIC_GROUPS;
 
   return (
     <section id="skills" className="py-24 sm:py-32 relative bg-transparent border-t border-border/60">

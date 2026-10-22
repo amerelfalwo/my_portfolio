@@ -15,29 +15,29 @@ const Hero = memo(() => {
   return (
     <section
       id="hero"
-      className="relative min-h-[calc(100svh-4rem)] sm:min-h-[calc(100svh-5rem)] w-full flex flex-col justify-between pt-20 sm:pt-24 pb-0 sm:pb-8 overflow-hidden bg-transparent select-none"
+      className="relative min-h-hero lg:h-hero mt-[var(--header-h)] border-b border-border w-full flex flex-col justify-between overflow-hidden bg-transparent select-none"
     >
-      {/* ── Left Vertical Margin Rail per Reference Image 2 ── */}
-      <div className="hidden lg:flex absolute start-0 top-0 bottom-0 w-16 xl:w-20 border-e border-border/60 flex-col justify-between items-center py-28 pointer-events-none z-20">
-        <span className="text-[11px] uppercase tracking-widest text-muted/70 font-medium [writing-mode:vertical-rl] rotate-180">
+      {/* ── Left Vertical Margin Rail ── */}
+      <div className="hidden lg:flex absolute start-0 top-0 bottom-0 w-16 xl:w-20 border-e border-border flex-col justify-between items-center py-8 pointer-events-none z-20">
+        <span className="text-xs text-muted font-normal [writing-mode:vertical-rl] rotate-180">
           AI Engineer
         </span>
-        <span className="text-[11px] tracking-widest text-muted/60 font-mono [writing-mode:vertical-rl] rotate-180">
+        <span className="text-xs text-muted font-normal [writing-mode:vertical-rl] rotate-180">
           2026
         </span>
       </div>
 
       {/* ── Main Hero Content Grid ── */}
-      <div className="page-container flex-1 flex flex-col justify-between relative z-10 pb-0">
+      <div className="page-container flex-1 h-full flex flex-col justify-between relative z-10 pb-0">
         
         {/* Top/Middle Area: Left Content + Right Bottom-Anchored Portrait */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4 items-end flex-1 my-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6 items-stretch flex-1 h-full">
           
-          {/* Left Column (7 cols): Stats + Massive "Hello" + Role */}
-          <div className="lg:col-span-7 flex flex-col justify-center items-start text-start pt-4 sm:pt-10 lg:pt-0">
+          {/* Left Column (7 cols): 4-row layout (auto / 1fr / auto / auto) */}
+          <div className="lg:col-span-7 flex flex-col justify-between h-full pt-4 sm:pt-6 lg:pt-8 pb-4 lg:pb-8 text-start">
             
-            {/* Stats Row */}
-            <div className="flex items-start gap-12 sm:gap-16 mb-6 sm:mb-12">
+            {/* Row 1: Stats */}
+            <div className="flex items-start gap-12 sm:gap-16 pt-1">
               <div>
                 <div className="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight text-foreground leading-none">
                   {projectCount}
@@ -57,57 +57,86 @@ const Hero = memo(() => {
               </div>
             </div>
 
-            {/* Massive Display Title per Reference Image 2: "Hello" */}
-            <h1 className="text-[76px] sm:text-[110px] md:text-[135px] lg:text-[145px] xl:text-[170px] font-normal tracking-[-0.035em] text-foreground leading-[0.9] select-none">
-              Hello
-            </h1>
+            {/* Row 2: Flexible empty space */}
+            <div className="hidden lg:block flex-1 min-h-[1.5rem]" />
 
-            {/* Subtitle with Dash */}
-            <p className="text-base sm:text-lg md:text-xl text-foreground font-normal tracking-wide mt-4 sm:mt-6">
-              — I&apos;m {profile.name}, an AI Engineer &amp; Systems Analyst.
-            </p>
+            {/* Row 3: Display Title + Subtitle + CTAs */}
+            <div className="my-auto lg:my-0">
+              {/* Massive Display Title */}
+              <h1 className="text-[76px] sm:text-[100px] md:text-[115px] lg:text-[120px] xl:text-[140px] font-normal tracking-[-0.035em] text-foreground leading-[0.9] select-none">
+                Hello
+              </h1>
 
-            {/* Mobile-only "Download CV" pill under Subtitle */}
-            <div className="mt-5 block lg:hidden">
+              {/* Subtitle with Dash */}
+              <p className="text-base sm:text-lg text-foreground font-normal tracking-wide mt-3 sm:mt-4">
+                — I&apos;m {profile.name}, an AI Engineer &amp; Systems Analyst.
+              </p>
+
+              {/* Desktop CTAs */}
+              <div className="mt-5 lg:mt-6 hidden lg:flex items-center gap-6">
+                <a
+                  href={profile.links.resume}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-foreground text-surface text-xs font-medium hover:opacity-90 transition-opacity"
+                >
+                  <span>Download CV</span>
+                  <span className="inline-block rtl:-scale-x-100" aria-hidden="true">→</span>
+                </a>
+
+                <a
+                  href={profile.links.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs font-medium text-foreground underline underline-offset-4 hover:text-muted transition-colors"
+                >
+                  View GitHub <span className="inline-block rtl:-scale-x-100" aria-hidden="true">↗</span>
+                </a>
+              </div>
+
+              {/* Mobile-only "Download CV" pill under Subtitle */}
+              <div className="mt-5 block lg:hidden">
+                <a
+                  href={profile.links.resume}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-surface text-foreground text-xs font-medium hover:bg-foreground hover:text-surface transition-colors"
+                >
+                  <span>Download CV</span>
+                  <span className="inline-block rtl:-scale-x-100" aria-hidden="true">→</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Flexible empty space before scroll down */}
+            <div className="hidden lg:block flex-1 min-h-[1.5rem]" />
+
+            {/* Row 4: Scroll down ↓ aligned to bottom-start */}
+            <div className="hidden lg:block">
               <a
-                href={profile.links.resume}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-surface text-foreground text-xs font-medium hover:bg-foreground hover:text-surface transition-colors"
+                href="#about"
+                className="inline-flex items-center gap-1.5 text-xs text-muted font-normal hover:text-foreground transition-colors cursor-pointer"
               >
-                <span>Download CV</span>
-                <span className="inline-block rtl:-scale-x-100" aria-hidden="true">→</span>
+                <span>Scroll down</span>
+                <ArrowDown size={13} className="animate-bounce" aria-hidden="true" />
               </a>
             </div>
 
           </div>
 
-          {/* Right Column (5 cols): Studio Portrait, w-full on mobile, flush to bottom border */}
-          <div className="lg:col-span-5 relative flex items-end justify-center lg:justify-end self-end w-full">
-            <div className="relative w-full flex items-end justify-center lg:justify-end">
-              <img
-                src="/hero-portrait.webp"
-                alt={profile.name}
-                width="896"
-                height="1200"
-                className="w-full lg:w-auto h-auto max-h-[50vh] sm:max-h-[60vh] lg:h-[78vh] xl:h-[84vh] max-h-[820px] xl:max-h-[900px] object-contain object-bottom select-none pointer-events-none"
-                fetchPriority="high"
-                decoding="async"
-              />
-            </div>
+          {/* Right Column (5 cols, ~45% width): Studio Portrait, flush to bottom border */}
+          <div className="lg:col-span-5 relative flex items-end justify-center lg:justify-end self-end w-full h-full">
+            <img
+              src="/hero-portrait.webp"
+              alt={profile.name}
+              width="896"
+              height="1200"
+              className="w-full lg:w-auto h-auto max-h-[50vh] sm:max-h-[60vh] lg:max-h-full lg:h-full object-contain object-bottom select-none pointer-events-none"
+              fetchPriority="high"
+              decoding="async"
+            />
           </div>
 
-        </div>
-
-        {/* Bottom Bar: Scroll down ↓ */}
-        <div className="hidden sm:block pt-4 sm:pt-6 pb-2 text-start">
-          <a
-            href="#about"
-            className="inline-flex items-center gap-1.5 text-xs text-muted font-normal hover:text-foreground transition-colors cursor-pointer"
-          >
-            <span>Scroll down</span>
-            <ArrowDown size={13} className="animate-bounce" aria-hidden="true" />
-          </a>
         </div>
 
       </div>

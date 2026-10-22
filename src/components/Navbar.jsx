@@ -44,7 +44,7 @@ const Navbar = () => {
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
         scrolled
           ? 'bg-background/90 backdrop-blur-md border-b border-border'
-          : 'bg-background/60 backdrop-blur-sm border-b border-transparent'
+          : 'bg-background border-b border-transparent'
       }`}
     >
       <div className="page-container h-16 sm:h-20 flex items-center justify-between">

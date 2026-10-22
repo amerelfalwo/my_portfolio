@@ -9,6 +9,22 @@
   --text-main: #222222;
   --text-muted: #5F5F5F;
   --border-color: rgba(0, 0, 0, 0.08);
+  --header-h: 4rem;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --header-h: 5rem;
+  }
+}
+
+@layer utilities {
+  .min-h-hero {
+    min-height: calc(100svh - var(--header-h));
+  }
+  .h-hero {
+    height: calc(100svh - var(--header-h));
+  }
 }
 
 @layer base {
