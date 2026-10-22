@@ -1,152 +1,127 @@
-import { m } from 'framer-motion';
-import { User, Terminal, Cpu, Database, Server, Code, Sparkles, Brain } from 'lucide-react';
 import { memo } from 'react';
-import { useSettings, useAboutConfig } from '../hooks/useData';
+import { ArrowRight, CheckCircle2, ShieldCheck, Cpu, Eye, Sparkles, Layers, Terminal } from 'lucide-react';
+import { profile } from '../data/profile';
+import { useAboutConfig } from '../hooks/useData';
 
-const tween = { type: 'tween', duration: 0.6, ease: 'easeOut' };
-
-const STACK = [
-  { name: 'Architecture', icon: Server, color: 'text-purple-400', bg: 'bg-purple-500/10' },
-  { name: 'AI Models', icon: Brain, color: 'text-pink-400', bg: 'bg-pink-500/10' },
-  { name: 'Processing', icon: Cpu, color: 'text-cyan-400', bg: 'bg-cyan-500/10' },
-  { name: 'Full-Stack', icon: Code, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-];
+const PILLAR_ICONS = {
+  'vision-ml': Eye,
+  'genai-agents': Sparkles,
+  'clean-arch': Layers,
+  'mlops-cloud': Terminal,
+};
 
 const About = memo(() => {
-  const { settings } = useSettings();
   const { aboutConfig } = useAboutConfig();
 
-  const title = aboutConfig?.title || 'The Architect';
-  const subtitle = aboutConfig?.subtitle || 'I build high-performance systems, intelligent AI architectures, and seamless digital experiences that scale.';
-  const paragraph1 = aboutConfig?.paragraph1 || 'As a versatile Software Engineer & AI Specialist, my core objective is to bridge the gap between complex neural architectures and highly polished, user-centric interfaces.';
-  const paragraph2 = aboutConfig?.paragraph2 || "My expertise spans across deep learning, generative AI, systems engineering, and modern full-stack frameworks. I don't just write code; I architect solutions that are robust, scalable, and visually exceptional.";
-  const quote = aboutConfig?.quote || '"Efficiency is doing things right; effectiveness is doing the right things."';
-  const yearsExp = aboutConfig?.yearsExp || '5+';
-  const deployments = aboutConfig?.deployments || '50+';
-  const availability = aboutConfig?.availability || 'Available for new opportunities';
-  const workTypes = aboutConfig?.workTypes || 'REMOTE / ONSITE / RELOCATION';
+  const title = aboutConfig?.title || 'Engineering intelligence into robust systems.';
+  const subtitle = aboutConfig?.subtitle || profile.bio.short;
+  const extendedBio = profile.bio.extended || [];
 
   return (
-    <section id="about" className="relative py-32 overflow-hidden selection:bg-cyan-500/30">
-      {/* Background Decor */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute top-1/2 right-0 w-[400px] h-[400px] bg-cyan-600/10 rounded-full blur-[100px] translate-x-1/3 -translate-y-1/2" />
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+    <section id="about" className="py-24 sm:py-32 relative bg-transparent border-t border-border/60">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        
         {/* Section Header */}
-        <div className="flex flex-col items-center mb-24 text-center">
-          <m.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ ...tween, delay: 0.1 }}
-            className="text-4xl md:text-6xl font-black tracking-tight text-white uppercase mb-6"
-          >
-            About <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">{title}</span>
-          </m.h2>
-
-          <m.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ ...tween, delay: 0.2 }}
-            className="text-slate-400 max-w-2xl text-lg leading-relaxed"
-          >
+        <div className="max-w-3xl mb-16 sm:mb-20 text-start">
+          <div className="inline-flex items-center gap-2 text-xs font-medium text-muted tracking-wide mb-3">
+            <span className="text-[8px] text-foreground" aria-hidden="true">●</span>
+            <span>About me</span>
+          </div>
+          
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight text-foreground leading-[1.12]">
+            {title}
+          </h2>
+          
+          <p className="text-muted text-base sm:text-lg font-normal leading-relaxed mt-4">
             {subtitle}
-          </m.p>
+          </p>
         </div>
 
-        {/* Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        {/* 2-Column Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
           
-          {/* Left: Identity Card */}
-          <m.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ ...tween, delay: 0.3 }}
-            className="relative p-[1px] rounded-[2rem] bg-gradient-to-b from-slate-700/50 to-slate-800/20"
-          >
-            <div className="relative bg-slate-950/80 backdrop-blur-2xl rounded-[2rem] p-8 md:p-12 overflow-hidden h-full">
-              <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
-                <Terminal size={180} />
-              </div>
-              
-              <h3 className="text-2xl font-bold text-white mb-6 font-mono tracking-tight flex items-center gap-3">
-                <Sparkles className="text-purple-400" size={24} /> 
-                System.Identity
-              </h3>
-              
-              <div className="space-y-6 text-slate-300 leading-relaxed font-medium">
-                <p>{paragraph1}</p>
-                <p>{paragraph2}</p>
-                {quote && (
-                  <p className="text-cyan-400/90 italic font-mono text-sm border-l-2 border-cyan-500/50 pl-4 py-1">
-                    {quote}
-                  </p>
-                )}
-              </div>
+          {/* Left Column (7 cols): Narrative & Background */}
+          <div className="lg:col-span-7 flex flex-col gap-6 text-start">
+            <div className="space-y-4 text-foreground/80 text-sm sm:text-base leading-relaxed font-normal">
+              {extendedBio.map((paragraph, idx) => (
+                <p key={idx} className="leading-relaxed">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
 
-              <div className="mt-10 grid grid-cols-2 gap-4">
-                <div className="bg-slate-900/50 rounded-2xl p-4 border border-slate-800/50">
-                  <div className="text-3xl font-black text-white mb-1">{yearsExp}</div>
-                  <div className="text-[10px] font-mono text-slate-400 uppercase tracking-widest">Years Exp.</div>
-                </div>
-                <div className="bg-slate-900/50 rounded-2xl p-4 border border-slate-800/50">
-                  <div className="text-3xl font-black text-white mb-1">{deployments}</div>
-                  <div className="text-[10px] font-mono text-slate-400 uppercase tracking-widest">Deployments</div>
+            {/* Academic Standing & Honors */}
+            <div className="p-5 sm:p-6 rounded-lg border border-border bg-surface mt-2">
+              <div className="flex items-start gap-3.5">
+                <ShieldCheck className="w-5 h-5 text-foreground shrink-0 mt-0.5" />
+                <div>
+                  <h3 className="text-sm sm:text-base font-medium text-foreground tracking-tight">
+                    B.Sc. Computer & Information Sciences
+                  </h3>
+                  <p className="text-xs sm:text-sm text-muted mt-1 leading-normal">
+                    Mansoura University (IT Major) • Completed with &quot;Very Good&quot; Honors (Class of 2026).
+                  </p>
                 </div>
               </div>
             </div>
-          </m.div>
 
-          {/* Right: Core Domains */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {STACK.map((item, idx) => {
-              const Icon = item.icon;
+            {/* Availability Status Card */}
+            <div className="p-5 sm:p-6 rounded-lg border border-border bg-surface-muted flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <div className="text-xs uppercase tracking-wider text-muted font-medium">
+                  Current Status
+                </div>
+                <div className="text-sm sm:text-base font-medium text-foreground mt-0.5">
+                  {profile.status.message}
+                </div>
+                <div className="text-xs text-muted mt-0.5">
+                  {profile.status.locations}
+                </div>
+              </div>
+              <a
+                href="#contact"
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-foreground underline underline-offset-4 hover:text-muted transition-colors shrink-0"
+              >
+                <span>Get in touch</span>
+                <span className="inline-block rtl:-scale-x-100 ms-0.5" aria-hidden="true">↗</span>
+              </a>
+            </div>
+          </div>
+
+          {/* Right Column (5 cols): Core Engineering Pillars */}
+          <div className="lg:col-span-5 flex flex-col gap-4">
+            <div className="text-xs uppercase tracking-wider text-muted font-medium mb-1 text-start">
+              Core Engineering Pillars
+            </div>
+
+            {profile.pillars.map((pillar) => {
+              const IconComp = PILLAR_ICONS[pillar.id] || Cpu;
               return (
-                <m.div
-                  key={item.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-100px' }}
-                  transition={{ ...tween, delay: 0.4 + idx * 0.1 }}
-                  className="group relative bg-slate-900/40 border border-slate-800/60 rounded-3xl p-6 hover:bg-slate-800/40 transition-colors duration-300"
+                <div
+                  key={pillar.id}
+                  className="p-5 rounded-lg border border-border bg-surface hover:border-foreground/30 transition-colors text-start"
                 >
-                  <div className={`w-12 h-12 rounded-2xl ${item.bg} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}>
-                    <Icon className={item.color} size={22} />
+                  <div className="flex items-center gap-2.5 mb-2">
+                    <IconComp className="w-4 h-4 text-foreground shrink-0" />
+                    <h4 className="text-sm font-medium text-foreground tracking-tight">
+                      {pillar.title}
+                    </h4>
                   </div>
-                  <h4 className="text-lg font-bold text-slate-200 mb-2">{item.name}</h4>
-                  <div className="w-8 h-1 bg-slate-800 rounded-full group-hover:bg-slate-600 transition-colors duration-300" />
-                </m.div>
+                  <p className="text-xs sm:text-sm text-muted leading-relaxed font-normal">
+                    {pillar.description}
+                  </p>
+                </div>
               );
             })}
-
-            <m.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-100px' }}
-              transition={{ ...tween, delay: 0.8 }}
-              className="sm:col-span-2 relative p-[1px] rounded-3xl bg-gradient-to-r from-cyan-500/30 to-purple-500/30 overflow-hidden group"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="relative bg-slate-950/80 backdrop-blur-md rounded-3xl p-6 flex items-center justify-between">
-                <div>
-                  <h4 className="text-white font-bold mb-1">{availability}</h4>
-                  <p className="text-xs text-slate-400 font-mono">{workTypes}</p>
-                </div>
-                <div className="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.6)] animate-pulse" />
-              </div>
-            </m.div>
           </div>
 
         </div>
+
       </div>
     </section>
   );
 });
 
 About.displayName = 'About';
+
 export default About;

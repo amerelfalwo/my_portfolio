@@ -14,10 +14,18 @@ import Footer from '../components/Footer';
 const getProjectFallback = (project) => {
   const p = ((project?.id || '') + ' ' + (project?.title || '') + ' ' + (project?.category || '')).toLowerCase();
 
+  if (p.includes('mnemos') || p.includes('agentic_memory') || p.includes('cognitive memory')) return '/images/projects/mnemos.webp';
+  if (p.includes('sql-llm') || p.includes('text-to-sql') || p.includes('lora')) return '/images/projects/sql-llm.webp';
+  if (p.includes('graph') || p.includes('graphrag') || p.includes('knowledge graph')) return '/images/projects/graphrag.webp';
+  if (p.includes('langgraph') || p.includes('multiagent') || p.includes('multi-agent')) return '/images/projects/langgraph-agent.webp';
+  if (p.includes('crew') || p.includes('procurement') || p.includes('search_agent')) return '/images/projects/crew-procurement.webp';
+  if (p.includes('phishing') || p.includes('simulation') || p.includes('cybersecurity')) return '/images/projects/phishing-simulator.webp';
+  if (p.includes('sentiment') || p.includes('review') || p.includes('semantic_analysis')) return '/images/projects/sentiment-analyzer.webp';
+  if (p.includes('cv-inference') || p.includes('depi_back') || p.includes('yolo') || p.includes('vehicle') || p.includes('traffic')) return '/images/projects/cv-yolo.webp';
   if (p.includes('thyrax') || p.includes('cancer')) return '/images/projects/thyrax.webp';
   if (p.includes('mri') || p.includes('tumour')) return '/images/projects/brain-tumour.webp';
-  if (p.includes('erp') || p.includes('clean') || p.includes('architecture')) return '/images/projects/aura.webp';
-  if (p.includes('pageindex') || p.includes('rag') || p.includes('search')) return '/images/projects/vision.webp';
+  if (p.includes('erp') || p.includes('clean') || p.includes('architecture') || p.includes('erb')) return '/images/projects/aura.webp';
+  if (p.includes('pageindex') || p.includes('atlas') || p.includes('rag') || p.includes('search')) return '/images/projects/vision.webp';
   if (p.includes('segmentation') || p.includes('wsss')) return '/images/projects/wsss.webp';
   if (p.includes('structural') || p.includes('sensor')) return '/images/projects/structural.webp';
   if (p.includes('vector') || p.includes('postgres')) return '/images/projects/edge.webp';

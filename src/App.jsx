@@ -13,6 +13,7 @@ const ScrollToTop = React.lazy(() => import('./components/ScrollToTop'));
 const SocialFloatingButton = React.lazy(() => import('./components/SocialFloatingButton'));
 
 // Lazy-loaded below-fold public sections
+const About = React.lazy(() => import('./components/About'));
 const Skills = React.lazy(() => import('./components/Skills'));
 const Projects = React.lazy(() => import('./components/Projects'));
 const Education = React.lazy(() => import('./components/Education'));
@@ -33,7 +34,7 @@ import LazySection from './components/LazySection';
 // Shared loading fallback
 const SectionLoader = () => (
   <div className="min-h-[40vh] w-full flex items-center justify-center">
-    <div className="w-10 h-10 border-4 border-purple-500/30 border-t-purple-400 rounded-full animate-spin" />
+    <div className="w-8 h-8 border-2 border-border border-t-foreground rounded-full animate-spin" />
   </div>
 );
 
@@ -44,6 +45,11 @@ function Portfolio() {
       <Navbar />
       <main className="relative z-10">
         <Hero />
+        <LazySection minHeight="500px">
+          <Suspense fallback={<SectionLoader />}>
+            <About />
+          </Suspense>
+        </LazySection>
         <LazySection minHeight="600px">
           <Suspense fallback={<SectionLoader />}>
             <Skills />

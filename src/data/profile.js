@@ -3,19 +3,21 @@
  * @description Single source of truth for Amir Elrefai's personal and professional profile.
  */
 
+import { projects } from './projects';
+
 export const profile = {
   name: 'Amir Elrefai',
   nameArabic: 'أمير الرفاعي',
   alternateName: 'Amir Elfalw',
-  title: 'AI Engineer & Systems Analyst',
+  title: 'AI Engineer',
   tagline: 'Architecting high-performance Deep Learning, Computer Vision, and Autonomous Agent systems with production-grade Clean Architecture.',
   status: {
-    available: true,
+    available: true,  
     message: 'Available for impactful AI & Systems roles',
     locations: 'Remote / Hybrid / Onsite',
   },
   bio: {
-    short: 'AI Engineer and Systems Analyst specializing in Deep Learning, Computer Vision, and Generative AI. Combining domain-driven architecture with scalable neural systems.',
+    short: 'AI Engineer specializing in Deep Learning, Computer Vision, and Generative AI. Combining domain-driven architecture with scalable neural systems.',
     extended: [
       'As an AI Engineer & Systems Analyst, my focus is bridging the gap between cutting-edge neural architectures and robust, maintainable production software. Rather than treating models as isolated scripts, I design complete systems with clean architectural boundaries, automated evaluation, and resilient deployment pipelines.',
       'My technical expertise centers on deep learning for computer vision (medical imaging segmentation, anomaly detection), Generative AI (hierarchical vectorless RAG, autonomous agents with tool-calling), and high-performance backend systems (.NET 8, FastAPI, PostgreSQL).',
@@ -24,16 +26,19 @@ export const profile = {
   },
   keyMetrics: [
     {
-      value: '9+',
-      label: 'Production Systems',
-      description: 'End-to-end architectures across Medical AI, RAG, and .NET 8 ERP'
+      id: 'projects',
+      value: String(projects.length),
+      label: 'Projects',
+      description: 'Autonomous AI agents, Medical Computer Vision, RAG & Clean Architecture'
     },
     {
+      id: 'years',
       value: '2+',
-      label: 'Years Specialization',
-      description: 'Focused production engineering in PyTorch, Computer Vision & MLOps'
+      label: 'Years building AI projects',
+      description: 'PyTorch, Computer Vision, Generative AI & Autonomous Agents'
     },
     {
+      id: 'academics',
       value: 'Honors',
       label: 'Academic Standing',
       description: 'Mansoura University IT Major, "Very Good" Honors (2026)'

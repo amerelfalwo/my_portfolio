@@ -9,11 +9,11 @@ import {
 import { authFetch } from '../../lib/authFetch';
 import ImageUpload from '../../components/admin/ImageUpload';
 
+import { projects } from '../../data/projects';
+
 const DEFAULT_HERO_STATS = [
-  { title: '1+ Year XP', description: 'AI & CV Specialist', iconName: 'Brain' },
-  { title: '8+ Certifications', description: 'Industry credentials', iconName: 'Award' },
-  { title: 'Linux Admin', description: 'Systems Optimization', iconName: 'Terminal' },
-  { title: 'IoT & Edge AI', description: 'Smart Ecosystems', iconName: 'Cpu' },
+  { title: String(projects.length), description: 'Projects', iconName: 'Code' },
+  { title: '2+', description: 'Years building AI projects', iconName: 'Brain' },
 ];
 
 const ICON_OPTIONS = [

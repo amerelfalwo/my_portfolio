@@ -63,12 +63,14 @@ export function useCertificates() {
   };
 }
 
+import { projects as fallbackProjects } from '../data/projects';
+
 const DEFAULT_SETTINGS = {
   fullName: 'AMIR ELREFAI',
   name: 'AMIR ELREFAI',
   bio: 'Building Next-Generation Autonomous AI Agents, Deep Neural Networks, and High-Performance Multimodal Computer Vision Systems.',
   heroBadgeText: 'SYSTEM ONLINE :: AI OS v3.0',
-  profileImageUrl: '/hero-portrait.webp',
+  profileImageUrl: '/hero.png',
   siteLogoUrl: '/logo.webp',
   siteTitle: 'Amir Elrefai | AI Engineer',
   resumeUrl: 'https://drive.google.com/file/d/1EwA9JlGdJhmg2H5YR6u9ld8l8jKCfrnd/view?usp=sharing',
@@ -79,8 +81,8 @@ const DEFAULT_SETTINGS = {
     'Autonomous AI Systems & Agents'
   ],
   heroStats: [
-    { title: '4+ Years Exp', description: 'AI & Machine Learning', iconName: 'Brain' },
-    { title: '25+ AI Models', description: 'Production Deployed', iconName: 'Cpu' }
+    { title: String(fallbackProjects.length), description: 'Projects', iconName: 'Code' },
+    { title: '2+', description: 'Years building AI projects', iconName: 'Brain' }
   ]
 };
 
