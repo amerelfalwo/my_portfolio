@@ -47,11 +47,11 @@ const Projects = memo(() => {
     <section id="projects" className="py-24 sm:py-32 relative bg-transparent border-t border-border/60">
       <div className="page-container">
         
-        {/* Section Header Centered per Pattern: "● Portfolio" pill + "Latest Works" heading */}
+        {/* Section Header Centered per Pattern: "● Projects" pill + "Latest Works" heading */}
         <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-border text-xs font-medium text-foreground tracking-wide mb-4 bg-surface">
             <span className="text-[7px] text-foreground" aria-hidden="true">●</span>
-            <span>Portfolio</span>
+            <span>Projects</span>
           </div>
 
           <h2 className="text-4xl md:text-5xl font-light tracking-tight text-foreground leading-[1.12]">

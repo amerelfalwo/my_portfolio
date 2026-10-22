@@ -8,7 +8,7 @@ const spring = { type: 'spring', stiffness: 260, damping: 25 };
 
 const NAV_LINKS = [
   { name: 'About Me', href: '#about' },
-  { name: 'Portfolio', href: '#projects' },
+  { name: 'Projects', href: '#projects' },
   { name: 'Skills', href: '#skills' },
   { name: 'Certificates', href: '#education' },
 ];
