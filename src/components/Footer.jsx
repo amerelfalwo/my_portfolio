@@ -1,4 +1,3 @@
-import { Zap } from 'lucide-react';
 import { useMemo } from 'react';
 import { useSettings } from '../hooks/useData';
 
@@ -6,45 +5,36 @@ const Footer = () => {
   const { settings } = useSettings();
 
   const logoText = useMemo(() => {
-    const raw = settings?.logoText || 'Amir.Aura';
-    return raw;
+    return settings?.logoText || 'Amir Elrefai';
   }, [settings?.logoText]);
 
-  const jobTitle = settings?.jobTitle || 'AI Architecture & Engineering';
+  const jobTitle = settings?.jobTitle || 'AI Architecture & Machine Learning';
 
   return (
-    <footer className="relative py-20 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-10">
-          {/* Branding */}
-          <div className="text-center md:text-left">
-            <h2 className="text-2xl font-black tracking-tight uppercase mb-2 text-white">
+    <footer className="border-t border-border bg-background py-16">
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
+          <div>
+            <h2 className="text-xl font-bold tracking-tight text-foreground mb-1">
               {logoText}
             </h2>
-            <p className="text-purple-300/30 text-[10px] font-bold uppercase tracking-[0.4em] font-mono">
+            <p className="text-xs uppercase font-medium tracking-wider text-muted">
               {jobTitle}
             </p>
           </div>
 
-          {/* Tagline & Copyright */}
-          <div className="text-center md:text-right">
-            <p className="text-white/25 text-xs font-bold uppercase tracking-[0.2em] mb-3 flex items-center justify-center md:justify-end gap-2">
-              Engineering Reality,{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">One Neuron</span>{' '}
-              at a Time.
-              <Zap className="w-3 h-3 text-purple-400/40" />
-            </p>
-            <p className="text-white/15 text-[10px] uppercase font-bold tracking-[0.3em] font-mono">
-              © {new Date().getFullYear()} {settings?.fullName || 'Amir Elrefai'}. All Rights Reserved.
-            </p>
-          </div>
+          <nav className="flex flex-wrap items-center gap-6 text-sm font-medium text-muted">
+            <a href="#about" className="hover:text-foreground transition-colors">About</a>
+            <a href="#skills" className="hover:text-foreground transition-colors">Skills</a>
+            <a href="#projects" className="hover:text-foreground transition-colors">Portfolio</a>
+            <a href="#education" className="hover:text-foreground transition-colors">Certificates</a>
+            <a href="#contact" className="hover:text-foreground transition-colors">Contact</a>
+          </nav>
         </div>
 
-        {/* Decorative line */}
-        <div className="mt-14 flex items-center justify-center gap-4">
-          <div className="flex-1 h-[1px] bg-gradient-to-r from-transparent via-purple-500/10 to-transparent" />
-          <div className="w-1.5 h-1.5 rounded-full bg-purple-500/20 shadow-[0_0_8px_rgba(168,85,247,0.2)]" />
-          <div className="flex-1 h-[1px] bg-gradient-to-r from-transparent via-purple-500/10 to-transparent" />
+        <div className="pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-muted">
+          <p>© {new Date().getFullYear()} {settings?.fullName || 'Amir Elrefai'}. All rights reserved.</p>
+          <p className="font-mono text-[11px] uppercase tracking-wider">AI Engineer • Mansoura, Egypt</p>
         </div>
       </div>
     </footer>

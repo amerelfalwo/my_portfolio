@@ -1,6 +1,6 @@
 import { useState, useEffect, memo } from 'react';
 import { m } from 'framer-motion';
-import { Send, MessageSquare, Phone, Github, Linkedin, Mail, ArrowUpRight, Zap, Briefcase, Facebook, Instagram, Twitter } from 'lucide-react';
+import { Send, Phone, Github, Linkedin, Mail, Briefcase, Facebook, Instagram, Twitter } from 'lucide-react';
 import { getContactRelay, addMessage } from '../api';
 
 const Contact = memo(() => {
@@ -64,7 +64,7 @@ const Contact = memo(() => {
       setStatus({ loading: false, success: true, error: '' });
       setFormData({ name: '', email: '', subject: '', message: '' });
     } catch (err) {
-      setStatus({ loading: false, success: false, error: 'Failed to send payload. Please try again later.' });
+      setStatus({ loading: false, success: false, error: 'Failed to send message. Please try again later.' });
       console.error(err);
     }
   };
@@ -79,15 +79,15 @@ const Contact = memo(() => {
     const kh = contactData?.khamsat;
 
     const s = [
-      { name: "LinkedIn", icon: <Linkedin size={20} />, href: li, color: "text-[#0A66C2] border-[#0A66C2]/30 hover:bg-[#0A66C2]/10" },
-      { name: "Facebook", icon: <Facebook size={20} />, href: fb, color: "text-[#1877F2] border-[#1877F2]/30 hover:bg-[#1877F2]/10" },
-      { name: "Instagram", icon: <Instagram size={20} />, href: ig, color: "text-[#E4405F] border-[#E4405F]/30 hover:bg-[#E4405F]/10" },
-      { name: "GitHub", icon: <Github size={20} />, href: gh, color: "text-white border-white/30 hover:bg-white/10" },
-      { name: "WhatsApp", icon: <Phone size={20} />, href: wa, color: "text-[#25D366] border-[#25D366]/30 hover:bg-[#25D366]/10" }
+      { name: "LinkedIn", icon: <Linkedin size={18} />, href: li },
+      { name: "GitHub", icon: <Github size={18} />, href: gh },
+      { name: "WhatsApp", icon: <Phone size={18} />, href: wa },
+      { name: "Facebook", icon: <Facebook size={18} />, href: fb },
+      { name: "Instagram", icon: <Instagram size={18} />, href: ig }
     ];
 
-    if (tw) s.push({ name: "X (Twitter)", icon: <Twitter size={20} />, href: tw, color: "text-[#06b6d4] border-[#06b6d4]/30 hover:bg-[#06b6d4]/10" });
-    if (kh) s.push({ name: "Khamsat", icon: <Briefcase size={20} />, href: kh, color: "text-[#1dbf73] border-[#1dbf73]/30 hover:bg-[#1dbf73]/10" });
+    if (tw) s.push({ name: "X (Twitter)", icon: <Twitter size={18} />, href: tw });
+    if (kh) s.push({ name: "Khamsat", icon: <Briefcase size={18} />, href: kh });
 
     return s;
   };
@@ -95,163 +95,205 @@ const Contact = memo(() => {
   const socials = getSocialList();
 
   return (
-    <section id="contact" className="py-32 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-20">
-          <m.div 
+    <section id="contact" className="py-24 sm:py-32 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+        {/* Section Header */}
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <m.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-medium border border-border bg-surface text-foreground mb-4"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-foreground" />
+            Contact
+          </m.div>
+          <m.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '80px' }}
-            className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full border border-purple-500/15 bg-purple-500/5 mb-8"
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground mb-4"
           >
-             <Zap className="w-3.5 h-3.5 text-cyan-400" />
-             <span className="text-[10px] font-bold tracking-[0.25em] uppercase text-purple-300/70 font-mono">Open for Collaboration</span>
-          </m.div>
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black uppercase tracking-[-0.03em] mb-5 text-white">
-            Connect for{' '}<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-fuchsia-400 to-cyan-400">Innovation.</span>
-          </h2>
+            Let&apos;s Build Together
+          </m.h2>
+          <m.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="text-muted text-sm sm:text-base leading-relaxed"
+          >
+            Have an AI project, research collaboration, or technical challenge in mind? Drop a message or reach out directly.
+          </m.p>
         </div>
 
-        <div className="grid lg:grid-cols-12 gap-12">
+        <div className="grid lg:grid-cols-12 gap-8 items-stretch">
           {/* Left Side: Contact Info */}
-          <div className="lg:col-span-5 space-y-8">
-            <div className="group relative flex flex-col p-10 bg-white/[0.02] border border-white/[0.06] rounded-3xl hover:border-purple-500/20 transition-all duration-500 overflow-hidden">
-               <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-               
-               <h3 className="text-2xl font-black uppercase mb-8 relative z-10 text-white">
-                 Reach Out
-               </h3>
-               
-               <div className="space-y-6 relative z-10">
-                 {!isDataLoaded ? (
-                   <div className="animate-pulse space-y-4">
-                     <div className="h-14 bg-white/5 rounded-2xl w-full"></div>
-                     <div className="h-14 bg-white/5 rounded-2xl w-full"></div>
-                   </div>
-                 ) : (
-                   <>
-                      <a href={`mailto:${contactData?.email || 'amer003100@gmail.com'}`} className="group/item flex items-center gap-6 p-4 rounded-2xl hover:bg-purple-500/5 transition-all border border-transparent hover:border-purple-500/15">
-                         <div className="w-13 h-13 p-3 bg-purple-500/10 rounded-xl flex items-center justify-center group-hover/item:bg-purple-500/15 transition-all duration-300 border border-purple-500/10">
-                           <Mail className="text-purple-300 w-5 h-5" />
-                         </div>
-                         <div>
-                           <p className="text-[10px] uppercase font-bold text-white/25 tracking-widest mb-1 font-mono">Email Protocol</p>
-                           <p className="text-base font-bold text-white/70">{contactData?.email || 'amer003100@gmail.com'}</p>
-                         </div>
+          <div className="lg:col-span-5 flex flex-col">
+            <div className="h-full flex flex-col justify-between p-8 sm:p-10 bg-surface border border-border rounded-3xl shadow-xs">
+              <div>
+                <h3 className="text-xl font-bold tracking-tight text-foreground mb-6">
+                  Direct Channels
+                </h3>
+
+                <div className="space-y-4">
+                  {!isDataLoaded ? (
+                    <div className="animate-pulse space-y-4">
+                      <div className="h-16 bg-surface-muted rounded-2xl w-full" />
+                      <div className="h-16 bg-surface-muted rounded-2xl w-full" />
+                    </div>
+                  ) : (
+                    <>
+                      <a
+                        href={`mailto:${contactData?.email || 'amer003100@gmail.com'}`}
+                        className="group flex items-center gap-4 p-4 rounded-2xl bg-background border border-border hover:border-foreground transition-all"
+                      >
+                        <div className="w-11 h-11 rounded-xl bg-surface border border-border flex items-center justify-center text-foreground group-hover:bg-foreground group-hover:text-background transition-colors shrink-0">
+                          <Mail className="w-5 h-5" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[11px] uppercase font-semibold text-muted tracking-wider">Email</p>
+                          <p className="text-sm font-semibold text-foreground truncate">{contactData?.email || 'amer003100@gmail.com'}</p>
+                        </div>
                       </a>
 
-                      <div className="group/item flex items-center gap-6 p-4 rounded-2xl hover:bg-purple-500/5 transition-all border border-transparent hover:border-purple-500/15">
-                         <div className="w-13 h-13 p-3 bg-cyan-500/10 rounded-xl flex items-center justify-center group-hover/item:bg-cyan-500/15 transition-all duration-300 border border-cyan-500/10">
-                           <Phone className="text-cyan-300 w-5 h-5" />
-                         </div>
-                         <div>
-                           <p className="text-[10px] uppercase font-bold text-white/25 tracking-widest mb-1 font-mono">Direct Relay</p>
-                           <p className="text-base font-bold text-white/70">{contactData?.phone || '+20 102 352 4477'}</p>
-                         </div>
-                      </div>
-                   </>
-                 )}
-               </div>
+                      <a
+                        href={`tel:${(contactData?.phone || '+201023524477').replace(/[^0-9+]/g, '')}`}
+                        className="group flex items-center gap-4 p-4 rounded-2xl bg-background border border-border hover:border-foreground transition-all"
+                      >
+                        <div className="w-11 h-11 rounded-xl bg-surface border border-border flex items-center justify-center text-foreground group-hover:bg-foreground group-hover:text-background transition-colors shrink-0">
+                          <Phone className="w-5 h-5" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[11px] uppercase font-semibold text-muted tracking-wider">Phone / WhatsApp</p>
+                          <p className="text-sm font-semibold text-foreground truncate">{contactData?.phone || '+20 102 352 4477'}</p>
+                        </div>
+                      </a>
+                    </>
+                  )}
+                </div>
+              </div>
 
-               <div className="mt-10 pt-10 border-t border-white/[0.04] relative z-10">
-                   <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mb-6 flex items-center gap-3 font-mono">
-                      <span className="w-8 h-[1px] bg-purple-500/15" /> Digital Ecosystem
-                  </p>
-                  <div className="flex gap-4 flex-wrap">
-                     {socials.map((s, i) => (
-                       <a 
-                        key={i} 
-                        href={s.href} 
-                        target="_blank" 
-                        rel="noopener" 
-                        className={`w-12 h-12 flex items-center justify-center border rounded-2xl transition-all duration-300 ${s.color}`}
-                        title={s.name}
-                       >
-                         {s.icon}
-                       </a>
-                     ))}
-                  </div>
-               </div>
+              {/* Social Channels */}
+              <div className="mt-8 pt-8 border-t border-border">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted mb-4">
+                  Connect & Follow
+                </p>
+                <div className="flex gap-2.5 flex-wrap">
+                  {socials.map((s, i) => (
+                    <a
+                      key={i}
+                      href={s.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-10 h-10 rounded-full border border-border bg-background hover:bg-foreground hover:text-background text-foreground transition-all flex items-center justify-center shadow-xs"
+                      title={s.name}
+                      aria-label={s.name}
+                    >
+                      {s.icon}
+                    </a>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Right Side: Contact Form */}
           <div className="lg:col-span-7">
-            <m.form 
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "100px" }}
+            <m.form
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
               onSubmit={handleSubmit}
-              className="group relative flex flex-col p-10 md:p-12 border border-white/[0.06] bg-white/[0.02] rounded-3xl overflow-hidden cursor-default h-full hover:border-purple-500/20 transition-all duration-500"
+              className="p-8 sm:p-10 bg-surface border border-border rounded-3xl shadow-xs flex flex-col justify-between h-full"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-              
-              <div className="grid md:grid-cols-2 gap-8 relative z-10">
-                <div className="space-y-3">
-                  <label className="text-[10px] uppercase font-black text-white/50 tracking-widest ml-2">Your Identity</label>
-                  <input 
-                    type="text" 
+              <div className="space-y-5">
+                <div className="grid sm:grid-cols-2 gap-5">
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold uppercase tracking-wider text-muted ms-1">
+                      Your Name
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.name}
+                      placeholder="e.g. Alex Morgan"
+                      className="w-full bg-background border border-border rounded-2xl px-5 py-3.5 focus:border-foreground focus:outline-none transition-all text-sm font-medium text-foreground placeholder:text-muted/50"
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold uppercase tracking-wider text-muted ms-1">
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={formData.email}
+                      placeholder="e.g. alex@company.com"
+                      className="w-full bg-background border border-border rounded-2xl px-5 py-3.5 focus:border-foreground focus:outline-none transition-all text-sm font-medium text-foreground placeholder:text-muted/50"
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-muted ms-1">
+                    Subject
+                  </label>
+                  <input
+                    type="text"
                     required
-                    value={formData.name}
-                    placeholder="Enter full name"
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 focus:border-purple-400/50 focus:bg-purple-500/5 focus:outline-none transition-all font-bold text-white placeholder:text-muted/40"
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    value={formData.subject}
+                    placeholder="e.g. AI System Architecture / Collaboration"
+                    className="w-full bg-background border border-border rounded-2xl px-5 py-3.5 focus:border-foreground focus:outline-none transition-all text-sm font-medium text-foreground placeholder:text-muted/50"
+                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                   />
                 </div>
-                <div className="space-y-3">
-                  <label className="text-[10px] uppercase font-black text-white/50 tracking-widest ml-2">Communication Link</label>
-                  <input 
-                    type="email" 
+
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-muted ms-1">
+                    Message
+                  </label>
+                  <textarea
+                    rows="4"
                     required
-                    value={formData.email}
-                    placeholder="Enter email address"
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 focus:border-purple-400/50 focus:bg-purple-500/5 focus:outline-none transition-all font-bold text-white placeholder:text-muted/40"
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    value={formData.message}
+                    placeholder="Tell me about your project, timeline, and goals..."
+                    className="w-full bg-background border border-border rounded-2xl px-5 py-3.5 focus:border-foreground focus:outline-none transition-all text-sm font-medium text-foreground placeholder:text-muted/50 resize-none"
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   />
                 </div>
               </div>
-              
-              <div className="space-y-3 relative z-10 mt-8 mb-8">
-                <label className="text-[10px] uppercase font-black text-white/50 tracking-widest ml-2">Objective / Subject</label>
-                <input 
-                  type="text" 
-                  required
-                  value={formData.subject}
-                  placeholder="Enter objective"
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 focus:border-purple-400/50 focus:bg-purple-500/5 focus:outline-none transition-all font-bold text-white placeholder:text-muted/40"
-                  onChange={(e) => setFormData({...formData, subject: e.target.value})}
-                />
+
+              <div className="mt-6 pt-2">
+                <button
+                  type="submit"
+                  disabled={status.loading}
+                  className={`w-full py-4 rounded-full font-semibold text-sm transition-all flex items-center justify-center gap-2.5 ${
+                    status.loading
+                      ? 'bg-foreground/50 text-background cursor-not-allowed'
+                      : 'bg-foreground text-background hover:opacity-90 active:scale-[0.99]'
+                  }`}
+                >
+                  {status.loading ? 'Sending...' : 'Send Message'}
+                  {!status.loading && <Send size={16} />}
+                </button>
+
+                {status.success && (
+                  <p className="text-emerald-600 text-xs font-semibold uppercase tracking-wider text-center mt-3">
+                    Message successfully sent. I will get back to you shortly.
+                  </p>
+                )}
+                {status.error && (
+                  <p className="text-red-500 text-xs font-semibold uppercase tracking-wider text-center mt-3">
+                    {status.error}
+                  </p>
+                )}
               </div>
-
-              <div className="space-y-3 relative z-10 mb-8">
-                <label className="text-[10px] uppercase font-black text-white/50 tracking-widest ml-2">Proposed Payload</label>
-                <textarea 
-                  rows="4"
-                  required
-                  value={formData.message}
-                  placeholder="Describe your vision or inquiry..."
-                  className="w-full bg-white/5 border border-white/10 rounded-[2rem] px-6 py-5 focus:border-purple-400/50 focus:bg-purple-500/5 focus:outline-none transition-all font-bold text-white placeholder:text-muted/40 resize-none"
-                  onChange={(e) => setFormData({...formData, message: e.target.value})}
-                />
-              </div>
-
-              <button 
-                type="submit"
-                disabled={status.loading}
-                className={`w-full py-6 font-black uppercase tracking-[0.4em] rounded-[2rem] transition-all flex items-center justify-center gap-4 group border-none ${
-                  status.loading ? 'bg-purple-500/40 text-white/60 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-500 text-white shadow-[0_0_25px_rgba(147,51,234,0.3)] hover:shadow-[0_0_35px_rgba(147,51,234,0.45)] hover:scale-[1.02] active:scale-[0.98]'
-                }`}
-              >
-                {status.loading ? 'Sending...' : 'Send Message'}
-                {!status.loading && <Send size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />}
-              </button>
-
-              {status.success && (
-                <p className="text-green-400 text-xs font-bold uppercase tracking-widest text-center mt-4">Payload successfully transmitted.</p>
-              )}
-              {status.error && (
-                <p className="text-red-400 text-xs font-bold uppercase tracking-widest text-center mt-4">{status.error}</p>
-              )}
             </m.form>
           </div>
         </div>
@@ -259,5 +301,7 @@ const Contact = memo(() => {
     </section>
   );
 });
+
+Contact.displayName = 'Contact';
 
 export default Contact;
