@@ -25,9 +25,9 @@ const Navbar = () => {
   }, []);
 
   const siteTitle = settings?.siteTitle || `${profile.name} | ${profile.title}`;
-  const siteLogoUrl = (settings?.siteLogoUrl && !settings.siteLogoUrl.includes('nszvb6wnbfzyfcuvvt7n'))
+  const siteLogoUrl = (settings?.siteLogoUrl && !settings.siteLogoUrl.includes('nszvb6wnbfzyfcuvvt7n') && !settings.siteLogoUrl.includes('logo.webp'))
     ? settings.siteLogoUrl
-    : '/logo.webp';
+    : '/icon-classic.svg';
 
   useEffect(() => {
     if (siteTitle) {
@@ -35,7 +35,7 @@ const Navbar = () => {
     }
     const favicon = document.querySelector("link[rel='icon']");
     if (favicon) {
-      favicon.href = siteLogoUrl || '/favicon.ico';
+      favicon.href = '/icon-classic.svg';
     }
   }, [siteTitle, siteLogoUrl]);
 
@@ -48,24 +48,21 @@ const Navbar = () => {
       }`}
     >
       <div className="page-container h-16 sm:h-20 flex items-center justify-between">
-        {/* Brand / Logo Mark per Reference Image 2 */}
+        {/* Brand / Logo Mark next to Name */}
         <a
           href="#"
           className="flex items-center gap-2.5 group text-start"
           aria-label={`${profile.name} Home`}
         >
-          {siteLogoUrl ? (
-            <img
-              src={siteLogoUrl}
-              alt={profile.name}
-              className="h-8 w-8 object-contain rounded-lg transition-transform group-hover:scale-105"
-              onError={(e) => { e.currentTarget.style.display = 'none'; }}
-            />
-          ) : (
-            <div className="w-8 h-8 rounded-lg bg-foreground text-surface flex items-center justify-center font-bold text-sm">
-              A
-            </div>
-          )}
+          <img
+            src={siteLogoUrl}
+            alt={profile.name}
+            className="h-8 w-auto rounded-lg transition-transform group-hover:scale-105"
+            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+          />
+          <span className="text-sm sm:text-base font-medium tracking-tight text-foreground">
+            {profile.name}
+          </span>
         </a>
 
         {/* Desktop Nav Links per Reference Image 2 */}

@@ -71,7 +71,7 @@ const DEFAULT_SETTINGS = {
   bio: 'Building Next-Generation Autonomous AI Agents, Deep Neural Networks, and High-Performance Multimodal Computer Vision Systems.',
   heroBadgeText: 'SYSTEM ONLINE :: AI OS v3.0',
   profileImageUrl: '/hero.png',
-  siteLogoUrl: '/logo.webp',
+  siteLogoUrl: '/icon-classic.svg',
   siteTitle: 'Amir Elrefai | AI Engineer',
   resumeUrl: 'https://drive.google.com/file/d/1EwA9JlGdJhmg2H5YR6u9ld8l8jKCfrnd/view?usp=sharing',
   githubUrl: 'https://github.com/amerelfalwo',
