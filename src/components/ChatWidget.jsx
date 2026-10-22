@@ -183,7 +183,7 @@ const ChatWidget = memo(() => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end pointer-events-none">
+    <div className="fixed bottom-3.5 end-3.5 sm:bottom-6 sm:end-6 z-40 flex flex-col items-end pointer-events-none">
       {/* Chat Box Window */}
       <AnimatePresence>
         {isOpen && (
@@ -192,7 +192,7 @@ const ChatWidget = memo(() => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="pointer-events-auto mb-4 w-[92vw] sm:w-[420px] h-[560px] max-h-[82vh] rounded-3xl bg-[#080816]/95 border border-purple-500/30 shadow-[0_0_50px_rgba(168,85,247,0.25)] flex flex-col overflow-hidden backdrop-blur-xl"
+            className="pointer-events-auto mb-4 w-[92vw] sm:w-[420px] h-[560px] max-h-[82vh] rounded-lg bg-[#080816]/95 border border-border flex flex-col overflow-hidden backdrop-blur-xl"
           >
             {/* Header */}
             <div className="px-5 py-4 border-b border-slate-800/80 bg-slate-900/70 flex items-center justify-between">
@@ -337,10 +337,10 @@ const ChatWidget = memo(() => {
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         aria-label={isOpen ? 'Close AI Assistant' : 'Open AI Assistant'}
-        className="pointer-events-auto relative group p-3.5 rounded-full bg-foreground text-surface hover:opacity-90 transition-opacity cursor-pointer"
+        className="pointer-events-auto relative group p-2.5 sm:p-3.5 rounded-full bg-foreground text-surface hover:opacity-90 transition-opacity cursor-pointer"
         title="Toggle AI Assistant"
       >
-        {isOpen ? <X size={20} /> : <Bot size={20} />}
+        {isOpen ? <X className="w-4 h-4 sm:w-5 sm:h-5" /> : <Bot className="w-4 h-4 sm:w-5 sm:h-5" />}
       </button>
     </div>
   );

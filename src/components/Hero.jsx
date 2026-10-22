@@ -15,7 +15,7 @@ const Hero = memo(() => {
   return (
     <section
       id="hero"
-      className="relative min-h-[94dvh] lg:min-h-screen w-full flex flex-col justify-between pt-24 sm:pt-28 pb-6 sm:pb-8 overflow-hidden bg-transparent select-none"
+      className="relative min-h-[calc(100svh-4rem)] sm:min-h-[calc(100svh-5rem)] w-full flex flex-col justify-between pt-20 sm:pt-24 pb-0 sm:pb-8 overflow-hidden bg-transparent select-none"
     >
       {/* ── Left Vertical Margin Rail per Reference Image 2 ── */}
       <div className="hidden lg:flex absolute start-0 top-0 bottom-0 w-16 xl:w-20 border-e border-border/60 flex-col justify-between items-center py-28 pointer-events-none z-20">
@@ -28,31 +28,31 @@ const Hero = memo(() => {
       </div>
 
       {/* ── Main Hero Content Grid ── */}
-      <div className="page-container flex-1 flex flex-col justify-between relative z-10">
+      <div className="page-container flex-1 flex flex-col justify-between relative z-10 pb-0">
         
         {/* Top/Middle Area: Left Content + Right Bottom-Anchored Portrait */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4 items-end flex-1 my-auto">
           
           {/* Left Column (7 cols): Stats + Massive "Hello" + Role */}
-          <div className="lg:col-span-7 flex flex-col justify-center items-start text-start pt-6 sm:pt-10 lg:pt-0">
+          <div className="lg:col-span-7 flex flex-col justify-center items-start text-start pt-4 sm:pt-10 lg:pt-0">
             
-            {/* Stats Row per Reference Image 2 (+200 / +50 layout) */}
-            <div className="flex items-start gap-12 sm:gap-16 mb-8 sm:mb-12">
+            {/* Stats Row */}
+            <div className="flex items-start gap-12 sm:gap-16 mb-6 sm:mb-12">
               <div>
                 <div className="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight text-foreground leading-none">
-                  +{projectCount}
+                  {projectCount}
                 </div>
                 <div className="text-xs text-muted mt-2 font-normal leading-snug">
-                  Projects completed
+                  Projects
                 </div>
               </div>
 
               <div>
                 <div className="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight text-foreground leading-none">
-                  +2
+                  2+
                 </div>
                 <div className="text-xs text-muted mt-2 font-normal leading-snug">
-                  Years building AI
+                  Years building AI projects
                 </div>
               </div>
             </div>
@@ -67,17 +67,30 @@ const Hero = memo(() => {
               — I&apos;m {profile.name}, an AI Engineer &amp; Systems Analyst.
             </p>
 
+            {/* Mobile-only "Download CV" pill under Subtitle */}
+            <div className="mt-5 block lg:hidden">
+              <a
+                href={profile.links.resume}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-surface text-foreground text-xs font-medium hover:bg-foreground hover:text-surface transition-colors"
+              >
+                <span>Download CV</span>
+                <span className="inline-block rtl:-scale-x-100" aria-hidden="true">→</span>
+              </a>
+            </div>
+
           </div>
 
-          {/* Right Column (5 cols): Studio Portrait, Bottom-Anchored & Giant per Reference */}
-          <div className="lg:col-span-5 relative flex items-end justify-center lg:justify-end self-end w-full h-full">
+          {/* Right Column (5 cols): Studio Portrait, w-full on mobile, flush to bottom border */}
+          <div className="lg:col-span-5 relative flex items-end justify-center lg:justify-end self-end w-full">
             <div className="relative w-full flex items-end justify-center lg:justify-end">
               <img
                 src="/hero-portrait.webp"
                 alt={profile.name}
                 width="896"
                 height="1200"
-                className="w-auto h-[55vh] sm:h-[65vh] lg:h-[78vh] xl:h-[84vh] max-h-[820px] xl:max-h-[900px] object-contain object-bottom select-none pointer-events-none"
+                className="w-full lg:w-auto h-auto max-h-[50vh] sm:max-h-[60vh] lg:h-[78vh] xl:h-[84vh] max-h-[820px] xl:max-h-[900px] object-contain object-bottom select-none pointer-events-none"
                 fetchPriority="high"
                 decoding="async"
               />
@@ -86,8 +99,8 @@ const Hero = memo(() => {
 
         </div>
 
-        {/* Bottom Bar: Scroll down ↓ per Reference Image 2 */}
-        <div className="pt-4 sm:pt-6 pb-2 text-start">
+        {/* Bottom Bar: Scroll down ↓ */}
+        <div className="hidden sm:block pt-4 sm:pt-6 pb-2 text-start">
           <a
             href="#about"
             className="inline-flex items-center gap-1.5 text-xs text-muted font-normal hover:text-foreground transition-colors cursor-pointer"

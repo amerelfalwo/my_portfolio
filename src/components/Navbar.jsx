@@ -147,10 +147,21 @@ const Navbar = () => {
                 ))}
               </div>
 
-              <div className="mt-auto pt-6 border-t border-border">
+              <div className="mt-auto pt-6 border-t border-border flex flex-col gap-2.5">
+                <a
+                  href={profile.links.resume}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center gap-1.5 bg-surface text-foreground border border-border rounded-full py-2.5 text-sm font-medium hover:bg-surface-muted transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <span>Download CV</span>
+                  <span className="inline-block rtl:-scale-x-100 ms-0.5 text-xs" aria-hidden="true">→</span>
+                </a>
+
                 <a
                   href="#contact"
-                  className="w-full inline-flex items-center justify-center gap-1.5 bg-foreground text-surface rounded-full py-3 text-sm font-medium hover:opacity-90 transition-opacity"
+                  className="w-full inline-flex items-center justify-center gap-1.5 bg-foreground text-surface rounded-full py-2.5 text-sm font-medium hover:opacity-90 transition-opacity"
                   onClick={() => setIsOpen(false)}
                 >
                   <span>Contact</span>
