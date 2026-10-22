@@ -32,6 +32,7 @@ const STATIC_GROUPS = [
     id: 'backend-systems',
     title: 'Backend & Systems Engineering',
     tools: [
+      { name: 'FastAPI' },
       { name: 'C++' },
       { name: 'PostgreSQL' },
       { name: 'MongoDB' },
