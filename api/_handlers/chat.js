@@ -24,7 +24,7 @@ export default async function handler(req, res) {
   // Dynamically reload .env on each request if available
   try {
     dotenv.config({ path: path.join(process.cwd(), '.env'), override: true });
-  } catch (e) {
+  } catch {
     // ignore in serverless environments
   }
 
@@ -37,7 +37,7 @@ export default async function handler(req, res) {
     if (typeof body === 'string') {
       try {
         body = JSON.parse(body);
-      } catch (e) {
+      } catch {
         body = {};
       }
     }
@@ -166,7 +166,7 @@ You are the official AI Representative and Professional Assistant for ${fullName
                   if (token) {
                     res.write(`0:${JSON.stringify(token)}\n`);
                   }
-                } catch (e) {
+                } catch {
                   // ignore JSON chunk parse error
                 }
               }

@@ -130,7 +130,7 @@ const ChatWidget = memo(() => {
               setMessages(prev => 
                 prev.map(msg => msg.id === assistantMsgId ? { ...msg, content: assistantText } : msg)
               );
-            } catch (e) {
+            } catch {
               const textChunk = line.slice(2).replace(/^"/, '').replace(/"$/, '');
               assistantText += textChunk;
               setMessages(prev => 
@@ -149,7 +149,7 @@ const ChatWidget = memo(() => {
           setMessages(prev => 
             prev.map(msg => msg.id === assistantMsgId ? { ...msg, content: assistantText } : msg)
           );
-        } catch (e) {
+        } catch {
           const textChunk = streamBuffer.slice(2).replace(/^"/, '').replace(/"$/, '');
           assistantText += textChunk;
           setMessages(prev => 

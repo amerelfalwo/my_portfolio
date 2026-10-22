@@ -17,7 +17,7 @@ const CATEGORY_OPTIONS = [
 ];
 
 const ManageProjects = () => {
-  const { projects, isLoading, isError, mutate } = useProjects();
+  const { projects, isLoading, mutate } = useProjects();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);

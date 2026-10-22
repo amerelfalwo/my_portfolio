@@ -61,7 +61,7 @@ export default async function handler(req, res) {
     if (req.method === 'GET') {
       const docs = await Model.find({}).lean();
       // Normalize _id → id for frontend compatibility
-      const result = docs.map(({ _id, __v, ...rest }) => ({ id: _id.toString(), ...rest }));
+      const result = docs.map(({ _id, __v: _v, ...rest }) => ({ id: _id.toString(), ...rest }));
       return res.status(200).json(result);
     }
 

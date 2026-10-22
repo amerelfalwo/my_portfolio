@@ -1,7 +1,6 @@
 import 'dotenv/config'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { promises as fs } from 'fs'
 import path from 'path'
 import url from 'url'
 
@@ -13,7 +12,6 @@ function localApiPlugin() {
         if (req.url.startsWith('/api')) {
           try {
             const parsedUrl = url.parse(req.url, true);
-            const pathname = parsedUrl.pathname;
             
             // Map all /api requests through unified router api/[...slug].js
             const filePath = path.join(process.cwd(), 'api', '[...slug].js');

@@ -5,18 +5,15 @@ import { useState, useEffect, useRef } from 'react';
  * Defers mounting and bundle fetching of below-the-fold sections until the user scrolls near them.
  */
 export default function LazySection({ children, minHeight = '400px', rootMargin = '400px' }) {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(
+    () => typeof window !== 'undefined' && Boolean(window.location.hash)
+  );
   const containerRef = useRef(null);
 
   useEffect(() => {
+    if (isVisible) return;
     const el = containerRef.current;
     if (!el) return;
-
-    // Immediate mount if URL has a direct anchor hash (e.g., #contact)
-    if (typeof window !== 'undefined' && window.location.hash) {
-      setIsVisible(true);
-      return;
-    }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -30,7 +27,7 @@ export default function LazySection({ children, minHeight = '400px', rootMargin 
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [rootMargin]);
+  }, [isVisible, rootMargin]);
 
   return (
     <div ref={containerRef} style={{ minHeight: isVisible ? 'auto' : minHeight }}>

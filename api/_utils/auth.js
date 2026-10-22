@@ -40,7 +40,7 @@ export function verifyToken(req) {
     try {
       const payload = jwt.verify(token, JWT_SECRET);
       if (payload) return payload;
-    } catch (error) {
+    } catch {
       // Token candidate failed verification, try next candidate
     }
   }
