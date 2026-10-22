@@ -1,35 +1,24 @@
 import { useState, useMemo, memo } from 'react';
-import { X, Award, ExternalLink, ShieldCheck } from 'lucide-react';
+import { X, Award, ExternalLink, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { useCertificates } from '../hooks/useData';
+import { certifications as fallbackCertifications } from '../data/certifications';
 
 const Education = memo(() => {
-  const { certificates: fetchedCerts, isLoading } = useCertificates();
+  const { certificates: fetchedCerts } = useCertificates();
   const [selectedCert, setSelectedCert] = useState(null);
 
   const certifications = useMemo(() => {
-    if (!fetchedCerts || fetchedCerts.length === 0) return [];
-    return [...fetchedCerts].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+    if (fetchedCerts && fetchedCerts.length > 0) {
+      return [...fetchedCerts].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+    }
+    return fallbackCertifications;
   }, [fetchedCerts]);
-
-  // Separate certificates into those with images and those without images
-  const { withImage, withoutImage } = useMemo(() => {
-    const withImg = [];
-    const withoutImg = [];
-    certifications.forEach(cert => {
-      const img = cert.imageUrl || cert.image;
-      if (img && img.trim().length > 0) {
-        withImg.push(cert);
-      } else {
-        withoutImg.push(cert);
-      }
-    });
-    return { withImage: withImg, withoutImage: withoutImg };
-  }, [certifications]);
 
   const formatDate = (dateStr) => {
     if (!dateStr) return '';
     try {
       const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
       return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
     } catch {
       return dateStr;
@@ -40,118 +29,142 @@ const Education = memo(() => {
     <section id="education" className="py-24 sm:py-32 relative bg-transparent border-t border-border/60">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         
-        {/* Section Header */}
-        <div className="max-w-3xl mb-12 sm:mb-16 text-start">
-          <div className="inline-flex items-center gap-2 text-xs font-medium text-muted tracking-wide mb-3">
-            <span className="text-[8px] text-foreground" aria-hidden="true">●</span>
-            <span>Certificates &amp; Credentials</span>
+        {/* Section Header Centered per Screenshot 2 Pattern: "● Certificates" pill + "Latest Credentials" */}
+        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-border text-xs font-medium text-foreground tracking-wide mb-4 bg-surface shadow-xs">
+            <span className="text-[7px] text-foreground" aria-hidden="true">●</span>
+            <span>Certificates</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight text-foreground leading-[1.12]">
-            Verified credentials
+            Latest Credentials
           </h2>
 
-          <p className="text-muted text-base sm:text-lg font-normal leading-relaxed mt-4">
-            Accredited industry certifications, advanced machine learning tracks, and technical achievements.
+          <p className="text-muted text-sm sm:text-base font-normal leading-relaxed mt-4 max-w-xl mx-auto">
+            Accredited industry certifications, advanced machine learning tracks, and verified technical achievements.
           </p>
         </div>
 
-        {/* 3-Column Grid for Certificates With Images (Same pattern as Projects per reference) */}
-        {withImage.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-12">
-            {withImage.map((cert) => {
-              const imgSrc = cert.imageUrl || cert.image;
+        {/* 3-Column Aspect-[4/3] Grid Matching Projects per User Request ("الشهادات زي البروجيكتات") */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          {certifications.map((cert) => {
+            const imgSrc = cert.imageUrl || cert.image;
 
-              return (
-                <div
-                  key={cert.id || cert.title}
-                  onClick={() => setSelectedCert(cert)}
-                  className="group flex flex-col text-start cursor-pointer"
-                >
-                  {/* Aspect 4/3 image card */}
-                  <div className="relative aspect-[4/3] w-full rounded-lg overflow-hidden border border-border bg-surface-muted">
+            return (
+              <div
+                key={cert.id || cert.title}
+                onClick={() => setSelectedCert(cert)}
+                className="group flex flex-col text-start cursor-pointer"
+              >
+                {/* 4/3 Aspect Ratio Card with Hover Dark Circle & Arrow */}
+                <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden border border-border bg-surface-muted transition-all duration-300 group-hover:shadow-md">
+                  {imgSrc ? (
                     <img
                       src={imgSrc}
                       alt={cert.title}
                       loading="lazy"
                       className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                     />
+                  ) : (
+                    /* Minimalist editorial certificate plaque */
+                    <div className="w-full h-full p-6 sm:p-7 flex flex-col justify-between bg-gradient-to-br from-surface to-surface-muted/70 transition-transform duration-500 ease-out group-hover:scale-[1.02]">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-medium uppercase tracking-wider bg-surface-muted border border-border text-foreground">
+                          <Award className="w-3 h-3 text-foreground" />
+                          <span>{cert.badge || 'Verified'}</span>
+                        </span>
+                        <span className="text-xs text-muted font-medium">{cert.year || formatDate(cert.date)}</span>
+                      </div>
 
-                    {/* Hover Dark Circle Overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center bg-foreground/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="my-auto">
+                        <h3 className="text-base sm:text-lg font-medium text-foreground tracking-tight leading-snug line-clamp-3">
+                          {cert.title}
+                        </h3>
+                        <p className="text-xs text-muted mt-2 line-clamp-2 font-normal">
+                          {cert.description || cert.issuer}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center justify-between text-xs text-muted pt-3 border-t border-border/50">
+                        <span className="font-medium text-foreground/85 truncate max-w-[180px]">{cert.issuerShort || cert.issuer}</span>
+                        <span className="text-[11px] text-muted flex items-center gap-1">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-foreground" />
+                          <span>Accredited</span>
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Hover Overlay: Dark Translucent Tint with Center Circle Arrow & Bottom Meta */}
+                  <div className="absolute inset-0 flex flex-col justify-between p-4 bg-foreground/25 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div />
+                    <div className="flex items-center justify-center">
                       <div className="w-12 h-12 rounded-full bg-foreground text-surface flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300">
                         <span className="inline-block rtl:-scale-x-100 text-lg leading-none" aria-hidden="true">↗</span>
                       </div>
                     </div>
-                  </div>
-
-                  {/* Caption Below the Card */}
-                  <div className="mt-3.5">
-                    <h3 className="text-sm sm:text-base font-medium text-foreground tracking-tight group-hover:text-muted transition-colors line-clamp-1">
-                      {cert.title}
-                    </h3>
-
-                    <div className="flex items-center justify-between text-xs text-muted font-normal mt-1">
-                      <span>{cert.issuer}</span>
-                      <span>{formatDate(cert.date)}</span>
+                    <div className="flex items-center justify-between text-[11px] text-surface font-medium drop-shadow-xs">
+                      <span>Verified Certificate</span>
+                      <span>View details ↗</span>
                     </div>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        )}
 
-        {/* Bordered List Rows for Items Without Images (or general credential list) */}
-        {withoutImage.length > 0 && (
-          <div className="mt-8 text-start">
-            <h3 className="text-xs uppercase tracking-wider text-muted font-medium mb-3">
-              Additional Credentials &amp; Certifications
-            </h3>
+                {/* Caption Below the Card Matching Projects Layout */}
+                <div className="mt-3.5 flex items-baseline justify-between gap-3">
+                  <h3 className="text-sm sm:text-base font-medium text-foreground tracking-tight group-hover:text-muted transition-colors line-clamp-1">
+                    {cert.title}
+                  </h3>
 
-            <div className="divide-y divide-border border-y border-border">
-              {withoutImage.map((cert) => (
-                <div
-                  key={cert.id || cert.title}
-                  className="py-4 px-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-surface-muted/50 rounded-lg transition-colors"
-                >
-                  <div>
-                    <h4 className="text-sm sm:text-base font-medium text-foreground tracking-tight">
-                      {cert.title}
-                    </h4>
-                    <p className="text-xs text-muted mt-0.5">
-                      {cert.issuer} {cert.date ? `• ${formatDate(cert.date)}` : ''}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-3 shrink-0">
-                    {cert.isVerified && (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-muted">
-                        <ShieldCheck className="w-3.5 h-3.5 text-foreground" />
-                        Verified
-                      </span>
-                    )}
-                    {cert.credentialUrl && (
-                      <a
-                        href={cert.credentialUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs font-medium text-foreground underline underline-offset-4 hover:text-muted transition-colors inline-flex items-center gap-1"
-                      >
-                        <span>View</span>
-                        <span className="inline-block rtl:-scale-x-100 text-[10px]" aria-hidden="true">↗</span>
-                      </a>
-                    )}
-                  </div>
+                  <span className="text-xs text-muted font-normal shrink-0">
+                    {cert.issuerShort || cert.issuer}
+                  </span>
                 </div>
-              ))}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Academic Degree Section */}
+        <div className="mt-16 pt-12 border-t border-border/60 text-start">
+          <div className="inline-flex items-center gap-2 text-xs font-medium text-muted tracking-wide mb-3">
+            <span className="text-[8px] text-foreground" aria-hidden="true">●</span>
+            <span>Academic Background</span>
+          </div>
+
+          <div className="bg-surface rounded-2xl border border-border p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xs">
+            <div>
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[11px] font-medium bg-surface-muted text-foreground mb-3">
+                <span>Very Good Honors</span>
+                <span className="text-muted">•</span>
+                <span>2022 — 2026</span>
+              </div>
+
+              <h3 className="text-lg sm:text-xl font-medium text-foreground tracking-tight">
+                Bachelor of Science in Computer and Information Sciences
+              </h3>
+              
+              <p className="text-xs sm:text-sm text-muted mt-1 font-normal">
+                Mansoura University • Information Technology (IT) Major
+              </p>
+
+              <p className="text-xs text-muted/80 mt-3 font-normal max-w-2xl leading-relaxed">
+                <span className="font-medium text-foreground">Capstone:</span> ThyraX — Thyroid Cancer Clinical Decision Support System (Biomedical Deep Learning &amp; Multimodal AI, Score: Distinction).
+              </p>
+            </div>
+
+            <div className="shrink-0 flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border text-xs font-medium text-foreground bg-surface-muted/60">
+                <ShieldCheck className="w-3.5 h-3.5 text-foreground" />
+                <span>Verified Degree</span>
+              </span>
             </div>
           </div>
-        )}
+        </div>
 
       </div>
 
-      {/* Modal for viewing certificate image preview */}
+      {/* Modal for viewing certificate details / preview */}
       {selectedCert && (
         <div
           role="dialog"
@@ -161,15 +174,21 @@ const Education = memo(() => {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative max-w-3xl w-full bg-surface border border-border rounded-lg p-5 sm:p-6 shadow-xl"
+            className="relative max-w-2xl w-full bg-surface border border-border rounded-2xl p-6 sm:p-7 shadow-2xl text-start"
           >
-            <div className="flex items-center justify-between pb-4 border-b border-border">
+            <div className="flex items-start justify-between gap-4 pb-4 border-b border-border">
               <div>
-                <h3 className="text-base font-medium text-foreground tracking-tight">
+                <div className="inline-flex items-center gap-1.5 text-xs text-muted font-medium mb-1">
+                  <ShieldCheck className="w-4 h-4 text-foreground" />
+                  <span>Verified Credential</span>
+                  {selectedCert.year && <span>• {selectedCert.year}</span>}
+                </div>
+                <h3 className="text-lg sm:text-xl font-medium text-foreground tracking-tight leading-snug">
                   {selectedCert.title}
                 </h3>
-                <p className="text-xs text-muted mt-0.5">
-                  {selectedCert.issuer} {selectedCert.date ? `• ${formatDate(selectedCert.date)}` : ''}
+                <p className="text-xs sm:text-sm text-muted mt-1">
+                  Issued by <span className="text-foreground font-medium">{selectedCert.issuer}</span>
+                  {selectedCert.status ? ` • ${selectedCert.status}` : ''}
                 </p>
               </div>
 
@@ -177,18 +196,55 @@ const Education = memo(() => {
                 type="button"
                 onClick={() => setSelectedCert(null)}
                 aria-label="Close dialog"
-                className="p-1.5 rounded-lg border border-border text-foreground hover:bg-surface-muted transition-colors"
+                className="p-2 rounded-full border border-border text-foreground hover:bg-surface-muted transition-colors shrink-0"
               >
-                <X size={18} />
+                <X size={16} />
               </button>
             </div>
 
-            <div className="mt-4 max-h-[70vh] overflow-auto rounded-lg border border-border bg-surface-muted flex items-center justify-center">
-              <img
-                src={selectedCert.imageUrl || selectedCert.image}
-                alt={selectedCert.title}
-                className="w-full h-auto max-h-[68vh] object-contain"
-              />
+            {/* Certificate Visual or Preview Image */}
+            {(selectedCert.imageUrl || selectedCert.image) ? (
+              <div className="mt-5 max-h-[60vh] overflow-auto rounded-xl border border-border bg-surface-muted flex items-center justify-center">
+                <img
+                  src={selectedCert.imageUrl || selectedCert.image}
+                  alt={selectedCert.title}
+                  className="w-full h-auto max-h-[58vh] object-contain rounded-xl"
+                />
+              </div>
+            ) : (
+              <div className="mt-5 p-6 rounded-xl border border-border bg-surface-muted/40">
+                <p className="text-sm text-foreground/85 leading-relaxed font-normal">
+                  {selectedCert.description}
+                </p>
+              </div>
+            )}
+
+            {/* Modal Actions */}
+            <div className="mt-6 flex items-center justify-between gap-3 pt-4 border-t border-border">
+              {selectedCert.badge && (
+                <span className="text-xs uppercase tracking-wider font-medium text-muted">
+                  {selectedCert.badge}
+                </span>
+              )}
+              {selectedCert.credentialUrl ? (
+                <a
+                  href={selectedCert.credentialUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-surface text-xs font-medium hover:opacity-90 transition-opacity"
+                >
+                  <span>Verify Credential</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setSelectedCert(null)}
+                  className="px-4 py-2 rounded-full border border-border text-xs font-medium text-foreground hover:bg-surface-muted transition-colors ms-auto"
+                >
+                  Close
+                </button>
+              )}
             </div>
           </div>
         </div>

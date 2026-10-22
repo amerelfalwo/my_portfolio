@@ -7,9 +7,9 @@ import { profile } from '../data/profile';
 const spring = { type: 'spring', stiffness: 260, damping: 25 };
 
 const NAV_LINKS = [
-  { name: 'About', href: '#about' },
+  { name: 'About Me', href: '#about' },
+  { name: 'Portfolio', href: '#projects' },
   { name: 'Skills', href: '#skills' },
-  { name: 'Projects', href: '#projects' },
   { name: 'Certificates', href: '#education' },
 ];
 
@@ -47,47 +47,48 @@ const Navbar = () => {
           : 'bg-background/60 backdrop-blur-sm border-b border-transparent'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 h-16 sm:h-20 flex items-center justify-between">
-        {/* Brand / Logo */}
+      <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-20 h-16 sm:h-20 flex items-center justify-between">
+        {/* Brand / Logo Mark per Reference Image 2 */}
         <a
           href="#"
-          className="flex items-center gap-3 group text-start"
+          className="flex items-center gap-2.5 group text-start"
           aria-label={`${profile.name} Home`}
         >
-          {siteLogoUrl && (
+          {siteLogoUrl ? (
             <img
               src={siteLogoUrl}
-              alt=""
-              className="h-7 w-7 object-contain rounded-lg border border-border"
+              alt={profile.name}
+              className="h-8 w-8 object-contain rounded-lg transition-transform group-hover:scale-105"
               onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
+          ) : (
+            <div className="w-8 h-8 rounded-lg bg-foreground text-surface flex items-center justify-center font-bold text-sm">
+              A
+            </div>
           )}
-          <span className="text-base sm:text-lg font-medium tracking-tight text-foreground transition-colors group-hover:text-muted">
-            {profile.name}
-          </span>
         </a>
 
-        {/* Desktop Nav Links */}
-        <nav className="hidden md:flex items-center gap-8" aria-label="Main Navigation">
+        {/* Desktop Nav Links per Reference Image 2 */}
+        <nav className="hidden md:flex items-center gap-7 lg:gap-10" aria-label="Main Navigation">
           {NAV_LINKS.map((link) => (
             <a
               key={link.name}
               href={link.href}
-              className="text-sm font-normal text-muted hover:text-foreground transition-colors duration-200"
+              className="text-xs sm:text-sm font-normal text-muted hover:text-foreground transition-colors duration-200"
             >
               {link.name}
             </a>
           ))}
         </nav>
 
-        {/* Desktop Right CTA: Underlined Contact ↗ */}
+        {/* Desktop Right CTA: "Book A Call ↗" per Reference Image 2 */}
         <div className="hidden md:flex items-center">
           <a
             href="#contact"
-            className="text-sm font-medium text-foreground underline underline-offset-4 hover:text-muted transition-colors duration-200 inline-flex items-center gap-1"
+            className="text-xs sm:text-sm font-normal text-foreground underline underline-offset-4 hover:text-muted transition-colors duration-200 inline-flex items-center gap-1"
           >
-            <span>Contact</span>
-            <span className="inline-block rtl:-scale-x-100 ms-0.5 text-xs" aria-hidden="true">↗</span>
+            <span>Book A Call</span>
+            <span className="inline-block rtl:-scale-x-100 text-xs" aria-hidden="true">↗</span>
           </a>
         </div>
 

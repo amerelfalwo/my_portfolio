@@ -1,122 +1,122 @@
 import { memo } from 'react';
-import { ArrowRight, CheckCircle2, ShieldCheck, Cpu, Eye, Sparkles, Layers, Terminal } from 'lucide-react';
+import { Globe, Sparkles } from 'lucide-react';
 import { profile } from '../data/profile';
-import { useAboutConfig } from '../hooks/useData';
-
-const PILLAR_ICONS = {
-  'vision-ml': Eye,
-  'genai-agents': Sparkles,
-  'clean-arch': Layers,
-  'mlops-cloud': Terminal,
-};
 
 const About = memo(() => {
-  const { aboutConfig } = useAboutConfig();
-
-  const title = aboutConfig?.title || 'Engineering intelligence into robust systems.';
-  const subtitle = aboutConfig?.subtitle || profile.bio.short;
-  const extendedBio = profile.bio.extended || [];
-
   return (
     <section id="about" className="py-24 sm:py-32 relative bg-transparent border-t border-border/60">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        
-        {/* Section Header */}
-        <div className="max-w-3xl mb-16 sm:mb-20 text-start">
-          <div className="inline-flex items-center gap-2 text-xs font-medium text-muted tracking-wide mb-3">
-            <span className="text-[8px] text-foreground" aria-hidden="true">●</span>
-            <span>About me</span>
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-start">
           
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight text-foreground leading-[1.12]">
-            {title}
-          </h2>
-          
-          <p className="text-muted text-base sm:text-lg font-normal leading-relaxed mt-4">
-            {subtitle}
-          </p>
-        </div>
+          {/* ── Left Column (4 cols): About Me Headline, Intro & Curved Arrow ── */}
+          <div className="lg:col-span-4 flex flex-col justify-between h-full text-start pt-2">
+            <div>
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight text-foreground leading-[1.08]">
+                About Me
+              </h2>
 
-        {/* 2-Column Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
-          
-          {/* Left Column (7 cols): Narrative & Background */}
-          <div className="lg:col-span-7 flex flex-col gap-6 text-start">
-            <div className="space-y-4 text-foreground/80 text-sm sm:text-base leading-relaxed font-normal">
-              {extendedBio.map((paragraph, idx) => (
-                <p key={idx} className="leading-relaxed">
-                  {paragraph}
-                </p>
-              ))}
+              <p className="text-muted text-sm sm:text-base leading-relaxed mt-5 max-w-sm font-normal">
+                I specialize in turning complex problems into scalable neural solutions. My approach blends deep learning rigor with clean architectural design to deliver AI systems that not only look great but work seamlessly. Ready to build your next project?
+              </p>
             </div>
 
-            {/* Academic Standing & Honors */}
-            <div className="p-5 sm:p-6 rounded-lg border border-border bg-surface mt-2">
-              <div className="flex items-start gap-3.5">
-                <ShieldCheck className="w-5 h-5 text-foreground shrink-0 mt-0.5" />
-                <div>
-                  <h3 className="text-sm sm:text-base font-medium text-foreground tracking-tight">
-                    B.Sc. Computer & Information Sciences
-                  </h3>
-                  <p className="text-xs sm:text-sm text-muted mt-1 leading-normal">
-                    Mansoura University (IT Major) • Completed with &quot;Very Good&quot; Honors (Class of 2026).
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Availability Status Card */}
-            <div className="p-5 sm:p-6 rounded-lg border border-border bg-surface-muted flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <div className="text-xs uppercase tracking-wider text-muted font-medium">
-                  Current Status
-                </div>
-                <div className="text-sm sm:text-base font-medium text-foreground mt-0.5">
-                  {profile.status.message}
-                </div>
-                <div className="text-xs text-muted mt-0.5">
-                  {profile.status.locations}
-                </div>
-              </div>
-              <a
-                href="#contact"
-                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-foreground underline underline-offset-4 hover:text-muted transition-colors shrink-0"
+            {/* Subtle Curved Arrow pointing toward middle card per reference screenshot */}
+            <div className="hidden lg:block mt-16 ps-6">
+              <svg 
+                viewBox="0 0 160 120" 
+                className="w-36 h-auto text-muted/30 stroke-current fill-none stroke-[2.5] rtl:-scale-x-100 origin-center"
+                aria-hidden="true"
               >
-                <span>Get in touch</span>
-                <span className="inline-block rtl:-scale-x-100 ms-0.5" aria-hidden="true">↗</span>
-              </a>
+                <path 
+                  d="M20,100 C60,110 110,95 135,35" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                />
+                <path 
+                  d="M115,30 L135,35 L138,55" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                />
+              </svg>
             </div>
           </div>
 
-          {/* Right Column (5 cols): Core Engineering Pillars */}
-          <div className="lg:col-span-5 flex flex-col gap-4">
-            <div className="text-xs uppercase tracking-wider text-muted font-medium mb-1 text-start">
-              Core Engineering Pillars
+          {/* ── Middle Column (4 cols): Tall Card with Icon, Stat & about-portrait.webp ── */}
+          <div className="lg:col-span-4">
+            <div className="bg-surface rounded-3xl border border-border p-6 sm:p-7 shadow-xs flex flex-col justify-between text-start">
+              <div>
+                {/* Globe Icon in Circle */}
+                <div className="w-12 h-12 rounded-full border border-border bg-surface-muted/50 flex items-center justify-center mb-6">
+                  <Globe className="w-5 h-5 text-foreground stroke-[1.5]" />
+                </div>
+
+                {/* Big Stat Number */}
+                <div className="text-5xl sm:text-6xl font-light text-foreground tracking-tight leading-none">
+                  100%
+                </div>
+
+                {/* Stat Description */}
+                <p className="text-xs sm:text-sm text-muted mt-3.5 leading-relaxed font-normal">
+                  Production-ready systems engineered with domain-driven Clean Architecture and resilient pipelines.
+                </p>
+              </div>
+
+              {/* Bottom Image: about-portrait.webp */}
+              <div className="mt-8 rounded-2xl overflow-hidden aspect-[4/5] w-full border border-border/50 bg-surface-muted">
+                <img
+                  src="/about-portrait.webp"
+                  alt={profile.name}
+                  loading="lazy"
+                  className="w-full h-full object-cover object-top"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* ── Right Column (4 cols): Square Face Crop (about-face.webp) + Bullet Points ── */}
+          <div className="lg:col-span-4 flex flex-col justify-between text-start pt-2">
+            {/* Top: Square Image Card with Center Arrow Button */}
+            <div className="relative w-full max-w-[280px] aspect-square rounded-3xl overflow-hidden border border-border bg-surface-muted group mb-8 sm:mb-10 shadow-xs">
+              <img
+                src="/about-face.webp"
+                alt={profile.name}
+                loading="lazy"
+                className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+              />
+
+              {/* Center White Circle Button with Arrow ↗ */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-12 h-12 rounded-full bg-surface text-foreground shadow-md flex items-center justify-center">
+                  <span className="inline-block rtl:-scale-x-100 text-lg font-medium" aria-hidden="true">↗</span>
+                </div>
+              </div>
             </div>
 
-            {profile.pillars.map((pillar) => {
-              const IconComp = PILLAR_ICONS[pillar.id] || Cpu;
-              return (
-                <div
-                  key={pillar.id}
-                  className="p-5 rounded-lg border border-border bg-surface hover:border-foreground/30 transition-colors text-start"
-                >
-                  <div className="flex items-center gap-2.5 mb-2">
-                    <IconComp className="w-4 h-4 text-foreground shrink-0" />
-                    <h4 className="text-sm font-medium text-foreground tracking-tight">
-                      {pillar.title}
-                    </h4>
-                  </div>
-                  <p className="text-xs sm:text-sm text-muted leading-relaxed font-normal">
-                    {pillar.description}
-                  </p>
+            {/* Bottom: Two Bullet Points with Dark Circle Star Badges */}
+            <div className="space-y-6">
+              {/* Bullet 1 */}
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 rounded-full bg-foreground text-surface flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                  <Sparkles size={14} className="fill-current text-surface" />
                 </div>
-              );
-            })}
+                <p className="text-xs sm:text-sm text-foreground/85 leading-relaxed font-normal">
+                  With 2+ years of experience, I specialize in architecting deep learning, computer vision, and autonomous agent systems that solve real-world problems and deliver seamless digital experiences.
+                </p>
+              </div>
+
+              {/* Bullet 2 */}
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 rounded-full bg-foreground text-surface flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                  <Sparkles size={14} className="fill-current text-surface" />
+                </div>
+                <p className="text-xs sm:text-sm text-foreground/85 leading-relaxed font-normal">
+                  I thrive on working closely with engineering teams and clients, blending algorithmic rigor with domain-driven design to bring intelligent systems to life.
+                </p>
+              </div>
+            </div>
           </div>
 
         </div>
-
       </div>
     </section>
   );

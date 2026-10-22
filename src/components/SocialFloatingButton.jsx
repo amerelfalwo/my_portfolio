@@ -91,14 +91,14 @@ const SocialFloatingButton = () => {
 
       {/* Main Toggle Button */}
       <m.button
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
         aria-label={isOpen ? 'Close social menu' : 'Open social menu and share links'}
-        className={`relative z-[100] w-14 h-14 rounded-full border transition-all duration-300 flex items-center justify-center backdrop-blur-xl ${
+        className={`relative z-[100] w-12 h-12 rounded-full border border-border transition-all duration-300 flex items-center justify-center shadow-sm ${
           isOpen 
-            ? 'bg-[#7c3aed]/20 border-[#d8b4fe]/50 shadow-[0_0_30px_rgba(124,58,237,0.4)]' 
-            : 'bg-[#0a0a0a]/80 border-white/10 hover:border-[#d8b4fe]/50 hover:bg-[#7c3aed]/20 shadow-[0_0_30px_rgba(124,58,237,0.15)]'
+            ? 'bg-foreground text-surface border-foreground' 
+            : 'bg-surface text-foreground hover:bg-surface-muted'
         }`}
       >
         <AnimatePresence mode="wait">
@@ -109,7 +109,7 @@ const SocialFloatingButton = () => {
               animate={{ rotate: 0, opacity: 1 }}
               exit={{ rotate: 90, opacity: 0 }}
             >
-              <X className="text-[#d8b4fe] w-6 h-6 drop-shadow-[0_0_8px_rgba(216,180,254,0.8)]" />
+              <X className="w-5 h-5" />
             </m.div>
           ) : (
             <m.div
@@ -118,7 +118,7 @@ const SocialFloatingButton = () => {
               animate={{ rotate: 0, opacity: 1 }}
               exit={{ rotate: -90, opacity: 0 }}
             >
-              <Share2 className="text-[#d8b4fe] w-6 h-6 drop-shadow-[0_0_8px_rgba(216,180,254,0.5)]" />
+              <Share2 className="w-5 h-5" />
             </m.div>
           )}
         </AnimatePresence>

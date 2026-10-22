@@ -133,7 +133,7 @@ const Skills = memo(() => {
                         <img
                           src={iconUrl}
                           alt=""
-                          className="w-4 h-4 object-contain"
+                          className="w-4 h-4 object-contain shrink-0"
                           loading="lazy"
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';

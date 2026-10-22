@@ -39,6 +39,15 @@ const LOCAL_ICONS = {
   'pandas': '/icons/pandas.svg',
   'numpy': '/icons/numpy.svg',
   'flask': '/icons/flask.svg',
+  'typescript': '/icons/typescript.svg',
+  'ts': '/icons/typescript.svg',
+  'javascript': '/icons/javascript.svg',
+  'js': '/icons/javascript.svg',
+  'javascript/typescript': '/icons/typescript.svg',
+  'javascript / typescript': '/icons/typescript.svg',
+  'tailwind': '/icons/tailwindcss.svg',
+  'tailwindcss': '/icons/tailwindcss.svg',
+  'tailwind css': '/icons/tailwindcss.svg',
 };
 
 const EXACT_ICON_URLS = {
