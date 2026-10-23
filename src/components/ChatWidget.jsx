@@ -1,14 +1,28 @@
 import { useState, useRef, useEffect, memo } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
-import { 
-  Bot, Sparkles, X, Send, RefreshCw, Minimize2, Loader2, AlertCircle, FileText, Briefcase, Award, Cpu, User
-} from 'lucide-react';
+import { MessageSquare, X, Send, RotateCcw } from 'lucide-react';
 
 const SUGGESTIONS = [
-  { label: "📄 What is Amir's CV & background?", prompt: "Can you give me a summary of Amir's CV, work experience, and background?" },
-  { label: "🧠 What are Amir's top AI skills?", prompt: "What are Amir's core skills in Deep Learning, Computer Vision, and AI Architecture?" },
-  { label: "🚀 What AI projects has Amir built?", prompt: "What are the main AI and Machine Learning projects built by Amir?" },
-  { label: "📜 Show verified credentials & certs", prompt: "What certifications and verified credentials does Amir hold?" }
+  {
+    label: "What projects has Amir built?",
+    prompt: "What projects has Amir built?"
+  },
+  {
+    label: "Which projects show his computer vision work?",
+    prompt: "Which projects show his computer vision work?"
+  },
+  {
+    label: "What are his core skills?",
+    prompt: "What are his core skills?"
+  },
+  {
+    label: "What certificates does he have?",
+    prompt: "What certificates does he have?"
+  },
+  {
+    label: "How can I contact him?",
+    prompt: "How can I contact him?"
+  }
 ];
 
 const SafeMessageRenderer = ({ content }) => {
@@ -25,13 +39,15 @@ const SafeMessageRenderer = ({ content }) => {
       if (match.index > lastIdx) {
         parts.push(text.substring(lastIdx, match.index));
       }
+      const url = match[2];
+      const isExternal = url.startsWith('http://') || url.startsWith('https://');
       parts.push(
         <a
           key={match.index}
-          href={match[2]}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-cyan-400 hover:text-cyan-300 underline underline-offset-2 font-semibold transition-colors"
+          href={url}
+          target={isExternal ? '_blank' : undefined}
+          rel={isExternal ? 'noopener noreferrer' : undefined}
+          className="underline underline-offset-2 text-foreground hover:text-muted transition-colors font-medium"
         >
           {match[1]}
         </a>
@@ -48,16 +64,15 @@ const SafeMessageRenderer = ({ content }) => {
 
   const lines = content.split('\n');
   return (
-    <div className="space-y-1.5 text-xs leading-relaxed text-slate-200">
+    <div className="space-y-1.5 text-sm leading-relaxed">
       {lines.map((line, idx) => {
         if (!line.trim()) return <div key={idx} className="h-1" />;
 
-        // Bullet points
         if (line.trim().startsWith('- ') || line.trim().startsWith('* ')) {
           const text = line.trim().substring(2);
           return (
             <div key={idx} className="flex items-start gap-2 pl-1">
-              <span className="text-cyan-400 font-bold">•</span>
+              <span className="text-foreground font-medium">•</span>
               <span>{parseInline(text)}</span>
             </div>
           );
@@ -73,7 +88,30 @@ const ChatWidget = memo(() => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
   const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
+  const triggerRef = useRef(null);
+
+  // Focus input when dialog opens; restore focus to trigger when closed
+  useEffect(() => {
+    if (isOpen) {
+      inputRef.current?.focus();
+    }
+  }, [isOpen]);
+
+  // Accessibility: Escape key closes the dialog
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsOpen(false);
+        triggerRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
 
   // Smooth scroll to bottom when new messages arrive
   useEffect(() => {
@@ -111,7 +149,6 @@ const ChatWidget = memo(() => {
       let streamBuffer = '';
       const assistantMsgId = (Date.now() + 1).toString();
 
-      // Add empty assistant placeholder message
       setMessages(prev => [...prev, { id: assistantMsgId, role: 'assistant', content: '' }]);
 
       while (true) {
@@ -127,13 +164,13 @@ const ChatWidget = memo(() => {
             try {
               const textChunk = JSON.parse(line.slice(2));
               assistantText += textChunk;
-              setMessages(prev => 
+              setMessages(prev =>
                 prev.map(msg => msg.id === assistantMsgId ? { ...msg, content: assistantText } : msg)
               );
             } catch {
               const textChunk = line.slice(2).replace(/^"/, '').replace(/"$/, '');
               assistantText += textChunk;
-              setMessages(prev => 
+              setMessages(prev =>
                 prev.map(msg => msg.id === assistantMsgId ? { ...msg, content: assistantText } : msg)
               );
             }
@@ -141,24 +178,22 @@ const ChatWidget = memo(() => {
         }
       }
 
-      // Process any remaining buffer text
       if (streamBuffer.startsWith('0:')) {
         try {
           const textChunk = JSON.parse(streamBuffer.slice(2));
           assistantText += textChunk;
-          setMessages(prev => 
+          setMessages(prev =>
             prev.map(msg => msg.id === assistantMsgId ? { ...msg, content: assistantText } : msg)
           );
         } catch {
           const textChunk = streamBuffer.slice(2).replace(/^"/, '').replace(/"$/, '');
           assistantText += textChunk;
-          setMessages(prev => 
+          setMessages(prev =>
             prev.map(msg => msg.id === assistantMsgId ? { ...msg, content: assistantText } : msg)
           );
         }
       }
 
-      // If no formatted stream text was captured, clean up empty assistant message
       if (!assistantText) {
         setMessages(prev => prev.filter(msg => msg.id !== assistantMsgId));
       }
@@ -169,7 +204,7 @@ const ChatWidget = memo(() => {
         {
           id: Date.now().toString(),
           role: 'assistant',
-          content: "⚠️ Unable to reach AI model. Please ensure GROQ_API_KEY or GEMINI_API_KEY is configured in your .env file."
+          content: "Unable to reach AI assistant right now. Please try again or reach out through the contact form."
         }
       ]);
     } finally {
@@ -183,83 +218,73 @@ const ChatWidget = memo(() => {
   };
 
   return (
-    <div className="fixed bottom-3.5 end-3.5 sm:bottom-6 sm:end-6 z-40 flex flex-col items-end pointer-events-none">
-      {/* Chat Box Window */}
+    <div className="fixed bottom-4 end-4 sm:bottom-6 sm:end-6 z-40 flex flex-col items-end pointer-events-none">
+      {/* Chat Dialog Window */}
       <AnimatePresence>
         {isOpen && (
           <m.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="pointer-events-auto mb-4 w-[92vw] sm:w-[420px] h-[560px] max-h-[82vh] rounded-lg bg-[#080816]/95 border border-border flex flex-col overflow-hidden backdrop-blur-xl"
+            role="dialog"
+            aria-label="Ask Amir"
+            aria-modal="true"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 16 }}
+            transition={{ duration: 0.2 }}
+            className="pointer-events-auto mb-3 w-[calc(100vw-2rem)] sm:w-[400px] h-[520px] max-h-[calc(100svh-6rem)] rounded-lg bg-surface border border-border flex flex-col overflow-hidden text-foreground"
           >
             {/* Header */}
-            <div className="px-5 py-4 border-b border-slate-800/80 bg-slate-900/70 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 via-fuchsia-500 to-cyan-400 p-[1px] shadow-[0_0_15px_rgba(168,85,247,0.3)]">
-                    <div className="w-full h-full rounded-[15px] bg-[#080816] flex items-center justify-center">
-                      <Bot className="w-5 h-5 text-cyan-400" />
-                    </div>
-                  </div>
-                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#080816] shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-black uppercase tracking-wider text-white flex items-center gap-2">
-                    Aura AI Assistant
-                  </h3>
-                  <p className="text-[10px] font-mono text-purple-300/80 tracking-widest uppercase">
-                    Amir's Portfolio Intelligence
-                  </p>
-                </div>
+            <div className="px-5 py-3.5 border-b border-border bg-surface flex items-center justify-between">
+              <div>
+                <h2 className="text-base font-medium text-foreground">
+                  Ask Amir
+                </h2>
+                <p className="text-sm text-muted">
+                  About his projects, skills, and certificates
+                </p>
               </div>
 
               <div className="flex items-center gap-1">
                 {messages.length > 0 && (
                   <button
+                    type="button"
                     onClick={() => setMessages([])}
-                    className="p-2 text-slate-400 hover:text-white hover:bg-slate-800/60 rounded-xl transition-colors cursor-pointer"
-                    title="Clear Conversation"
-                    aria-label="Clear Conversation"
+                    className="p-1.5 text-muted hover:text-foreground rounded-md hover:bg-surface-muted transition-colors cursor-pointer"
+                    aria-label="Clear conversation"
                   >
-                    <RefreshCw size={14} />
+                    <RotateCcw size={15} />
                   </button>
                 )}
                 <button
-                  onClick={() => setIsOpen(false)}
-                  className="p-2 text-slate-400 hover:text-white hover:bg-slate-800/60 rounded-xl transition-colors cursor-pointer"
-                  title="Close Assistant"
-                  aria-label="Close Assistant"
+                  type="button"
+                  onClick={() => {
+                    setIsOpen(false);
+                    triggerRef.current?.focus();
+                  }}
+                  className="p-1.5 text-muted hover:text-foreground rounded-md hover:bg-surface-muted transition-colors cursor-pointer"
+                  aria-label="Close chat"
                 >
-                  <Minimize2 size={16} />
+                  <X size={18} />
                 </button>
               </div>
             </div>
 
             {/* Messages Scroll Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto p-4 space-y-3.5">
               {messages.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-center p-4 space-y-4">
-                  <div className="w-14 h-14 rounded-3xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center shadow-[0_0_30px_rgba(168,85,247,0.2)]">
-                    <Sparkles className="w-7 h-7 text-purple-400" />
-                  </div>
-                  <div className="space-y-1">
-                    <h4 className="text-sm font-bold text-white uppercase font-mono">Ask Amir's AI Agent</h4>
-                    <p className="text-xs text-slate-400 leading-relaxed max-w-[280px]">
-                      Interactive AI assistant trained on Amir's Machine Learning projects, CV, technical skills, and verified credentials.
-                    </p>
-                  </div>
+                <div className="h-full flex flex-col justify-center text-start space-y-4 px-1">
+                  <p className="text-sm text-muted leading-relaxed">
+                    Answers are based on his projects, CV, skills, and certificates.
+                  </p>
 
-                  <div className="w-full space-y-2 pt-2">
+                  <div className="space-y-2 pt-1">
                     {SUGGESTIONS.map((item, i) => (
                       <button
                         key={i}
                         type="button"
                         onClick={() => handleSend(item.prompt)}
-                        className="w-full text-left text-xs p-3 rounded-2xl bg-slate-900/60 hover:bg-purple-500/10 border border-slate-800 hover:border-purple-500/30 text-slate-200 transition-all font-medium cursor-pointer flex items-center gap-2"
+                        className="w-full text-start rounded-lg border border-border bg-surface px-4 py-2.5 text-sm text-foreground hover:bg-surface-muted transition-colors cursor-pointer"
                       >
-                        <span>{item.label}</span>
+                        {item.label}
                       </button>
                     ))}
                   </div>
@@ -268,23 +293,17 @@ const ChatWidget = memo(() => {
                 messages.map((mItem) => (
                   <div
                     key={mItem.id}
-                    className={`flex gap-3 ${mItem.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                    className={`flex ${mItem.role === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
-                    {mItem.role !== 'user' && (
-                      <div className="w-7 h-7 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center shrink-0 mt-1 shadow-sm">
-                        <Bot className="w-4 h-4 text-cyan-400" />
-                      </div>
-                    )}
-
                     <div
-                      className={`max-w-[85%] p-3.5 ${
+                      className={`max-w-[85%] rounded-lg px-4 py-2.5 text-sm ${
                         mItem.role === 'user'
-                          ? 'bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white rounded-2xl rounded-br-sm shadow-[0_0_15px_rgba(168,85,247,0.2)]'
-                          : 'bg-slate-900/90 border border-slate-800/90 text-slate-200 rounded-2xl rounded-bl-sm shadow-md'
+                          ? 'bg-foreground text-surface'
+                          : 'bg-surface-muted text-foreground'
                       }`}
                     >
                       {mItem.role === 'user' ? (
-                        <p className="text-xs font-medium leading-relaxed">{mItem.content}</p>
+                        <p className="leading-relaxed">{mItem.content}</p>
                       ) : (
                         <SafeMessageRenderer content={mItem.content} />
                       )}
@@ -293,16 +312,11 @@ const ChatWidget = memo(() => {
                 ))
               )}
 
-              {/* Loading Dots */}
+              {/* Plain text loading indicator */}
               {isLoading && (
-                <div className="flex gap-3 justify-start">
-                  <div className="w-7 h-7 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center shrink-0">
-                    <Bot className="w-4 h-4 text-cyan-400 animate-pulse" />
-                  </div>
-                  <div className="bg-slate-900/90 border border-slate-800 rounded-2xl rounded-bl-sm px-4 py-3 flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-bounce [animation-delay:0.2s]" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-fuchsia-400 animate-bounce [animation-delay:0.4s]" />
+                <div className="flex justify-start">
+                  <div className="bg-surface-muted text-muted rounded-lg px-4 py-2 text-sm">
+                    Thinking…
                   </div>
                 </div>
               )}
@@ -311,40 +325,44 @@ const ChatWidget = memo(() => {
             </div>
 
             {/* Input Form */}
-            <form onSubmit={handleSubmit} className="p-3 border-t border-slate-800/80 bg-slate-900/50 flex items-center gap-2">
+            <form onSubmit={handleSubmit} className="p-3 border-t border-border bg-surface flex items-center gap-2">
               <input
+                ref={inputRef}
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask about Amir's projects, skills, CV..."
-                className="flex-1 bg-slate-950 border border-slate-800 rounded-2xl py-3 px-4 text-xs text-white placeholder:text-slate-500 focus:border-purple-400 focus:outline-none transition-all"
+                placeholder="Ask a question…"
+                aria-label="Message prompt"
+                className="flex-1 rounded-lg border border-border bg-surface px-4 py-2 text-sm text-foreground placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-foreground transition-colors"
               />
               <button
                 type="submit"
                 disabled={isLoading || !input.trim()}
                 aria-label="Send message"
-                className="p-3 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white disabled:opacity-40 transition-all cursor-pointer shadow-lg shadow-purple-500/20"
+                className="w-9 h-9 rounded-full bg-foreground text-surface flex items-center justify-center shrink-0 disabled:opacity-40 hover:opacity-90 transition-opacity cursor-pointer"
               >
-                <Send size={15} />
+                <Send size={14} className="rtl:-scale-x-100" />
               </button>
             </form>
           </m.div>
         )}
       </AnimatePresence>
 
-      {/* Floating Action Button (FAB) */}
+      {/* Floating Trigger Button */}
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        aria-label={isOpen ? 'Close AI Assistant' : 'Open AI Assistant'}
-        className="pointer-events-auto relative group p-2.5 sm:p-3.5 rounded-full bg-foreground text-surface hover:opacity-90 transition-opacity cursor-pointer"
-        title="Toggle AI Assistant"
+        aria-label={isOpen ? 'Close chat' : 'Ask Amir'}
+        aria-expanded={isOpen}
+        className="pointer-events-auto w-12 h-12 rounded-full bg-foreground text-surface hover:opacity-90 transition-opacity flex items-center justify-center cursor-pointer"
       >
-        {isOpen ? <X className="w-4 h-4 sm:w-5 sm:h-5" /> : <Bot className="w-4 h-4 sm:w-5 sm:h-5" />}
+        {isOpen ? <X size={20} /> : <MessageSquare size={20} />}
       </button>
     </div>
   );
 });
 
-export default ChatWidget;
+ChatWidget.displayName = 'ChatWidget';
 
+export default ChatWidget;

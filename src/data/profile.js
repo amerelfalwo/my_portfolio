@@ -3,7 +3,7 @@
  * @description Single source of truth for Amir Elrefai's personal and professional profile.
  */
 
-import { projects } from './projects';
+import { projects } from './projects.js';
 
 export const profile = {
   name: 'Amir Elrefai',
