@@ -13,19 +13,23 @@ async function syncProjects() {
 
   console.log(`Found ${projects.length} verified projects from GitHub in projects.js.`);
 
-  // Clear previous entries and insert the complete, clean 19 projects
-  console.log('Clearing old projects collection...');
-  await Project.deleteMany({});
-
-  console.log('Inserting new verified projects into MongoDB...');
-  const docsToInsert = projects.map(p => ({
-    ...p,
-    tags: p.caseStudy?.stack || p.tags || [],
-    description: p.summary,
-  }));
-
-  const inserted = await Project.insertMany(docsToInsert);
-  console.log(`Successfully synced ${inserted.length} projects to MongoDB!`);
+  // Safe non-destructive sync: upsert projects without deleting admin custom data
+  console.log('Upserting verified projects into MongoDB (preserving existing records)...');
+  let insertedCount = 0;
+  for (const p of projects) {
+    const doc = {
+      ...p,
+      tags: p.caseStudy?.stack || p.tags || [],
+      description: p.summary,
+    };
+    const res = await Project.findOneAndUpdate(
+      { id: p.id },
+      { $setOnInsert: doc },
+      { upsert: true, new: true }
+    );
+    if (res) insertedCount++;
+  }
+  console.log(`Successfully checked and synced ${insertedCount} projects.`);
 
   await mongoose.disconnect();
   console.log('Disconnected from MongoDB.');

@@ -1,620 +1,526 @@
 import { useState, useEffect } from 'react';
+import { Save, Plus, Trash2, Bot, Link2, User, Sparkles, ExternalLink, ShieldCheck } from 'lucide-react';
 import { useSettings } from '../../hooks/useData';
-import { m } from 'framer-motion';
-import { 
-  Settings as SettingsIcon, Save, CheckCircle2, ShieldAlert, User, Briefcase, 
-  FileText, Link2, Github, Linkedin, Twitter, Facebook, Instagram, Image as ImageIcon, Sparkles, Globe,
-  Brain, Award, Terminal, Cpu, Code, Zap, Layers, Plus, Trash2, Bot
-} from 'lucide-react';
 import { authFetch } from '../../lib/authFetch';
 import ImageUpload from '../../components/admin/ImageUpload';
+import {
+  Button,
+  Input,
+  Textarea,
+  Field,
+  Card,
+  Alert,
+  LoadingState,
+} from '../../components/admin/ui';
 
-import { projects } from '../../data/projects';
-
-const DEFAULT_HERO_STATS = [
-  { title: String(projects.length), description: 'Projects', iconName: 'Code' },
-  { title: '2+', description: 'Years building AI projects', iconName: 'Brain' },
+const TABS = [
+  { id: 'identity', label: 'Identity & Profile' },
+  { id: 'socials', label: 'Links & Socials' },
+  { id: 'hero', label: 'Hero & Highlights' },
+  { id: 'ai', label: 'AI Assistant Brain' },
 ];
 
-const ICON_OPTIONS = [
-  { id: 'Brain', label: 'Brain / Neural' },
-  { id: 'Award', label: 'Award / Cert' },
-  { id: 'Terminal', label: 'Terminal / CLI' },
-  { id: 'Cpu', label: 'CPU / Hardware' },
-  { id: 'Code', label: 'Code / Dev' },
-  { id: 'Zap', label: 'Zap / Speed' },
-  { id: 'Globe', label: 'Globe / Web' },
-  { id: 'Layers', label: 'Layers / Arch' },
-];
-
-const ManageSettings = () => {
+export default function ManageSettings() {
   const { settings, isLoading, mutate } = useSettings();
 
-  const [fullName, setFullName] = useState('');
-  const [jobTitle, setJobTitle] = useState('');
-  const [siteTitle, setSiteTitle] = useState('');
-  const [heroBadgeText, setHeroBadgeText] = useState('');
-  const [bio, setBio] = useState('');
-  const [resumeUrl, setResumeUrl] = useState('');
-  const [cvText, setCvText] = useState('');
-  const [chatbotKnowledge, setChatbotKnowledge] = useState('');
-  const [profileImageUrl, setProfileImageUrl] = useState('');
-  const [siteLogoUrl, setSiteLogoUrl] = useState('');
-  const [logoText, setLogoText] = useState('');
-  const [typewriterInput, setTypewriterInput] = useState('');
-
-  const [githubUrl, setGithubUrl] = useState('');
-  const [linkedinUrl, setLinkedinUrl] = useState('');
-  const [twitterUrl, setTwitterUrl] = useState('');
-  const [facebookUrl, setFacebookUrl] = useState('');
-  const [instagramUrl, setInstagramUrl] = useState('');
-
-  const [heroStats, setHeroStats] = useState(DEFAULT_HERO_STATS);
+  const [activeTab, setActiveTab] = useState('identity');
+  const [form, setForm] = useState({
+    fullName: '',
+    jobTitle: '',
+    siteTitle: '',
+    bio: '',
+    email: '',
+    phone: '',
+    location: '',
+    resumeUrl: '',
+    githubUrl: '',
+    linkedinUrl: '',
+    twitterUrl: '',
+    facebookUrl: '',
+    instagramUrl: '',
+    heroBadgeText: 'AI COMMAND CENTER',
+    heroImage: '/hero.webp',
+    heroStats: [
+      { title: '19', description: 'Projects completed' },
+      { title: '2+', description: 'Years building AI projects' },
+    ],
+    chatbotKnowledge: '',
+    cvText: '',
+  });
 
   const [saving, setSaving] = useState(false);
-  const [successMsg, setSuccessMsg] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (settings) {
-      setFullName(settings.fullName || settings.name || '');
-      setJobTitle(settings.jobTitle || '');
-      setSiteTitle(settings.siteTitle || '');
-      setHeroBadgeText(settings.heroBadgeText || 'AI COMMAND CENTER');
-      setBio(settings.bio || '');
-      setResumeUrl(settings.resumeUrl || settings.cvUrl || '');
-      setCvText(settings.cvText || '');
-      setChatbotKnowledge(settings.chatbotKnowledge || '');
-      setProfileImageUrl(settings.profileImageUrl || settings.heroImage || '');
-      setSiteLogoUrl(settings.siteLogoUrl || '');
-      setLogoText(settings.logoText || 'AMIR.AURA');
-
-      const words = settings.typewriterWords || [];
-      setTypewriterInput(Array.isArray(words) ? words.join(', ') : '');
-
       const socials = settings.socialLinks || {};
-      setGithubUrl(socials.github || settings.githubUrl || '');
-      setLinkedinUrl(socials.linkedin || 'https://www.linkedin.com/in/amir-elrefai-b3a3212b8/?isSelfProfile=true');
-      setTwitterUrl(socials.twitter || '');
-      setFacebookUrl(socials.facebook || 'https://www.facebook.com/amir.elref3i');
-      setInstagramUrl(socials.instagram || 'https://www.instagram.com/amir.elref3i/');
-
-      if (Array.isArray(settings.heroStats) && settings.heroStats.length > 0) {
-        setHeroStats(settings.heroStats);
-      } else {
-        setHeroStats(DEFAULT_HERO_STATS);
-      }
+      setForm({
+        fullName: settings.fullName || settings.name || '',
+        jobTitle: settings.jobTitle || '',
+        siteTitle: settings.siteTitle || 'Amir Elrefai | AI Engineer',
+        bio: settings.bio || '',
+        email: settings.email || 'amir.elrefai.dev@gmail.com',
+        phone: settings.phone || '+201023524477',
+        location: settings.location || 'Mansoura, Egypt',
+        resumeUrl: settings.resumeUrl || settings.cvUrl || '',
+        githubUrl: settings.github || settings.githubUrl || socials.github || '',
+        linkedinUrl: settings.linkedin || settings.linkedinUrl || socials.linkedin || '',
+        twitterUrl: settings.twitter || settings.twitterUrl || socials.twitter || '',
+        facebookUrl: settings.facebook || socials.facebook || '',
+        instagramUrl: settings.instagram || socials.instagram || '',
+        heroBadgeText: settings.heroBadgeText || 'AI COMMAND CENTER',
+        heroImage: settings.heroImage || settings.profileImageUrl || '/hero.webp',
+        heroStats: Array.isArray(settings.heroStats) && settings.heroStats.length > 0
+          ? settings.heroStats
+          : [
+              { title: '19', description: 'Projects completed' },
+              { title: '2+', description: 'Years building AI projects' },
+            ],
+        chatbotKnowledge: settings.chatbotKnowledge || '',
+        cvText: settings.cvText || '',
+      });
     }
   }, [settings]);
 
-  const handleStatChange = (index, field, value) => {
-    setHeroStats((prev) => {
-      const updated = [...prev];
-      updated[index] = { ...updated[index], [field]: value };
-      return updated;
+  const handleStatChange = (idx, field, value) => {
+    setForm((prev) => {
+      const updated = [...prev.heroStats];
+      updated[idx] = { ...updated[idx], [field]: value };
+      return { ...prev, heroStats: updated };
     });
   };
 
-  const handleAddStatCard = () => {
-    setHeroStats((prev) => [
+  const handleAddStat = () => {
+    setForm((prev) => ({
       ...prev,
-      { title: 'New Stat', description: 'Description', iconName: 'Brain' },
-    ]);
+      heroStats: [...prev.heroStats, { title: '', description: '' }],
+    }));
   };
 
-  const handleRemoveStatCard = (index) => {
-    setHeroStats((prev) => prev.filter((_, i) => i !== index));
+  const handleRemoveStat = (idx) => {
+    setForm((prev) => ({
+      ...prev,
+      heroStats: prev.heroStats.filter((_, i) => i !== idx),
+    }));
   };
 
   const handleSave = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     setSaving(true);
-    setSuccessMsg(null);
-    setErrorMsg(null);
-
-    const typewriterWords = typewriterInput
-      ? typewriterInput.split(',').map((w) => w.trim()).filter(Boolean)
-      : [];
+    setError(null);
+    setSuccess(null);
 
     const payload = {
-      fullName,
-      jobTitle,
-      siteTitle,
-      heroBadgeText: heroBadgeText || 'AI COMMAND CENTER',
-      bio,
-      resumeUrl,
-      cvText,
-      chatbotKnowledge,
-      profileImageUrl,
-      heroImage: profileImageUrl,
-      siteLogoUrl,
-      logoText: logoText || 'AMIR.AURA',
-      typewriterWords,
-      heroStats,
+      ...settings,
+      fullName: form.fullName.trim(),
+      name: form.fullName.trim(),
+      jobTitle: form.jobTitle.trim(),
+      siteTitle: form.siteTitle.trim(),
+      bio: form.bio.trim(),
+      email: form.email.trim(),
+      phone: form.phone.trim(),
+      location: form.location.trim(),
+      resumeUrl: form.resumeUrl.trim(),
+      cvUrl: form.resumeUrl.trim(),
+      github: form.githubUrl.trim(),
+      githubUrl: form.githubUrl.trim(),
+      linkedin: form.linkedinUrl.trim(),
+      linkedinUrl: form.linkedinUrl.trim(),
+      twitter: form.twitterUrl.trim(),
+      twitterUrl: form.twitterUrl.trim(),
+      facebook: form.facebookUrl.trim(),
+      instagram: form.instagramUrl.trim(),
       socialLinks: {
-        github: githubUrl,
-        linkedin: linkedinUrl,
-        twitter: twitterUrl,
-        facebook: facebookUrl,
-        instagram: instagramUrl,
+        github: form.githubUrl.trim(),
+        linkedin: form.linkedinUrl.trim(),
+        twitter: form.twitterUrl.trim(),
+        facebook: form.facebookUrl.trim(),
+        instagram: form.instagramUrl.trim(),
       },
+      heroBadgeText: form.heroBadgeText.trim(),
+      heroImage: form.heroImage.trim() || '/hero.webp',
+      profileImageUrl: form.heroImage.trim() || '/hero.webp',
+      heroStats: form.heroStats.map((s) => ({
+        title: String(s.title || '').trim(),
+        description: String(s.description || '').trim(),
+      })),
+      chatbotKnowledge: form.chatbotKnowledge.trim(),
+      cvText: form.cvText.trim(),
     };
 
     try {
-      const settingId = settings?.id || settings?._id;
-      const url = settingId ? `/api/settings?id=${settingId}` : '/api/settings';
-      const method = settingId ? 'PUT' : 'POST';
-
-      const res = await authFetch(url, {
-        method,
+      const res = await authFetch('/api/settings', {
+        method: 'POST',
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
 
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || 'Failed to update settings.');
+      if (!res.ok || (data.success === false)) {
+        throw new Error(data.error || 'Failed to save settings');
       }
 
-      setSuccessMsg('Portfolio & AI Chatbot Knowledge settings updated successfully!');
       await mutate();
+      setSuccess('Settings saved successfully and synchronized across site.');
     } catch (err) {
-      console.error('Settings Update Error:', err);
-      setErrorMsg(err.message || 'Operation failed.');
+      console.error('Save Settings Error:', err);
+      setError(err.message || 'Operation failed');
     } finally {
       setSaving(false);
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="max-w-4xl mx-auto space-y-6 animate-pulse">
-        <div className="h-10 w-48 bg-slate-900/60 rounded-lg" />
-        <div className="h-96 w-full bg-slate-900/40 rounded-lg border border-slate-800" />
-      </div>
-    );
-  }
-
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-border">
         <div>
-          <p className="text-slate-400 text-sm">Control Hero avatar, bio, CV details, AI chatbot knowledge base, and social links.</p>
+          <h1 className="text-2xl font-light tracking-tight text-foreground">Global Settings</h1>
+          <p className="text-sm text-muted mt-1">
+            Manage site-wide identity, social links, contact coordinates, hero counters, and AI assistant intelligence.
+          </p>
         </div>
+
+        <Button type="button" onClick={handleSave} disabled={saving} className="self-start sm:self-auto">
+          <Save size={14} />
+          <span>{saving ? 'Saving…' : 'Save all settings'}</span>
+        </Button>
       </div>
 
-      {/* Notifications */}
-      {successMsg && (
-        <m.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center gap-3 text-emerald-400 text-xs font-bold font-mono uppercase"
-        >
-          <CheckCircle2 size={18} />
-          <span>{successMsg}</span>
-        </m.div>
-      )}
+      {/* Global Alerts */}
+      {error && <Alert variant="error">{error}</Alert>}
+      {success && <Alert variant="success">{success}</Alert>}
 
-      {errorMsg && (
-        <m.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="p-4 rounded-lg bg-red-500/10 border border-red-500/30 flex items-center gap-3 text-red-400 text-xs font-mono font-bold uppercase"
-        >
-          <ShieldAlert size={18} />
-          <span>{errorMsg}</span>
-        </m.div>
-      )}
+      {/* Navigation Tabs */}
+      <div className="flex items-center gap-1.5 border-b border-border pb-3 overflow-x-auto">
+        {TABS.map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setActiveTab(tab.id)}
+            className={`px-4 py-2 text-xs font-medium rounded-full border transition-colors shrink-0 ${
+              activeTab === tab.id
+                ? 'bg-foreground text-surface border-foreground'
+                : 'bg-surface text-muted border-border hover:text-foreground'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
-      {/* Settings Form Card */}
-      <form onSubmit={handleSave} className="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-lg p-6 md:p-10 space-y-8 shadow-2xl">
-        
-        {/* Section 1: Hero Media & Branding (Avatar + Site Logo) */}
-        <div className="space-y-6">
-          <div className="flex items-center gap-3 border-b border-slate-800 pb-3">
-            <ImageIcon className="text-purple-400 w-5 h-5" />
-            <h3 className="text-sm font-bold text-white uppercase font-mono tracking-wider">
-              Hero Avatar & Site Logo Upload
-            </h3>
-          </div>
+      {isLoading ? (
+        <LoadingState message="Loading global settings…" />
+      ) : (
+        <form onSubmit={handleSave} className="space-y-6">
+          {/* TAB 1: Identity & Profile */}
+          {activeTab === 'identity' && (
+            <div className="space-y-6">
+              <Card
+                title="Personal Identity & Branding"
+                description="Core attributes displayed on hero, navbar, contact, and footer."
+              >
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <Field label="Full name" required>
+                      <Input
+                        value={form.fullName}
+                        onChange={(e) => setForm((prev) => ({ ...prev, fullName: e.target.value }))}
+                        placeholder="Amir Elrefai"
+                        required
+                      />
+                    </Field>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            <ImageUpload
-              value={profileImageUrl}
-              onUploadComplete={(url) => setProfileImageUrl(url)}
-              label="Hero Profile Avatar / Image"
-            />
+                    <Field label="Job title" required>
+                      <Input
+                        value={form.jobTitle}
+                        onChange={(e) => setForm((prev) => ({ ...prev, jobTitle: e.target.value }))}
+                        placeholder="AI Engineer & Systems Analyst"
+                        required
+                      />
+                    </Field>
+                  </div>
 
-            <ImageUpload
-              value={siteLogoUrl}
-              onUploadComplete={(url) => setSiteLogoUrl(url)}
-              label="Custom Site Brand Logo"
-            />
-          </div>
-        </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <Field label="Browser window & site title" hint="Meta title for tab">
+                      <Input
+                        value={form.siteTitle}
+                        onChange={(e) => setForm((prev) => ({ ...prev, siteTitle: e.target.value }))}
+                        placeholder="Amir Elrefai | AI Engineer"
+                      />
+                    </Field>
 
-        {/* Section 2: Basic Identity & Browser Tab Title */}
-        <div className="space-y-6 pt-2">
-          <div className="flex items-center gap-3 border-b border-slate-800 pb-3">
-            <User className="text-cyan-400 w-5 h-5" />
-            <h3 className="text-sm font-bold text-white uppercase font-mono tracking-wider">
-              Identity & Eyebrow Badge
-            </h3>
-          </div>
+                    <Field label="Location" hint="Displayed in footer">
+                      <Input
+                        value={form.location}
+                        onChange={(e) => setForm((prev) => ({ ...prev, location: e.target.value }))}
+                        placeholder="Mansoura, Egypt"
+                      />
+                    </Field>
+                  </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1 font-mono">
-                Top Eyebrow Badge Text
-              </label>
-              <input 
-                type="text" 
-                value={heroBadgeText} 
-                onChange={(e) => setHeroBadgeText(e.target.value)} 
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-sm font-mono focus:border-cyan-400 focus:outline-none transition-all" 
-                placeholder="AI COMMAND CENTER" 
-              />
-            </div>
+                  <Field label="Hero & profile portrait" hint="Visible on the public hero section and meta previews">
+                    <div className="flex items-center gap-4 p-3 rounded-lg border border-border bg-surface-muted/30">
+                      <img
+                        src={form.heroImage || '/hero.webp'}
+                        alt="Hero preview"
+                        className="w-14 h-14 rounded-lg object-cover border border-border bg-surface shrink-0"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-medium text-foreground truncate">{form.heroImage || '/hero.webp'}</p>
+                        <p className="text-[11px] text-muted">Configured in Hero &amp; Highlights tab or editable directly</p>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={() => setActiveTab('hero')}
+                        className="text-xs shrink-0"
+                      >
+                        Change portrait
+                      </Button>
+                    </div>
+                  </Field>
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1 font-mono">
-                Browser Tab Title (HTML Document Title)
-              </label>
-              <input 
-                type="text" 
-                value={siteTitle} 
-                onChange={(e) => setSiteTitle(e.target.value)} 
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-sm font-mono focus:border-purple-400 focus:outline-none transition-all" 
-                placeholder="Amir Elrefai | AI & ML Engineer Portfolio" 
-              />
-            </div>
-          </div>
-          
-          <div className="grid md:grid-cols-2 gap-6 mt-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1 font-mono">
-                Full Logo Text
-              </label>
-              <input 
-                type="text" 
-                value={logoText} 
-                onChange={(e) => setLogoText(e.target.value)} 
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-sm font-mono focus:border-cyan-400 focus:outline-none transition-all" 
-                placeholder="AMIR.AURA" 
-              />
-              <p className="text-[10px] text-slate-500 mt-1 ml-1">Appears in the Navbar and Footer</p>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1 font-mono">
-                Full Name
-              </label>
-              <input 
-                type="text" 
-                value={fullName} 
-                onChange={(e) => setFullName(e.target.value)} 
-                required 
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-sm font-bold focus:border-purple-400 focus:outline-none transition-all" 
-                placeholder="Amir Elrefai" 
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1 font-mono">
-                Job Title / Primary Subtitle
-              </label>
-              <input 
-                type="text" 
-                value={jobTitle} 
-                onChange={(e) => setJobTitle(e.target.value)} 
-                required 
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-sm font-bold focus:border-cyan-400 focus:outline-none transition-all" 
-                placeholder="AI Architecture & Engineering" 
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Section 3: Typewriter Animation Keywords & Bio */}
-        <div className="space-y-6 pt-2">
-          <div className="flex items-center gap-3 border-b border-slate-800 pb-3">
-            <Sparkles className="text-purple-400 w-5 h-5" />
-            <h3 className="text-sm font-bold text-white uppercase font-mono tracking-wider">
-              Hero Typewriter Keywords & Bio
-            </h3>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1 font-mono">
-              Typewriter Words (Comma Separated)
-            </label>
-            <input 
-              type="text" 
-              value={typewriterInput} 
-              onChange={(e) => setTypewriterInput(e.target.value)} 
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-sm font-mono focus:border-cyan-400 focus:outline-none transition-all" 
-              placeholder="Deep Learning Specialist, Computer Vision Expert, AI Agent Architect" 
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1 font-mono">
-              Professional Bio Paragraph
-            </label>
-            <textarea 
-              rows={4} 
-              value={bio} 
-              onChange={(e) => setBio(e.target.value)} 
-              required 
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-sm font-medium focus:border-purple-400 focus:outline-none transition-all leading-relaxed" 
-              placeholder="Passionate AI Engineer specializing in Deep Learning, Computer Vision, and Generative AI..." 
-            />
-          </div>
-        </div>
-
-        {/* Section 4: Interactive Hero 4 Stat Cards Manager */}
-        <div className="space-y-6 pt-2">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-            <div className="flex items-center gap-3">
-              <Zap className="text-cyan-400 w-5 h-5" />
-              <h3 className="text-sm font-bold text-white uppercase font-mono tracking-wider">
-                Hero Stat Cards Grid (Bottom 4 Cards)
-              </h3>
-            </div>
-            <button
-              type="button"
-              onClick={handleAddStatCard}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 text-[10px] font-bold uppercase font-mono transition-all cursor-pointer"
-            >
-              <Plus size={14} /> Add Card
-            </button>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            {heroStats.map((stat, idx) => (
-              <div key={idx} className="p-4 rounded-lg bg-slate-950 border border-slate-800 space-y-3 relative group">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono font-bold uppercase text-purple-400">
-                    Stat Card #{idx + 1}
-                  </span>
-                  {heroStats.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveStatCard(idx)}
-                      className="p-1 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
-                      title="Remove Stat Card"
-                    >
-                      <Trash2 size={13} />
-                    </button>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1">
-                    <label className="text-[9px] font-mono uppercase text-slate-400 font-bold">Title / Headline</label>
-                    <input
-                      type="text"
-                      value={stat.title}
-                      onChange={(e) => handleStatChange(idx, 'title', e.target.value)}
-                      className="w-full bg-slate-900 border border-slate-800 rounded-lg py-2 px-3 text-white text-xs font-bold focus:border-cyan-400 focus:outline-none"
-                      placeholder="1+ Year XP"
+                  <Field label="Bio summary" hint="High-level engineering summary used across channels">
+                    <Textarea
+                      value={form.bio}
+                      onChange={(e) => setForm((prev) => ({ ...prev, bio: e.target.value }))}
+                      placeholder="AI Engineer and Systems Analyst specializing in Deep Learning, Computer Vision, and Generative AI..."
+                      rows={3}
                     />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-[9px] font-mono uppercase text-slate-400 font-bold">Icon</label>
-                    <select
-                      value={stat.iconName || 'Brain'}
-                      onChange={(e) => handleStatChange(idx, 'iconName', e.target.value)}
-                      className="w-full bg-slate-900 border border-slate-800 rounded-lg py-2 px-3 text-white text-xs font-mono focus:border-cyan-400 focus:outline-none"
-                    >
-                      {ICON_OPTIONS.map((opt) => (
-                        <option key={opt.id} value={opt.id}>{opt.label}</option>
-                      ))}
-                    </select>
-                  </div>
+                  </Field>
                 </div>
+              </Card>
 
-                <div className="space-y-1">
-                  <label className="text-[9px] font-mono uppercase text-slate-400 font-bold">Subtitle / Description</label>
-                  <input
-                    type="text"
-                    value={stat.description}
-                    onChange={(e) => handleStatChange(idx, 'description', e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-lg py-2 px-3 text-white text-xs font-medium focus:border-purple-400 focus:outline-none"
-                    placeholder="AI & CV Specialist"
+              <Card
+                title="Direct Contact Coordinates"
+                description="Contact channels shown on public Contact section cards."
+              >
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Field label="Primary email" required hint="Used for direct mailto links">
+                    <Input
+                      type="email"
+                      value={form.email}
+                      onChange={(e) => setForm((prev) => ({ ...prev, email: e.target.value }))}
+                      placeholder="amir.elrefai.dev@gmail.com"
+                      required
+                    />
+                  </Field>
+
+                  <Field label="Phone / WhatsApp" hint="Include country code, e.g. +201023524477">
+                    <Input
+                      value={form.phone}
+                      onChange={(e) => setForm((prev) => ({ ...prev, phone: e.target.value }))}
+                      placeholder="+201023524477"
+                    />
+                  </Field>
+                </div>
+              </Card>
+            </div>
+          )}
+
+          {/* TAB 2: Links & Socials */}
+          {activeTab === 'socials' && (
+            <Card
+              title="Social Media & Resume Links"
+              description="Direct URLs for public action buttons and social icons."
+            >
+              <div className="space-y-4">
+                <Field
+                  label="CV / Resume download URL"
+                  hint="Public Google Drive or hosted PDF link opened by 'Download CV' buttons"
+                >
+                  <Input
+                    value={form.resumeUrl}
+                    onChange={(e) => setForm((prev) => ({ ...prev, resumeUrl: e.target.value }))}
+                    placeholder="https://drive.google.com/file/d/..."
                   />
+                </Field>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Field label="GitHub profile URL">
+                    <Input
+                      value={form.githubUrl}
+                      onChange={(e) => setForm((prev) => ({ ...prev, githubUrl: e.target.value }))}
+                      placeholder="https://github.com/amerelfalwo"
+                    />
+                  </Field>
+
+                  <Field label="LinkedIn profile URL">
+                    <Input
+                      value={form.linkedinUrl}
+                      onChange={(e) => setForm((prev) => ({ ...prev, linkedinUrl: e.target.value }))}
+                      placeholder="https://www.linkedin.com/in/amir-elrefai..."
+                    />
+                  </Field>
+
+                  <Field label="Facebook profile URL">
+                    <Input
+                      value={form.facebookUrl}
+                      onChange={(e) => setForm((prev) => ({ ...prev, facebookUrl: e.target.value }))}
+                      placeholder="https://www.facebook.com/amir.elref3i"
+                    />
+                  </Field>
+
+                  <Field label="Instagram profile URL">
+                    <Input
+                      value={form.instagramUrl}
+                      onChange={(e) => setForm((prev) => ({ ...prev, instagramUrl: e.target.value }))}
+                      placeholder="https://www.instagram.com/amir.elref3i/"
+                    />
+                  </Field>
+
+                  <Field label="Twitter / X profile URL (optional)">
+                    <Input
+                      value={form.twitterUrl}
+                      onChange={(e) => setForm((prev) => ({ ...prev, twitterUrl: e.target.value }))}
+                      placeholder="https://x.com/..."
+                    />
+                  </Field>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
+            </Card>
+          )}
 
-        {/* Section 5: Resume & Social Profiles */}
-        <div className="space-y-6 pt-2">
-          <div className="flex items-center gap-3 border-b border-slate-800 pb-3">
-            <Link2 className="text-cyan-400 w-5 h-5" />
-            <h3 className="text-sm font-bold text-white uppercase font-mono tracking-wider">
-              Resume & Social Accounts
-            </h3>
-          </div>
+          {/* TAB 3: Hero & Highlights */}
+          {activeTab === 'hero' && (
+            <div className="space-y-6">
+              <Card
+                title="Hero Studio Portrait"
+                description="The primary portrait displayed on the right of the Hero section."
+              >
+                <div className="space-y-4">
+                  <ImageUpload
+                    value={form.heroImage}
+                    onUploadComplete={(url) => setForm((prev) => ({ ...prev, heroImage: url }))}
+                    label="Hero portrait image"
+                  />
+                  <div className="flex items-center justify-between text-xs text-muted">
+                    <span>Active file: <code className="text-foreground">{form.heroImage || '/hero.webp'}</code></span>
+                    {form.heroImage !== '/hero.webp' && (
+                      <button
+                        type="button"
+                        onClick={() => setForm((prev) => ({ ...prev, heroImage: '/hero.webp' }))}
+                        className="text-foreground hover:underline cursor-pointer"
+                      >
+                        Reset to default (/hero.webp)
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </Card>
 
-          <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1 font-mono">
-              Resume / CV Download URL
-            </label>
-            <input 
-              type="url" 
-              value={resumeUrl} 
-              onChange={(e) => setResumeUrl(e.target.value)} 
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-sm font-mono focus:border-cyan-400 focus:outline-none transition-all" 
-              placeholder="https://drive.google.com/file/d/..." 
-            />
-          </div>
+              <Card
+                title="Hero Display Settings"
+                description="Controls the pill badge text and dynamic stat counters."
+              >
+                <div className="space-y-6">
+                  <Field label="Hero status badge" hint="e.g. AI COMMAND CENTER, SYSTEM ONLINE">
+                    <Input
+                      value={form.heroBadgeText}
+                      onChange={(e) => setForm((prev) => ({ ...prev, heroBadgeText: e.target.value }))}
+                      placeholder="AI COMMAND CENTER"
+                    />
+                  </Field>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1 font-mono flex items-center gap-1.5">
-                <Linkedin size={12} /> LinkedIn
-              </label>
-              <input 
-                type="url" 
-                value={linkedinUrl} 
-                onChange={(e) => setLinkedinUrl(e.target.value)} 
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-xs font-mono focus:border-cyan-400 focus:outline-none" 
-                placeholder="https://linkedin.com/in/username" 
-              />
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <h4 className="text-sm font-medium text-foreground">Hero Stat Cards</h4>
+                        <p className="text-xs text-muted">
+                          Displayed at the top of the hero section.
+                        </p>
+                      </div>
+                      <Button type="button" variant="secondary" onClick={handleAddStat}>
+                        <Plus size={14} />
+                        <span>Add stat</span>
+                      </Button>
+                    </div>
+
+                    <div className="space-y-3">
+                      {form.heroStats.map((stat, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center gap-3 p-3 rounded-lg border border-border bg-surface"
+                        >
+                          <div className="w-24 shrink-0">
+                            <Input
+                              value={stat.title}
+                              onChange={(e) => handleStatChange(idx, 'title', e.target.value)}
+                              placeholder="+19 or 2+"
+                            />
+                          </div>
+                          <div className="flex-1">
+                            <Input
+                              value={stat.description}
+                              onChange={(e) => handleStatChange(idx, 'description', e.target.value)}
+                              placeholder="Projects completed"
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveStat(idx)}
+                            className="p-2 text-muted hover:text-red-600 rounded transition-colors shrink-0"
+                            title="Remove stat"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </Card>
             </div>
+          )}
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1 font-mono flex items-center gap-1.5">
-                <Facebook size={12} /> Facebook
-              </label>
-              <input 
-                type="url" 
-                value={facebookUrl} 
-                onChange={(e) => setFacebookUrl(e.target.value)} 
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-xs font-mono focus:border-purple-400 focus:outline-none" 
-                placeholder="https://facebook.com/username" 
-              />
-            </div>
+          {/* TAB 4: AI Assistant Knowledge */}
+          {activeTab === 'ai' && (
+            <div className="space-y-6">
+              <Card
+                title="AI Assistant Knowledge & Persona Protocol"
+                description="Defines the behavior, response style, career narrative, and guardrails for the portfolio chat assistant."
+              >
+                <div className="space-y-4">
+                  <Field
+                    label="Chatbot system instructions & knowledge base"
+                    hint="Markdown formatted prompt injected into every visitor conversation."
+                  >
+                    <Textarea
+                      value={form.chatbotKnowledge}
+                      onChange={(e) => setForm((prev) => ({ ...prev, chatbotKnowledge: e.target.value }))}
+                      placeholder="### SYSTEM INSTRUCTIONS & BEHAVIORAL PROTOCOLS..."
+                      rows={12}
+                      className="font-mono text-xs leading-relaxed"
+                    />
+                  </Field>
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1 font-mono flex items-center gap-1.5">
-                <Instagram size={12} /> Instagram
-              </label>
-              <input 
-                type="url" 
-                value={instagramUrl} 
-                onChange={(e) => setInstagramUrl(e.target.value)} 
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-xs font-mono focus:border-pink-400 focus:outline-none" 
-                placeholder="https://instagram.com/username" 
-              />
+                  <Field
+                    label="Curriculum Vitae (Markdown Source)"
+                    hint="Full technical resume text reference for the chat assistant to answer detailed questions."
+                  >
+                    <Textarea
+                      value={form.cvText}
+                      onChange={(e) => setForm((prev) => ({ ...prev, cvText: e.target.value }))}
+                      placeholder="# AMIR ELFALW - AI ENGINEER & SYSTEMS ANALYST..."
+                      rows={10}
+                      className="font-mono text-xs leading-relaxed"
+                    />
+                  </Field>
+                </div>
+              </Card>
             </div>
+          )}
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1 font-mono flex items-center gap-1.5">
-                <Github size={12} /> GitHub
-              </label>
-              <input 
-                type="url" 
-                value={githubUrl} 
-                onChange={(e) => setGithubUrl(e.target.value)} 
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-xs font-mono focus:border-purple-400 focus:outline-none" 
-                placeholder="https://github.com/username" 
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1 font-mono flex items-center gap-1.5">
-                <Twitter size={12} /> Twitter / X
-              </label>
-              <input 
-                type="url" 
-                value={twitterUrl} 
-                onChange={(e) => setTwitterUrl(e.target.value)} 
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-xs font-mono focus:border-purple-400 focus:outline-none" 
-                placeholder="https://x.com/username" 
-              />
-            </div>
+          <div className="flex items-center justify-end pt-4 border-t border-border">
+            <Button type="submit" disabled={saving}>
+              <Save size={14} />
+              <span>{saving ? 'Saving…' : 'Save all settings'}</span>
+            </Button>
           </div>
-        </div>
-
-        {/* Section 6: AI Chatbot Assistant Knowledge Base & CV Content */}
-        <div className="space-y-6 pt-4 border-t border-slate-800/80">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-            <div className="flex items-center gap-3">
-              <Bot className="text-cyan-400 w-5 h-5" />
-              <h3 className="text-sm font-bold text-white uppercase font-mono tracking-wider">
-                AI Chatbot Knowledge Base & CV Information
-              </h3>
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                if (!cvText) {
-                  setCvText(`SUMMARY:
-Amir Elrefai is a passionate AI & Machine Learning Engineer specializing in Deep Learning, Computer Vision, and AI Systems.
-
-EXPERIENCE:
-- AI Engineer | Freelance / Projects (2023 - Present): Developed custom Computer Vision pipelines using YOLO v11 and OpenCV, built real-time AI agents using LangChain, and deployed full-stack web applications.
-- Lead AI Developer: Built high-accuracy neural network models for image classification, object detection, and feature extraction.
-
-EDUCATION:
-- B.Sc. in Computer Science | Mansoura University (2020 - 2024)
-
-TECHNICAL SKILLS:
-- Frameworks: PyTorch, TensorFlow, OpenCV, YOLO, LangChain, FastAPI, React, Node.js
-- Languages: Python, C++, SQL, JavaScript/TypeScript, C#
-- Infrastructure: Docker, Git, Linux (Ubuntu), Vector DB (Qdrant), MongoDB, PostgreSQL`);
-                }
-
-                if (!chatbotKnowledge) {
-                  setChatbotKnowledge(`CAREER PREFERENCES:
-- Open to Full-time, Remote, Onsite, or Relocation AI Engineering & Computer Vision roles worldwide.
-
-CONVERSATION INSTRUCTIONS:
-- Always highlight Amir's expertise in Computer Vision, Deep Learning, and AI Agents.
-- Be polite, encouraging, and invite visitors to connect with Amir via LinkedIn or GitHub.`);
-                }
-              }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-600/20 hover:bg-purple-600/40 border border-purple-500/30 text-purple-300 text-[10px] font-bold uppercase font-mono transition-all cursor-pointer"
-            >
-              <Sparkles size={13} /> Load Sample Template
-            </button>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1 font-mono flex items-center gap-1.5">
-              <FileText size={13} className="text-purple-400" /> Full CV Content & Work Experience Details
-            </label>
-            <textarea 
-              rows={6} 
-              value={cvText} 
-              onChange={(e) => setCvText(e.target.value)} 
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-xs font-mono focus:border-purple-400 focus:outline-none transition-all leading-relaxed" 
-              placeholder="Paste or write full CV details here (Work History, AI Achievements, Key Projects, Tech Stack, Education, Certifications)..." 
-            />
-            <p className="text-[10px] text-slate-500 ml-1">
-              The AI Assistant queries this text to answer visitor questions about your CV, background, and career history.
-            </p>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1 font-mono flex items-center gap-1.5">
-              <Brain size={13} className="text-cyan-400" /> Custom Knowledge Base & AI Instructions
-            </label>
-            <textarea 
-              rows={6} 
-              value={chatbotKnowledge} 
-              onChange={(e) => setChatbotKnowledge(e.target.value)} 
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-xs font-mono focus:border-cyan-400 focus:outline-none transition-all leading-relaxed" 
-              placeholder="Add extra background info, career objectives, salary expectations, preferred work modes (Remote/Onsite), or specific answers for the AI Assistant..." 
-            />
-            <p className="text-[10px] text-slate-500 ml-1">
-              Custom instructions and knowledge provided directly to the AI Assistant.
-            </p>
-          </div>
-        </div>
-
-        {/* Submit */}
-        <div className="pt-6 border-t border-slate-800 flex justify-end">
-          <button
-            type="submit"
-            disabled={saving}
-            className="flex items-center gap-3 px-8 py-4 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-[0.2em] shadow-lg shadow-purple-500/20 disabled:opacity-50 transition-all cursor-pointer"
-          >
-            <Save size={16} />
-            <span>{saving ? 'Saving Changes...' : 'Save Settings & Knowledge Base'}</span>
-          </button>
-        </div>
-      </form>
+        </form>
+      )}
     </div>
   );
-};
-
-export default ManageSettings;
-
+}

@@ -2,6 +2,7 @@ import { connectDb } from '../_utils/mongodb.js';
 import Project from '../models/Project.js';
 import { setCors, handlePreflight } from '../_middleware.js';
 import { verifyAuth } from '../_utils/auth.js';
+import { projects as staticProjects } from '../../src/data/projects.js';
 
 export default async function handler(req, res) {
   setCors(res);
@@ -10,11 +11,22 @@ export default async function handler(req, res) {
   try {
     // GET requests are public
     if (req.method === 'GET') {
-      await connectDb();
-      const projects = await Project.find({}).sort({ createdAt: -1 });
+      try {
+        await connectDb();
+        const projects = await Project.find({}).sort({ createdAt: -1 });
+        if (Array.isArray(projects) && projects.length > 0) {
+          return res.status(200).json({
+            success: true,
+            data: projects,
+          });
+        }
+      } catch (dbErr) {
+        console.warn('MongoDB query failed, falling back to static projects:', dbErr.message);
+      }
+
       return res.status(200).json({
         success: true,
-        data: projects,
+        data: staticProjects,
       });
     }
 

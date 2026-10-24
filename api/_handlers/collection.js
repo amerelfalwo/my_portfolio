@@ -57,8 +57,11 @@ export default async function handler(req, res) {
   const Model = MODEL_MAP[name];
 
   try {
-    // ── GET: List all ──
+    // ── GET: List all (messages require auth to protect user privacy) ──
     if (req.method === 'GET') {
+      if (name === 'messages') {
+        if (!requireAuth(req, res)) return;
+      }
       const docs = await Model.find({}).lean();
       // Normalize _id → id for frontend compatibility
       const result = docs.map(({ _id, __v: _v, ...rest }) => ({ id: _id.toString(), ...rest }));

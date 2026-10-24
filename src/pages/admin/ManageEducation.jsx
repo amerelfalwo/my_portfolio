@@ -1,196 +1,233 @@
 import { useState, useEffect } from 'react';
-import { useEducationDegree } from '../../hooks/useData';
 import { Link } from 'react-router-dom';
-import {
-  Save, GraduationCap, CheckCircle2, ShieldAlert, MapPin, Calendar, FileText, Award, ArrowRight
-} from 'lucide-react';
+import { Award, ArrowRight, Save, ShieldCheck } from 'lucide-react';
+import { useEducationDegree } from '../../hooks/useData';
 import { authFetch } from '../../lib/authFetch';
+import {
+  Button,
+  Input,
+  Textarea,
+  Field,
+  Card,
+  Alert,
+  LoadingState,
+} from '../../components/admin/ui';
 
-const ManageEducation = () => {
-  const { education, isLoading: eduLoading, mutate: mutateDegree } = useEducationDegree();
+export default function ManageEducation() {
+  const { education, isLoading, mutate } = useEducationDegree();
 
-  // ── Education Degree Form ──
-  const [degree, setDegree] = useState('');
-  const [university, setUniversity] = useState('');
-  const [location, setLocation] = useState('');
-  const [period, setPeriod] = useState('');
-  const [eduDescription, setEduDescription] = useState('');
-  const [savingDegree, setSavingDegree] = useState(false);
-  const [degreeSuccess, setDegreeSuccess] = useState(false);
-  const [degreeError, setDegreeError] = useState(null);
+  const [form, setForm] = useState({
+    degree: '',
+    university: '',
+    location: '',
+    major: '',
+    period: '',
+    honors: '',
+    badge: 'Verified Degree',
+    description: '',
+  });
 
-  // Populate degree form from fetched data
+  const [saving, setSaving] = useState(false);
+  const [success, setSuccess] = useState(null);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     if (education) {
-      setDegree(education.degree || '');
-      setUniversity(education.university || '');
-      setLocation(education.location || '');
-      setPeriod(education.period || '');
-      setEduDescription(education.description || '');
+      setForm({
+        degree: education.degree || '',
+        university: education.university || '',
+        location: education.location || '',
+        major: education.major || '',
+        period: education.period || '',
+        honors: education.honors || 'Very Good Honors',
+        badge: education.badge || 'Verified Degree',
+        description: education.description || '',
+      });
     }
   }, [education]);
 
-  // ── Save Education Degree ──
-  const handleSaveDegree = async (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    setSavingDegree(true);
-    setDegreeError(null);
-    setDegreeSuccess(false);
+    setSaving(true);
+    setError(null);
+    setSuccess(null);
 
     try {
       const res = await authFetch('/api/config?key=educationDegree', {
         method: 'POST',
-        body: JSON.stringify({
-          degree,
-          university,
-          location,
-          period,
-          description: eduDescription,
-        }),
+        body: JSON.stringify(form),
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
 
-      if (!res.ok) {
-        throw new Error(data.error || 'Failed to save education degree');
+      if (!res.ok || (data.success === false)) {
+        throw new Error(data.error || 'Failed to save academic degree information');
       }
 
-      await mutateDegree();
-      setDegreeSuccess(true);
-      setTimeout(() => setDegreeSuccess(false), 3000);
+      await mutate();
+      setSuccess('Academic degree information saved successfully.');
     } catch (err) {
-      setDegreeError(err.message);
+      console.error('Save Education Error:', err);
+      setError(err.message || 'Operation failed');
     } finally {
-      setSavingDegree(false);
+      setSaving(false);
     }
   };
 
   return (
-    <div className="space-y-8 max-w-5xl">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-lg bg-purple-500/10 border border-purple-500/20">
-            <GraduationCap className="w-6 h-6 text-purple-400" />
-          </div>
-          <div>
-            <h3 className="text-xl font-extrabold text-white uppercase font-mono tracking-tight">University Education</h3>
-            <p className="text-slate-400 text-xs">Manage your degree, university name, period, and specialization details.</p>
-          </div>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-border">
+        <div>
+          <h1 className="text-2xl font-light tracking-tight text-foreground">Education</h1>
+          <p className="text-sm text-muted mt-1">
+            Manage your academic degree, university credentials, and capstone project details.
+          </p>
         </div>
 
         <Link
           to="/admin/dashboard/certificates"
-          className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-purple-500/40 text-slate-300 hover:text-white text-xs font-bold transition-all"
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-border bg-surface text-xs font-medium text-foreground hover:bg-surface-muted transition-colors self-start sm:self-auto"
         >
-          <Award size={16} className="text-cyan-400" />
+          <Award size={14} />
           <span>Manage Certificates</span>
-          <ArrowRight size={14} className="text-slate-500" />
+          <ArrowRight size={12} className="text-muted" />
         </Link>
       </div>
 
-      {degreeError && (
-        <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-mono font-bold flex items-center gap-2">
-          <ShieldAlert size={16} /> {degreeError}
-        </div>
-      )}
+      {/* Global Alerts */}
+      {error && <Alert variant="error">{error}</Alert>}
+      {success && <Alert variant="success">{success}</Alert>}
 
-      {degreeSuccess && (
-        <div className="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold flex items-center gap-2">
-          <CheckCircle2 size={16} /> Education degree saved successfully!
-        </div>
-      )}
-
-      {eduLoading ? (
-        <div className="space-y-4 animate-pulse">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-14 rounded-lg bg-slate-900/40 border border-slate-800" />
-          ))}
-        </div>
+      {isLoading ? (
+        <LoadingState message="Loading education settings…" />
       ) : (
-        <form onSubmit={handleSaveDegree} className="space-y-6 p-8 rounded-lg bg-slate-900/60 border border-slate-800 backdrop-blur-md shadow-xl">
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase text-slate-300 font-mono flex items-center gap-2">
-                <GraduationCap size={14} className="text-purple-400" /> Degree Title
-              </label>
-              <input
-                type="text"
-                value={degree}
-                onChange={(e) => setDegree(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none transition-colors"
-                placeholder="B.Sc. Computer Science"
-              />
-            </div>
+        <div className="space-y-6">
+          {/* Degree Form Card */}
+          <Card
+            title="University Degree"
+            description="Details shown in the Academic Background card at the bottom of the public credentials section."
+          >
+            <form onSubmit={handleSave} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Field label="Degree title" required>
+                  <Input
+                    value={form.degree}
+                    onChange={(e) => setForm((prev) => ({ ...prev, degree: e.target.value }))}
+                    placeholder="Bachelor of Science in Computer and Information Sciences"
+                    required
+                  />
+                </Field>
 
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase text-slate-300 font-mono flex items-center gap-2">
-                <FileText size={14} className="text-cyan-400" /> University Name
-              </label>
-              <input
-                type="text"
-                value={university}
-                onChange={(e) => setUniversity(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-sm focus:border-purple-400 focus:outline-none transition-colors"
-                placeholder="Mansoura University"
-              />
-            </div>
-          </div>
+                <Field label="University name" required>
+                  <Input
+                    value={form.university}
+                    onChange={(e) => setForm((prev) => ({ ...prev, university: e.target.value }))}
+                    placeholder="Mansoura University"
+                    required
+                  />
+                </Field>
+              </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase text-slate-300 font-mono flex items-center gap-2">
-                <MapPin size={14} className="text-emerald-400" /> Location
-              </label>
-              <input
-                type="text"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none transition-colors"
-                placeholder="Mansoura, Egypt"
-              />
-            </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <Field label="Major / Specialization">
+                  <Input
+                    value={form.major}
+                    onChange={(e) => setForm((prev) => ({ ...prev, major: e.target.value }))}
+                    placeholder="Information Technology (IT) Major"
+                  />
+                </Field>
 
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase text-slate-300 font-mono flex items-center gap-2">
-                <Calendar size={14} className="text-amber-400" /> Period
-              </label>
-              <input
-                type="text"
-                value={period}
-                onChange={(e) => setPeriod(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none transition-colors"
-                placeholder="2020 — 2024"
-              />
-            </div>
-          </div>
+                <Field label="Location">
+                  <Input
+                    value={form.location}
+                    onChange={(e) => setForm((prev) => ({ ...prev, location: e.target.value }))}
+                    placeholder="Mansoura, Egypt"
+                  />
+                </Field>
 
+                <Field label="Period">
+                  <Input
+                    value={form.period}
+                    onChange={(e) => setForm((prev) => ({ ...prev, period: e.target.value }))}
+                    placeholder="2022 — 2026"
+                  />
+                </Field>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Field label="Honors / Grade badge" hint="e.g. Very Good Honors">
+                  <Input
+                    value={form.honors}
+                    onChange={(e) => setForm((prev) => ({ ...prev, honors: e.target.value }))}
+                    placeholder="Very Good Honors"
+                  />
+                </Field>
+
+                <Field label="Verification badge text" hint="e.g. Verified Degree">
+                  <Input
+                    value={form.badge}
+                    onChange={(e) => setForm((prev) => ({ ...prev, badge: e.target.value }))}
+                    placeholder="Verified Degree"
+                  />
+                </Field>
+              </div>
+
+              <Field
+                label="Capstone & Specialization description"
+                hint="Describe graduation capstone project, multimodal AI focus, and honors distinction."
+              >
+                <Textarea
+                  value={form.description}
+                  onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
+                  placeholder="Capstone: ThyraX — Thyroid Cancer Clinical Decision Support System (Biomedical Deep Learning & Multimodal AI, Score: Distinction)."
+                  rows={3}
+                />
+              </Field>
+
+              <div className="flex items-center justify-end pt-4 border-t border-border">
+                <Button type="submit" disabled={saving || !form.degree.trim() || !form.university.trim()}>
+                  <Save size={14} />
+                  <span>{saving ? 'Saving…' : 'Save degree information'}</span>
+                </Button>
+              </div>
+            </form>
+          </Card>
+
+          {/* Live Preview Card */}
           <div className="space-y-2">
-            <label className="text-xs font-bold uppercase text-slate-300 font-mono">Degree Overview & Specialization</label>
-            <textarea
-              value={eduDescription}
-              onChange={(e) => setEduDescription(e.target.value)}
-              rows={4}
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3.5 px-4 text-white text-sm focus:border-purple-400 focus:outline-none resize-none transition-colors"
-              placeholder="Specialized in Artificial Intelligence and High-Performance Software Engineering..."
-            />
-          </div>
+            <h3 className="text-xs font-medium text-muted uppercase tracking-wider">Public Site Card Preview</h3>
+            <div className="bg-surface rounded-lg border border-border p-6 sm:p-7 flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div>
+                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[11px] font-medium bg-surface-muted text-foreground mb-3">
+                  <span>{form.honors || 'Very Good Honors'}</span>
+                  <span className="text-muted">•</span>
+                  <span>{form.period || '2022 — 2026'}</span>
+                </div>
 
-          <div className="pt-4 flex justify-end">
-            <button
-              type="submit"
-              disabled={savingDegree}
-              className="flex items-center gap-2.5 px-8 py-3.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-wider disabled:opacity-50 transition-all shadow-lg shadow-purple-500/20 cursor-pointer"
-            >
-              <Save size={16} />
-              {savingDegree ? 'Saving...' : 'Save Degree Info'}
-            </button>
+                <h4 className="text-base sm:text-lg font-medium text-foreground tracking-tight">
+                  {form.degree || 'Bachelor of Science in Computer and Information Sciences'}
+                </h4>
+
+                <p className="text-xs sm:text-sm text-muted mt-1 font-normal">
+                  {form.university || 'Mansoura University'} • {form.major || form.location || 'Information Technology (IT) Major'}
+                </p>
+
+                <p className="text-xs text-muted/80 mt-3 font-normal max-w-2xl leading-relaxed">
+                  {form.description || 'Capstone: ThyraX — Thyroid Cancer Clinical Decision Support System.'}
+                </p>
+              </div>
+
+              <div className="shrink-0 flex items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border text-xs font-medium text-foreground bg-surface-muted/60">
+                  <ShieldCheck className="w-3.5 h-3.5 text-foreground" />
+                  <span>{form.badge || 'Verified Degree'}</span>
+                </span>
+              </div>
+            </div>
           </div>
-        </form>
+        </div>
       )}
     </div>
   );
-};
-
-export default ManageEducation;
-
+}

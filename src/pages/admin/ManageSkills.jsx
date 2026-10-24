@@ -1,466 +1,442 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { Plus, Search, Edit2, Trash2, Sparkles, ExternalLink } from 'lucide-react';
 import { useSkills } from '../../hooks/useData';
-import { m, AnimatePresence } from 'framer-motion';
-import { 
-  Plus, Edit2, Trash2, X, Cpu, Zap, Sparkles, Check, ChevronRight 
-} from 'lucide-react';
-import { authFetch } from '../../lib/authFetch';
+import { useAdminCrud } from '../../hooks/useAdminCrud';
 import { getToolIconUrl } from '../../utils/getToolIcon';
+import {
+  Button,
+  Input,
+  Select,
+  Field,
+  Card,
+  Modal,
+  ConfirmDialog,
+  Alert,
+  LoadingState,
+  EmptyState,
+} from '../../components/admin/ui';
 
-const CATEGORY_OPTIONS = [
-  { id: 'deep_learning', label: 'Deep Learning' },
-  { id: 'computer_vision', label: 'Computer Vision' },
-  { id: 'data_science', label: 'Data Science' },
-  { id: 'nlp_ai', label: 'NLP & Gen AI' },
-  { id: 'development', label: 'Development' },
-  { id: 'devops', label: 'DevOps & Tools' },
+const CATEGORIES = [
+  { value: 'ai_ml', label: 'AI, Deep Learning & CV' },
+  { value: 'genai', label: 'Generative AI & Agentic Workflows' },
+  { value: 'backend', label: 'Backend & Systems Engineering' },
+  { value: 'frontend', label: 'Web & Frontend Development' },
+  { value: 'devops', label: 'DevOps & Infrastructure' },
+  { value: 'data_science', label: 'Data Science & Analytics' },
 ];
 
-const POPULAR_SKILLS = [
-  // Deep Learning
-  { name: 'PyTorch', category: 'deep_learning' },
-  { name: 'TensorFlow', category: 'deep_learning' },
-  { name: 'Keras', category: 'deep_learning' },
-  { name: 'JAX', category: 'deep_learning' },
-  { name: 'ONNX', category: 'deep_learning' },
-  { name: 'TensorRT', category: 'deep_learning' },
-
-  // Computer Vision
-  { name: 'OpenCV', category: 'computer_vision' },
-  { name: 'YOLO', category: 'computer_vision' },
-  { name: 'MediaPipe', category: 'computer_vision' },
-  { name: 'Pillow', category: 'computer_vision' },
-  { name: 'Segment Anything', category: 'computer_vision' },
-
-  // Data Science
-  { name: 'Scikit-Learn', category: 'data_science' },
-  { name: 'Pandas', category: 'data_science' },
-  { name: 'NumPy', category: 'data_science' },
-  { name: 'SciPy', category: 'data_science' },
-  { name: 'Matplotlib', category: 'data_science' },
-  { name: 'Seaborn', category: 'data_science' },
-  { name: 'XGBoost', category: 'data_science' },
-
-  // NLP & Gen AI
-  { name: 'LangChain', category: 'nlp_ai' },
-  { name: 'LlamaIndex', category: 'nlp_ai' },
-  { name: 'Hugging Face', category: 'nlp_ai' },
-  { name: 'Transformers', category: 'nlp_ai' },
-  { name: 'OpenAI', category: 'nlp_ai' },
-  { name: 'Ollama', category: 'nlp_ai' },
-  { name: 'Pinecone', category: 'nlp_ai' },
-  { name: 'Qdrant', category: 'nlp_ai' },
-  { name: 'ChromaDB', category: 'nlp_ai' },
-
-  // Development
-  { name: 'Python', category: 'development' },
-  { name: 'C++', category: 'development' },
-  { name: 'FastAPI', category: 'development' },
-  { name: 'Flask', category: 'development' },
-  { name: 'Django', category: 'development' },
-  { name: 'React', category: 'development' },
-  { name: 'Next.js', category: 'development' },
-  { name: 'TypeScript', category: 'development' },
-  { name: 'JavaScript', category: 'development' },
-  { name: 'Node.js', category: 'development' },
-  { name: 'PostgreSQL', category: 'development' },
-  { name: 'MongoDB', category: 'development' },
-
-  // DevOps & Tools
+const POPULAR_SUGGESTIONS = [
+  { name: 'PyTorch', category: 'ai_ml' },
+  { name: 'TensorFlow', category: 'ai_ml' },
+  { name: 'OpenCV', category: 'ai_ml' },
+  { name: 'YOLO', category: 'ai_ml' },
+  { name: 'MediaPipe', category: 'ai_ml' },
+  { name: 'LangChain', category: 'genai' },
+  { name: 'LangGraph', category: 'genai' },
+  { name: 'LlamaIndex', category: 'genai' },
+  { name: 'ChromaDB', category: 'genai' },
+  { name: 'Hugging Face', category: 'genai' },
+  { name: 'Python', category: 'backend' },
+  { name: 'FastAPI', category: 'backend' },
+  { name: 'C++', category: 'backend' },
+  { name: 'PostgreSQL', category: 'backend' },
+  { name: 'MongoDB', category: 'backend' },
   { name: 'Docker', category: 'devops' },
-  { name: 'Kubernetes', category: 'devops' },
   { name: 'Linux', category: 'devops' },
-  { name: 'Ubuntu', category: 'devops' },
   { name: 'Git', category: 'devops' },
-  { name: 'MLflow', category: 'devops' },
+  { name: 'React', category: 'frontend' },
+  { name: 'Next.js', category: 'frontend' },
+  { name: 'TypeScript', category: 'frontend' },
+  { name: 'Tailwind CSS', category: 'frontend' },
 ];
 
-/**
- * Intelligent Category Inference Engine based on technology name
- */
 function inferCategory(name) {
-  if (!name || typeof name !== 'string') return 'development';
+  if (!name) return 'backend';
   const clean = name.trim().toLowerCase();
-
-  // Exact dictionary match
-  const exact = POPULAR_SKILLS.find((s) => s.name.toLowerCase() === clean);
-  if (exact) return exact.category;
-
-  // Keyword rules
-  if (/torch|tensor|keras|jax|nn|deep/i.test(clean)) return 'deep_learning';
-  if (/vision|opencv|yolo|image|detect|segment|mediapipe|cv/i.test(clean)) return 'computer_vision';
-  if (/data|pandas|numpy|scikit|scipy|plot|seaborn|xgboost|learn|stat/i.test(clean)) return 'data_science';
-  if (/langchain|llama|hugging|nlp|gpt|bert|rag|openai|pinecone|qdrant|chroma|ai/i.test(clean)) return 'nlp_ai';
-  if (/docker|k8s|kube|devops|linux|ubuntu|git|mlflow|dvc|ci/i.test(clean)) return 'devops';
-
-  return 'development';
+  const match = POPULAR_SUGGESTIONS.find((s) => s.name.toLowerCase() === clean);
+  if (match) return match.category;
+  if (/torch|tensor|keras|cv|vision|opencv|yolo|segment|onnx/i.test(clean)) return 'ai_ml';
+  if (/lang|llama|graph|rag|chroma|pinecone|gpt|agent|nlp/i.test(clean)) return 'genai';
+  if (/react|next|vue|tailwind|css|html|frontend|script|ui/i.test(clean)) return 'frontend';
+  if (/docker|kube|linux|git|aws|gcp|ci|cd|deploy/i.test(clean)) return 'devops';
+  if (/pandas|numpy|scikit|sql|data|analytics/i.test(clean)) return 'data_science';
+  return 'backend';
 }
 
-const ManageSkills = () => {
+const INITIAL_FORM = {
+  name: '',
+  category: 'ai_ml',
+  icon: '',
+  level: '',
+  context: '',
+  importance: 1,
+};
+
+export default function ManageSkills() {
   const { skills, isLoading, mutate } = useSkills();
+  const {
+    isModalOpen,
+    editingItem,
+    deleteTarget,
+    saving,
+    deleting,
+    error,
+    success,
+    openCreate,
+    openEdit,
+    closeModal,
+    requestDelete,
+    cancelDelete,
+    saveItem,
+    confirmDelete,
+  } = useAdminCrud({ endpoint: '/api/skills', mutate, entityName: 'Skill' });
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingId, setEditingId] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [form, setForm] = useState(INITIAL_FORM);
+  const [filterCategory, setFilterCategory] = useState('ALL');
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // Form State
-  const [name, setName] = useState('');
-  const [icon, setIcon] = useState('');
-  const [category, setCategory] = useState('deep_learning');
-  const [showSuggestions, setShowSuggestions] = useState(false);
-
-  // Filtered auto-suggestions as user types
-  const suggestions = useMemo(() => {
-    if (!name.trim()) return [];
-    const clean = name.trim().toLowerCase();
-    return POPULAR_SKILLS.filter((s) => s.name.toLowerCase().includes(clean)).slice(0, 6);
-  }, [name]);
+  useEffect(() => {
+    if (editingItem) {
+      setForm({
+        name: editingItem.name || '',
+        category: editingItem.category || 'ai_ml',
+        icon: editingItem.icon || '',
+        level: editingItem.level || '',
+        context: editingItem.context || '',
+        importance: editingItem.importance ?? 1,
+      });
+    } else {
+      setForm(INITIAL_FORM);
+    }
+  }, [editingItem, isModalOpen]);
 
   const handleNameChange = (val) => {
-    setName(val);
-    setShowSuggestions(true);
+    const autoCat = inferCategory(val);
+    const autoIcon = getToolIconUrl(val) || '';
+    setForm((prev) => ({
+      ...prev,
+      name: val,
+      category: prev.category === 'ai_ml' && val.trim() ? autoCat : prev.category,
+      icon: !prev.icon || prev.icon.includes('devicon') || prev.icon.includes('simpleicons') ? autoIcon : prev.icon,
+    }));
+  };
 
-    // Auto-infer category & resolve icon URL
-    if (val.trim()) {
-      setCategory(inferCategory(val));
-      setIcon(getToolIconUrl(val));
+  const handleAutoResolveIcon = () => {
+    if (!form.name.trim()) return;
+    const resolved = getToolIconUrl(form.name);
+    if (resolved) {
+      setForm((prev) => ({ ...prev, icon: resolved }));
     }
   };
 
-  const selectSuggestion = (skillItem) => {
-    setName(skillItem.name);
-    setCategory(skillItem.category);
-    setIcon(getToolIconUrl(skillItem.name));
-    setShowSuggestions(false);
-  };
-
-  const openCreateModal = () => {
-    setEditingId(null);
-    setName('');
-    setIcon('');
-    setCategory('deep_learning');
-    setErrorMessage(null);
-    setShowSuggestions(false);
-    setIsModalOpen(true);
-  };
-
-  const openEditModal = (skill) => {
-    setEditingId(skill.id || skill._id);
-    setName(skill.name || '');
-    setIcon(skill.icon || getToolIconUrl(skill.name) || '');
-    setCategory(skill.category || 'deep_learning');
-    setErrorMessage(null);
-    setShowSuggestions(false);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setEditingId(null);
-    setErrorMessage(null);
-    setShowSuggestions(false);
-  };
-
-  const handleSave = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitting(true);
-    setErrorMessage(null);
+    if (!form.name.trim()) return;
 
     const payload = {
-      name,
-      icon: icon || getToolIconUrl(name),
-      category: category || inferCategory(name),
-      importance: 1, // Default importance cleanly in backend
+      name: form.name.trim(),
+      category: form.category,
+      icon: form.icon.trim() || getToolIconUrl(form.name) || '',
+      level: form.level.trim(),
+      context: form.context.trim(),
+      importance: Number(form.importance) || 1,
     };
 
-    try {
-      const url = editingId ? `/api/skills?id=${editingId}` : '/api/skills';
-      const method = editingId ? 'PUT' : 'POST';
-
-      const res = await authFetch(url, {
-        method,
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || 'Failed to save skill entry');
-      }
-
-      await mutate();
-      closeModal();
-    } catch (err) {
-      console.error('Save Skill Error:', err);
-      setErrorMessage(err.message || 'Operation failed');
-    } finally {
-      setSubmitting(false);
-    }
+    await saveItem(payload);
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this skill entry?')) return;
-
-    try {
-      const res = await authFetch(`/api/skills?id=${id}`, {
-        method: 'DELETE',
-      });
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || 'Failed to delete skill entry');
-      }
-
-      await mutate();
-    } catch (err) {
-      alert(`Delete Error: ${err.message}`);
-    }
-  };
+  const filteredSkills = useMemo(() => {
+    if (!Array.isArray(skills)) return [];
+    return skills.filter((item) => {
+      const matchCat = filterCategory === 'ALL' || item.category === filterCategory;
+      const matchQuery =
+        !searchQuery.trim() ||
+        (item.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item.context || '').toLowerCase().includes(searchQuery.toLowerCase());
+      return matchCat && matchQuery;
+    });
+  }, [skills, filterCategory, searchQuery]);
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div className="space-y-6">
+      {/* Top Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-border">
         <div>
-          <p className="text-slate-400 text-sm">Manage technical arsenal skills with smart auto-categorization.</p>
+          <h1 className="text-2xl font-light tracking-tight text-foreground">Skills</h1>
+          <p className="text-sm text-muted mt-1">
+            Manage technologies, frameworks, and tools displayed on the public site.
+          </p>
         </div>
-
-        <button
-          onClick={openCreateModal}
-          className="flex items-center gap-2.5 px-6 py-3.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-purple-500/20 cursor-pointer"
-        >
-          <Plus size={18} />
-          <span>Add New Skill</span>
-        </button>
+        <Button onClick={openCreate} className="self-start sm:self-auto">
+          <Plus size={16} />
+          <span>Add skill</span>
+        </Button>
       </div>
 
-      {/* Grid View */}
-      {isLoading ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 animate-pulse">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="h-36 rounded-lg bg-slate-900/40 border border-slate-800" />
-          ))}
-        </div>
-      ) : skills.length === 0 ? (
-        <div className="text-center py-20 border border-slate-800 rounded-lg bg-slate-900/20">
-          <Cpu className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-          <h3 className="text-lg font-bold text-slate-300">No Skills Found</h3>
-          <p className="text-slate-500 text-xs mt-1">Click "Add New Skill" above to add your first technology.</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {skills.map((skill) => {
-            const skillIcon = skill.icon || getToolIconUrl(skill.name);
+      {/* Global Alerts */}
+      {error && <Alert variant="error">{error}</Alert>}
+      {success && <Alert variant="success">{success}</Alert>}
+
+      {/* Filter and Search Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+          <button
+            type="button"
+            onClick={() => setFilterCategory('ALL')}
+            className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-colors shrink-0 ${
+              filterCategory === 'ALL'
+                ? 'bg-foreground text-surface border-foreground'
+                : 'bg-surface text-muted border-border hover:text-foreground'
+            }`}
+          >
+            All ({Array.isArray(skills) ? skills.length : 0})
+          </button>
+          {CATEGORIES.map((cat) => {
+            const count = Array.isArray(skills) ? skills.filter((s) => s.category === cat.value).length : 0;
             return (
-              <m.div
-                key={skill.id || skill._id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="group relative rounded-lg bg-slate-900/60 border border-slate-800 hover:border-cyan-400/40 p-5 flex flex-col items-center justify-between text-center transition-all duration-300 backdrop-blur-md shadow-lg"
+              <button
+                key={cat.value}
+                type="button"
+                onClick={() => setFilterCategory(cat.value)}
+                className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-colors shrink-0 ${
+                  filterCategory === cat.value
+                    ? 'bg-foreground text-surface border-foreground'
+                    : 'bg-surface text-muted border-border hover:text-foreground'
+                }`}
               >
-                {/* Icon Preview */}
-                <div className="w-12 h-12 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-center mb-3 mt-2 group-hover:scale-110 transition-transform">
-                  {skillIcon ? (
-                    <img
-                      src={skillIcon}
-                      alt={skill.name}
-                      className="w-7 h-7 object-contain"
-                      onError={(e) => { e.target.style.display = 'none'; }}
-                    />
-                  ) : (
-                    <Zap className="w-5 h-5 text-cyan-400" />
-                  )}
+                {cat.label} ({count})
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="relative w-full sm:w-64 shrink-0">
+          <Search size={14} className="absolute start-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search skills…"
+            className="w-full ps-9 pe-3 py-1.5 rounded-lg border border-border bg-surface text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-foreground"
+          />
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      {isLoading ? (
+        <LoadingState message="Loading skills…" />
+      ) : filteredSkills.length === 0 ? (
+        <EmptyState
+          title="No skills found"
+          description={
+            searchQuery || filterCategory !== 'ALL'
+              ? 'Try adjusting your search or category filter.'
+              : 'Add your first skill to display on the public site.'
+          }
+          action={
+            <Button onClick={openCreate} variant="secondary">
+              <Plus size={16} />
+              <span>Add skill</span>
+            </Button>
+          }
+        />
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {filteredSkills.map((skill) => {
+            const iconUrl = skill.icon || getToolIconUrl(skill.name);
+            const catLabel = CATEGORIES.find((c) => c.value === skill.category)?.label || skill.category || 'Skill';
+
+            return (
+              <div
+                key={skill.id || skill._id}
+                className="group rounded-lg border border-border bg-surface p-4 flex items-start justify-between gap-3 hover:border-foreground/30 transition-colors"
+              >
+                <div className="flex items-start gap-3 min-w-0">
+                  <div className="w-10 h-10 rounded-lg border border-border bg-surface-muted flex items-center justify-center shrink-0 overflow-hidden p-2">
+                    {iconUrl ? (
+                      <img
+                        src={iconUrl}
+                        alt=""
+                        className="w-full h-full object-contain grayscale"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <Sparkles size={16} className="text-muted" />
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="text-sm font-medium text-foreground truncate">{skill.name}</h3>
+                    <p className="text-xs text-muted truncate mt-0.5">{catLabel}</p>
+                    {skill.level && (
+                      <span className="inline-block mt-2 px-2 py-0.5 text-[10px] font-medium rounded-full bg-surface-muted border border-border text-muted">
+                        {skill.level}
+                      </span>
+                    )}
+                  </div>
                 </div>
 
-                <h4 className="text-sm font-bold text-white mb-1 leading-tight">{skill.name}</h4>
-                <p className="text-[10px] font-mono uppercase tracking-wider text-purple-400/80 mb-4 font-bold">
-                  {CATEGORY_OPTIONS.find((c) => c.id === skill.category)?.label || skill.category}
-                </p>
-
-                {/* Actions */}
-                <div className="flex items-center gap-2 pt-3 border-t border-slate-800/80 w-full justify-center">
+                <div className="flex items-center gap-1 shrink-0">
                   <button
-                    onClick={() => openEditModal(skill)}
-                    className="p-1.5 rounded-lg bg-slate-800/60 border border-slate-700 hover:border-cyan-400 text-cyan-300 transition-colors cursor-pointer"
-                    title="Edit Skill"
+                    type="button"
+                    onClick={() => openEdit(skill)}
+                    className="p-1.5 text-muted hover:text-foreground rounded transition-colors"
+                    title="Edit skill"
+                    aria-label={`Edit ${skill.name}`}
                   >
-                    <Edit2 size={13} />
+                    <Edit2 size={14} />
                   </button>
                   <button
-                    onClick={() => handleDelete(skill.id || skill._id)}
-                    className="p-1.5 rounded-lg bg-slate-800/60 border border-slate-700 hover:border-red-500 text-red-400 transition-colors cursor-pointer"
-                    title="Delete Skill"
+                    type="button"
+                    onClick={() => requestDelete(skill)}
+                    className="p-1.5 text-muted hover:text-red-600 rounded transition-colors"
+                    title="Delete skill"
+                    aria-label={`Delete ${skill.name}`}
                   >
-                    <Trash2 size={13} />
+                    <Trash2 size={14} />
                   </button>
                 </div>
-              </m.div>
+              </div>
             );
           })}
         </div>
       )}
 
-      {/* Modal Dialog */}
-      <AnimatePresence>
-        {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
-            <m.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-lg p-6 md:p-8 shadow-2xl space-y-6 relative overflow-visible"
-            >
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-                <h3 className="text-lg font-bold text-white uppercase font-mono flex items-center gap-2">
-                  <Sparkles size={18} className="text-cyan-400" />
-                  {editingId ? 'Edit Skill Entry' : 'Add New Skill'}
-                </h3>
-                <button onClick={closeModal} className="p-2 text-slate-400 hover:text-white rounded-lg bg-slate-800/50">
-                  <X size={18} />
-                </button>
+      {/* Add / Edit Modal */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        title={editingItem ? 'Edit skill' : 'Add new skill'}
+        description="Enter skill details to appear in the public tech stack grid."
+      >
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Field label="Skill name" required>
+            <Input
+              value={form.name}
+              onChange={(e) => handleNameChange(e.target.value)}
+              placeholder="e.g. PyTorch, LangGraph, Docker"
+              required
+            />
+          </Field>
+
+          {/* Quick preset suggestions if creating new */}
+          {!editingItem && !form.name && (
+            <div className="space-y-1.5">
+              <label className="text-[11px] font-medium text-muted">Suggested presets</label>
+              <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto">
+                {POPULAR_SUGGESTIONS.slice(0, 10).map((s) => (
+                  <button
+                    key={s.name}
+                    type="button"
+                    onClick={() => {
+                      setForm((prev) => ({
+                        ...prev,
+                        name: s.name,
+                        category: s.category,
+                        icon: getToolIconUrl(s.name) || '',
+                      }));
+                    }}
+                    className="text-xs px-2.5 py-1 rounded-full border border-border bg-surface-muted text-foreground hover:bg-surface transition-colors"
+                  >
+                    + {s.name}
+                  </button>
+                ))}
               </div>
+            </div>
+          )}
 
-              {errorMessage && (
-                <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-mono font-bold">
-                  {errorMessage}
-                </div>
-              )}
+          <Field label="Category" required>
+            <Select
+              value={form.category}
+              onChange={(e) => setForm((prev) => ({ ...prev, category: e.target.value }))}
+              options={CATEGORIES}
+            />
+          </Field>
 
-              <form onSubmit={handleSave} className="space-y-5">
-                {/* Skill Name with Live Autocomplete & Icon Badge */}
-                <div className="space-y-1.5 relative">
-                  <div className="flex items-center justify-between">
-                    <label className="text-[10px] font-bold uppercase text-slate-400 font-mono">
-                      Skill / Technology Name
-                    </label>
-                    {name && (
-                      <span className="text-[10px] text-cyan-400 font-mono flex items-center gap-1">
-                        <Check size={12} /> Auto-suggest active
-                      </span>
-                    )}
-                  </div>
+          <Field
+            label="Icon URL"
+            hint="Supports SVG or PNG URLs. Click auto-detect to generate from simpleicons/devicons."
+          >
+            <div className="flex items-center gap-2">
+              <Input
+                value={form.icon}
+                onChange={(e) => setForm((prev) => ({ ...prev, icon: e.target.value }))}
+                placeholder="https://..."
+              />
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={handleAutoResolveIcon}
+                disabled={!form.name.trim()}
+                className="shrink-0"
+              >
+                Auto-detect
+              </Button>
+            </div>
+            {form.icon && (
+              <div className="mt-2 flex items-center gap-2 p-2 rounded-lg border border-border bg-surface-muted">
+                <img
+                  src={form.icon}
+                  alt="Preview"
+                  className="w-5 h-5 object-contain grayscale shrink-0"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+                <span className="text-xs text-muted truncate">{form.icon}</span>
+              </div>
+            )}
+          </Field>
 
-                  <div className="relative">
-                    <input 
-                      type="text" 
-                      value={name} 
-                      onChange={(e) => handleNameChange(e.target.value)}
-                      onFocus={() => setShowSuggestions(true)}
-                      required 
-                      className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 pl-12 text-white text-sm focus:border-cyan-400 focus:outline-none transition-all" 
-                      placeholder="Type tool name (e.g. PyTorch, OpenCV, Docker...)" 
-                    />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Field label="Proficiency level (optional)" hint="e.g. Production, Advanced, Core">
+              <Input
+                value={form.level}
+                onChange={(e) => setForm((prev) => ({ ...prev, level: e.target.value }))}
+                placeholder="e.g. Production"
+              />
+            </Field>
 
-                    {/* Live SVG Icon Preview Badge */}
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center pointer-events-none">
-                      {icon || getToolIconUrl(name) ? (
-                        <img 
-                          src={icon || getToolIconUrl(name)} 
-                          alt="" 
-                          className="w-4 h-4 object-contain" 
-                          onError={(e) => { e.target.style.display = 'none'; }}
-                        />
-                      ) : (
-                        <Zap className="w-3.5 h-3.5 text-slate-500" />
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Autocomplete Dropdown List */}
-                  {showSuggestions && suggestions.length > 0 && (
-                    <m.div
-                      initial={{ opacity: 0, y: -5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="absolute left-0 right-0 top-full mt-1.5 bg-slate-950 border border-slate-800 rounded-lg p-2 z-50 shadow-2xl space-y-1 max-h-48 overflow-y-auto"
-                    >
-                      <div className="text-[9px] font-mono text-slate-500 px-3 py-1 uppercase font-bold tracking-wider">
-                        Suggested Technologies
-                      </div>
-                      {suggestions.map((s) => (
-                        <button
-                          key={s.name}
-                          type="button"
-                          onClick={() => selectSuggestion(s)}
-                          className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-900/90 text-white text-xs flex items-center justify-between transition-colors cursor-pointer"
-                        >
-                          <div className="flex items-center gap-2.5">
-                            <img 
-                              src={getToolIconUrl(s.name)} 
-                              alt="" 
-                              className="w-4 h-4 object-contain" 
-                              onError={(e) => { e.target.style.display = 'none'; }}
-                            />
-                            <span className="font-bold">{s.name}</span>
-                          </div>
-                          <span className="text-[9px] font-mono text-purple-400 uppercase tracking-widest bg-purple-500/10 px-2 py-0.5 rounded-lg border border-purple-500/20">
-                            {CATEGORY_OPTIONS.find((c) => c.id === s.category)?.label || s.category}
-                          </span>
-                        </button>
-                      ))}
-                    </m.div>
-                  )}
-                </div>
-
-                {/* Intelligent Auto-Category Field */}
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <label className="text-[10px] font-bold uppercase text-slate-400 font-mono">
-                      Category (Auto-Inferred)
-                    </label>
-                    <span className="text-[10px] text-purple-400 font-mono">
-                      Auto-detected from skill name
-                    </span>
-                  </div>
-                  <select 
-                    value={category} 
-                    onChange={(e) => setCategory(e.target.value)} 
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none transition-all font-medium"
-                  >
-                    {CATEGORY_OPTIONS.map((cat) => (
-                      <option key={cat.id} value={cat.id}>{cat.label}</option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Optional Custom SVG/Icon Override */}
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold uppercase text-slate-400 font-mono">
-                    Icon SVG URL (Optional Override)
-                  </label>
-                  <input 
-                    type="text" 
-                    value={icon} 
-                    onChange={(e) => setIcon(e.target.value)} 
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 text-white text-xs font-mono focus:border-cyan-400 focus:outline-none" 
-                    placeholder={getToolIconUrl(name) || 'https://cdn.simpleicons.org/...'} 
-                  />
-                </div>
-
-                {/* Action Buttons */}
-                <div className="pt-4 flex items-center justify-end gap-3 border-t border-slate-800">
-                  <button 
-                    type="button" 
-                    onClick={closeModal} 
-                    className="px-5 py-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider"
-                  >
-                    Cancel
-                  </button>
-                  <button 
-                    type="submit" 
-                    disabled={submitting || !name.trim()} 
-                    className="px-6 py-3 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-wider disabled:opacity-40 transition-all shadow-lg shadow-purple-500/20"
-                  >
-                    {submitting ? 'Saving...' : (editingId ? 'Update Skill' : 'Add Skill')}
-                  </button>
-                </div>
-              </form>
-            </m.div>
+            <Field label="Display priority / importance" hint="Higher numbers appear first">
+              <Input
+                type="number"
+                value={form.importance}
+                onChange={(e) => setForm((prev) => ({ ...prev, importance: e.target.value }))}
+                min="0"
+              />
+            </Field>
           </div>
-        )}
-      </AnimatePresence>
+
+          <Field label="Usage context / notes (optional)" hint="Internal note or hover info">
+            <Input
+              value={form.context}
+              onChange={(e) => setForm((prev) => ({ ...prev, context: e.target.value }))}
+              placeholder="e.g. Custom CNNs, loss surface tuning, agentic tools"
+            />
+          </Field>
+
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
+            <Button type="button" variant="secondary" onClick={closeModal} disabled={saving}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={saving || !form.name.trim()}>
+              {saving ? 'Saving…' : editingItem ? 'Save changes' : 'Add skill'}
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={Boolean(deleteTarget)}
+        title="Delete skill"
+        message={`Are you sure you want to delete "${deleteTarget?.name}"? This will remove it from the database and public site.`}
+        confirmLabel={deleting ? 'Deleting…' : 'Delete skill'}
+        isDestructive
+        onConfirm={confirmDelete}
+        onCancel={cancelDelete}
+      />
     </div>
   );
-};
-
-export default ManageSkills;
+}

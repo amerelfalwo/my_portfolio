@@ -1,250 +1,278 @@
 import { useState, useEffect } from 'react';
-import { getAboutConfig, saveAboutConfig } from '../../api';
-import { m } from 'framer-motion';
-import { User, Save, CheckCircle2, ShieldAlert } from 'lucide-react';
+import { Save, User, Sparkles, Layers, ArrowUpRight } from 'lucide-react';
+import { useAboutConfig } from '../../hooks/useData';
+import { authFetch } from '../../lib/authFetch';
+import ImageUpload from '../../components/admin/ImageUpload';
+import {
+  Button,
+  Input,
+  Textarea,
+  Field,
+  Card,
+  Alert,
+  LoadingState,
+} from '../../components/admin/ui';
 
-const ManageAbout = () => {
-  const [title, setTitle] = useState('');
-  const [subtitle, setSubtitle] = useState('');
-  const [paragraph1, setParagraph1] = useState('');
-  const [paragraph2, setParagraph2] = useState('');
-  const [quote, setQuote] = useState('');
-  const [yearsExp, setYearsExp] = useState('');
-  const [deployments, setDeployments] = useState('');
-  const [availability, setAvailability] = useState('');
-  const [workTypes, setWorkTypes] = useState('');
+const DEFAULT_ABOUT = {
+  title: 'About me',
+  intro: 'I build deep learning, computer vision, and autonomous agent systems, and structure them with Clean Architecture so they stay maintainable. I have 2+ years building AI projects.',
+  statDescription: 'Projects across computer vision, LLM agents, and backend systems.',
+  bullet1: 'Hands-on background developing medical computer vision, multi-agent systems, advanced RAG, and real-time detection pipelines.',
+  bullet2: 'Focused on Clean Architecture: keeping domain logic separate from frameworks, APIs, and storage.',
+  workImage: '/about-work.webp',
+  codeImage: '/about-code.webp',
+  // Preserved legacy fields
+  subtitle: 'Architecting high-performance AI systems and scalable digital solutions.',
+  paragraph2: '',
+  quote: '',
+  yearsExp: '2+',
+  deployments: '15+',
+  availability: 'Available for new opportunities',
+  workTypes: 'REMOTE / ONSITE / HYBRID',
+};
 
-  const [isLoading, setIsLoading] = useState(true);
+export default function ManageAbout() {
+  const { aboutConfig, isLoading, mutate } = useAboutConfig();
+
+  const [form, setForm] = useState(DEFAULT_ABOUT);
   const [saving, setSaving] = useState(false);
-  const [successMsg, setSuccessMsg] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
-
-  const fetchAboutData = async () => {
-    setIsLoading(true);
-    try {
-      const data = await getAboutConfig();
-      if (data) {
-        setTitle(data.title || '');
-        setSubtitle(data.subtitle || '');
-        setParagraph1(data.paragraph1 || '');
-        setParagraph2(data.paragraph2 || '');
-        setQuote(data.quote || '');
-        setYearsExp(data.yearsExp || '');
-        setDeployments(data.deployments || '');
-        setAvailability(data.availability || '');
-        setWorkTypes(data.workTypes || '');
-      }
-    } catch (err) {
-      console.error(err);
-    }
-    setIsLoading(false);
-  };
+  const [success, setSuccess] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchAboutData();
-  }, []);
+    if (aboutConfig) {
+      setForm((prev) => ({
+        ...prev,
+        ...aboutConfig,
+        title: aboutConfig.title || prev.title,
+        intro: aboutConfig.intro || aboutConfig.bio || aboutConfig.paragraph1 || prev.intro,
+        statDescription: aboutConfig.statDescription || prev.statDescription,
+        bullet1: aboutConfig.bullet1 || prev.bullet1,
+        bullet2: aboutConfig.bullet2 || prev.bullet2,
+        workImage: aboutConfig.workImage || prev.workImage,
+        codeImage: aboutConfig.codeImage || prev.codeImage,
+      }));
+    }
+  }, [aboutConfig]);
 
-  const handleSave = async () => {
+  const handleSave = async (e) => {
+    e.preventDefault();
     setSaving(true);
-    setErrorMsg(null);
-    setSuccessMsg(null);
+    setError(null);
+    setSuccess(null);
 
     const payload = {
-      title, subtitle, paragraph1, paragraph2, quote, yearsExp, deployments, availability, workTypes
+      ...form,
+      title: form.title.trim(),
+      intro: form.intro.trim(),
+      bio: form.intro.trim(),
+      statDescription: form.statDescription.trim(),
+      bullet1: form.bullet1.trim(),
+      bullet2: form.bullet2.trim(),
+      workImage: form.workImage.trim() || '/about-work.webp',
+      codeImage: form.codeImage.trim() || '/about-code.webp',
     };
 
     try {
-      const res = await saveAboutConfig(payload);
-      if (res?.success) {
-        setSuccessMsg('About section configuration saved successfully!');
-        setTimeout(() => setSuccessMsg(null), 3000);
-      } else {
-        setErrorMsg(res?.message || 'Failed to save configuration');
+      const res = await authFetch('/api/config?key=about', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || (data.success === false)) {
+        throw new Error(data.error || 'Failed to save About section configuration');
       }
+
+      await mutate();
+      setSuccess('About section configuration saved successfully.');
     } catch (err) {
-      setErrorMsg(err.message || 'An error occurred while saving.');
+      console.error('Save About Error:', err);
+      setError(err.message || 'Operation failed');
     } finally {
       setSaving(false);
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex-1 p-8 ml-64 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-cyan-500/30 border-t-cyan-400 rounded-full animate-spin" />
-      </div>
-    );
-  }
-
   return (
-    <div className="flex-1 p-8 lg:p-12 ml-64 overflow-y-auto max-h-screen bg-[#020617] text-slate-200">
-      <div className="max-w-4xl mx-auto space-y-10 pb-20">
-        
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-              <User className="text-cyan-400" size={24} />
-            </div>
-            <div>
-              <h2 className="text-2xl font-black uppercase tracking-tight text-white">Manage About Section</h2>
-              <p className="text-sm text-slate-400 font-mono mt-1">Configure your personal identity and stats</p>
-            </div>
-          </div>
-          
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="flex items-center gap-2 px-6 py-3 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold uppercase tracking-wider transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(34,211,238,0.2)]"
-          >
-            {saving ? <div className="w-5 h-5 border-2 border-slate-900/30 border-t-slate-900 rounded-full animate-spin" /> : <Save size={18} />}
-            {saving ? 'Saving...' : 'Save Config'}
-          </button>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-border">
+        <div>
+          <h1 className="text-2xl font-light tracking-tight text-foreground">About & Profile</h1>
+          <p className="text-sm text-muted mt-1">
+            Configure bio copy, stat card description, images, and architecture bullet points on the public site.
+          </p>
         </div>
 
-        {/* Notifications */}
-        {successMsg && (
-          <m.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-3 text-emerald-400">
-            <CheckCircle2 size={18} />
-            <span className="font-medium">{successMsg}</span>
-          </m.div>
-        )}
-
-        {errorMsg && (
-          <m.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="p-4 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center gap-3 text-red-400">
-            <ShieldAlert size={18} />
-            <span className="font-medium">{errorMsg}</span>
-          </m.div>
-        )}
-
-        {/* Form Grid */}
-        <div className="grid grid-cols-1 gap-8">
-          
-          {/* Main Info Box */}
-          <div className="p-6 rounded-lg border border-slate-800 bg-slate-900/50 space-y-6">
-            <h3 className="text-lg font-bold text-white uppercase tracking-wider mb-4 border-b border-slate-800 pb-3">Primary Info</h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">Title</label>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono text-sm"
-                  placeholder="e.g. The Architect"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">Subtitle</label>
-                <input
-                  type="text"
-                  value={subtitle}
-                  onChange={(e) => setSubtitle(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono text-sm"
-                  placeholder="e.g. I build high-performance systems..."
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">Paragraph 1</label>
-              <textarea
-                value={paragraph1}
-                onChange={(e) => setParagraph1(e.target.value)}
-                rows={3}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all text-sm leading-relaxed"
-                placeholder="First paragraph of identity..."
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">Paragraph 2</label>
-              <textarea
-                value={paragraph2}
-                onChange={(e) => setParagraph2(e.target.value)}
-                rows={3}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all text-sm leading-relaxed"
-                placeholder="Second paragraph of identity..."
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">Quote</label>
-              <input
-                type="text"
-                value={quote}
-                onChange={(e) => setQuote(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono text-sm"
-                placeholder="e.g. 'Efficiency is doing things right...'"
-              />
-            </div>
-          </div>
-
-          {/* Stats & Availability Box */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="p-6 rounded-lg border border-slate-800 bg-slate-900/50 space-y-6">
-              <h3 className="text-lg font-bold text-white uppercase tracking-wider mb-4 border-b border-slate-800 pb-3">Stats</h3>
-              
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">Years Experience</label>
-                  <input
-                    type="text"
-                    value={yearsExp}
-                    onChange={(e) => setYearsExp(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono text-sm"
-                    placeholder="e.g. 5+"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">Deployments</label>
-                  <input
-                    type="text"
-                    value={deployments}
-                    onChange={(e) => setDeployments(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono text-sm"
-                    placeholder="e.g. 50+"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="p-6 rounded-lg border border-slate-800 bg-slate-900/50 space-y-6">
-              <h3 className="text-lg font-bold text-white uppercase tracking-wider mb-4 border-b border-slate-800 pb-3">Status</h3>
-              
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">Availability Text</label>
-                  <input
-                    type="text"
-                    value={availability}
-                    onChange={(e) => setAvailability(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono text-sm"
-                    placeholder="e.g. Available for new opportunities"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">Work Types</label>
-                  <input
-                    type="text"
-                    value={workTypes}
-                    onChange={(e) => setWorkTypes(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono text-sm"
-                    placeholder="e.g. REMOTE / ONSITE / RELOCATION"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
+        <Button type="button" onClick={handleSave} disabled={saving} className="self-start sm:self-auto">
+          <Save size={14} />
+          <span>{saving ? 'Saving…' : 'Save changes'}</span>
+        </Button>
       </div>
+
+      {/* Global Alerts */}
+      {error && <Alert variant="error">{error}</Alert>}
+      {success && <Alert variant="success">{success}</Alert>}
+
+      {isLoading ? (
+        <LoadingState message="Loading about configuration…" />
+      ) : (
+        <form onSubmit={handleSave} className="space-y-6">
+          {/* Main Bio & Headline */}
+          <Card
+            title="Bio & Narrative"
+            description="Displayed on the left column of the About section."
+          >
+            <div className="space-y-4">
+              <Field label="Section title" hint="Default is 'About me'">
+                <Input
+                  value={form.title}
+                  onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
+                  placeholder="About me"
+                />
+              </Field>
+
+              <Field
+                label="Primary bio paragraph"
+                required
+                hint="Summarizes your engineering focus, experience, and clean architecture foundation."
+              >
+                <Textarea
+                  value={form.intro}
+                  onChange={(e) => setForm((prev) => ({ ...prev, intro: e.target.value }))}
+                  placeholder="I build deep learning, computer vision, and autonomous agent systems..."
+                  rows={4}
+                  required
+                />
+              </Field>
+            </div>
+          </Card>
+
+          {/* Stat Card & Bullet Points */}
+          <Card
+            title="Middle Stat Card & Key Bullet Points"
+            description="Content for the stat highlight and right-hand technical capability bullets."
+          >
+            <div className="space-y-4">
+              <Field
+                label="Stat card caption"
+                hint="Displayed below the dynamic project count in the middle card."
+              >
+                <Input
+                  value={form.statDescription}
+                  onChange={(e) => setForm((prev) => ({ ...prev, statDescription: e.target.value }))}
+                  placeholder="Projects across computer vision, LLM agents, and backend systems."
+                />
+              </Field>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Field
+                  label="Technical highlight bullet 1"
+                  hint="First star bullet point in right column."
+                >
+                  <Textarea
+                    value={form.bullet1}
+                    onChange={(e) => setForm((prev) => ({ ...prev, bullet1: e.target.value }))}
+                    placeholder="Hands-on background developing medical computer vision, multi-agent systems..."
+                    rows={3}
+                  />
+                </Field>
+
+                <Field
+                  label="Architecture principle bullet 2"
+                  hint="Second star bullet point in right column."
+                >
+                  <Textarea
+                    value={form.bullet2}
+                    onChange={(e) => setForm((prev) => ({ ...prev, bullet2: e.target.value }))}
+                    placeholder="Focused on Clean Architecture: keeping domain logic separate..."
+                    rows={3}
+                  />
+                </Field>
+              </div>
+            </div>
+          </Card>
+
+          {/* About Images */}
+          <Card
+            title="Section Imagery"
+            description="Manage the tall work portrait and square code snippet visuals."
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <Field
+                label="Work portrait image (4:5 aspect)"
+                hint="Default is /about-work.webp"
+              >
+                <ImageUpload
+                  currentImage={form.workImage}
+                  onImageChange={(url) => setForm((prev) => ({ ...prev, workImage: url }))}
+                  placeholder="Upload 4:5 work photo"
+                />
+              </Field>
+
+              <Field
+                label="Code snippet visual (1:1 square)"
+                hint="Default is /about-code.webp"
+              >
+                <ImageUpload
+                  currentImage={form.codeImage}
+                  onImageChange={(url) => setForm((prev) => ({ ...prev, codeImage: url }))}
+                  placeholder="Upload 1:1 code snippet visual"
+                />
+              </Field>
+            </div>
+          </Card>
+
+          {/* Secondary / Availability Information */}
+          <Card
+            title="Availability & Work Preferences"
+            description="General contract and availability settings."
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Field label="Years of experience" hint="e.g. 2+">
+                <Input
+                  value={form.yearsExp}
+                  onChange={(e) => setForm((prev) => ({ ...prev, yearsExp: e.target.value }))}
+                  placeholder="2+"
+                />
+              </Field>
+
+              <Field label="Availability status" hint="e.g. Available for new opportunities">
+                <Input
+                  value={form.availability}
+                  onChange={(e) => setForm((prev) => ({ ...prev, availability: e.target.value }))}
+                  placeholder="Available for new opportunities"
+                />
+              </Field>
+
+              <Field label="Work types" hint="e.g. REMOTE / ONSITE / HYBRID">
+                <Input
+                  value={form.workTypes}
+                  onChange={(e) => setForm((prev) => ({ ...prev, workTypes: e.target.value }))}
+                  placeholder="REMOTE / ONSITE / HYBRID"
+                />
+              </Field>
+
+              <Field label="Personal quote / motto (optional)">
+                <Input
+                  value={form.quote}
+                  onChange={(e) => setForm((prev) => ({ ...prev, quote: e.target.value }))}
+                  placeholder="Continuous learning and relentless discipline..."
+                />
+              </Field>
+            </div>
+          </Card>
+
+          <div className="flex items-center justify-end pt-4 border-t border-border">
+            <Button type="submit" disabled={saving || !form.intro.trim()}>
+              <Save size={14} />
+              <span>{saving ? 'Saving…' : 'Save about configuration'}</span>
+            </Button>
+          </div>
+        </form>
+      )}
     </div>
   );
-};
-
-export default ManageAbout;
+}

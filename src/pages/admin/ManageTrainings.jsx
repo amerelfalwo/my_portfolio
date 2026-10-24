@@ -1,398 +1,302 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Plus, Edit2, Trash2, BookOpen, ExternalLink, CheckCircle2 } from 'lucide-react';
 import { useTrainings } from '../../hooks/useData';
-import { m, AnimatePresence } from 'framer-motion';
+import { useAdminCrud } from '../../hooks/useAdminCrud';
 import {
-  Plus, Edit2, Trash2, X, BookOpen, CheckCircle2, Clock, Calendar, ExternalLink, XCircle
-} from 'lucide-react';
-import { authFetch } from '../../lib/authFetch';
+  Button,
+  Input,
+  Textarea,
+  Field,
+  Card,
+  Modal,
+  ConfirmDialog,
+  Alert,
+  LoadingState,
+  EmptyState,
+} from '../../components/admin/ui';
 
-const ManageTrainings = () => {
+export default function ManageTrainings() {
   const { trainings, isLoading, mutate } = useTrainings();
+  const {
+    isModalOpen,
+    editingItem,
+    deleteTarget,
+    saving,
+    deleting,
+    error,
+    success,
+    openCreate,
+    openEdit,
+    closeModal,
+    requestDelete,
+    cancelDelete,
+    saveItem,
+    confirmDelete,
+  } = useAdminCrud({ endpoint: '/api/collection?name=trainings', mutate, entityName: 'Training' });
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingId, setEditingId] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [form, setForm] = useState({
+    title: '',
+    provider: '',
+    duration: '',
+    description: '',
+    skillsListedText: '',
+    certificateUrl: '',
+    isCompleted: true,
+  });
 
-  // Form State
-  const [title, setTitle] = useState('');
-  const [provider, setProvider] = useState('');
-  const [duration, setDuration] = useState('');
-  const [description, setDescription] = useState('');
-  const [skillsListed, setSkillsListed] = useState('');
-  const [isCompleted, setIsCompleted] = useState(false);
-  const [certificateUrl, setCertificateUrl] = useState('');
-  const [status, setStatus] = useState('Actively Relevant');
+  useEffect(() => {
+    if (editingItem) {
+      setForm({
+        title: editingItem.title || '',
+        provider: editingItem.provider || '',
+        duration: editingItem.duration || '',
+        description: editingItem.description || '',
+        skillsListedText: Array.isArray(editingItem.skillsListed)
+          ? editingItem.skillsListed.join(', ')
+          : '',
+        certificateUrl: editingItem.certificateUrl || '',
+        isCompleted: editingItem.isCompleted !== undefined ? editingItem.isCompleted : true,
+      });
+    } else {
+      setForm({
+        title: '',
+        provider: '',
+        duration: '',
+        description: '',
+        skillsListedText: '',
+        certificateUrl: '',
+        isCompleted: true,
+      });
+    }
+  }, [editingItem, isModalOpen]);
 
-  const openCreateModal = () => {
-    setEditingId(null);
-    setTitle('');
-    setProvider('');
-    setDuration('');
-    setDescription('');
-    setSkillsListed('');
-    setIsCompleted(false);
-    setCertificateUrl('');
-    setStatus('Actively Relevant');
-    setErrorMessage(null);
-    setIsModalOpen(true);
-  };
-
-  const openEditModal = (training) => {
-    setEditingId(training.id || training._id);
-    setTitle(training.title || '');
-    setProvider(training.provider || '');
-    setDuration(training.duration || '');
-    setDescription(training.description || '');
-    setSkillsListed((training.skillsListed || []).join(', '));
-    setIsCompleted(training.isCompleted || false);
-    setCertificateUrl(training.certificateUrl || '');
-    setStatus(training.status || 'Actively Relevant');
-    setErrorMessage(null);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setEditingId(null);
-    setErrorMessage(null);
-  };
-
-  const handleSave = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitting(true);
-    setErrorMessage(null);
+    if (!form.title.trim() || !form.provider.trim()) return;
 
     const payload = {
-      title,
-      provider,
-      duration,
-      description,
-      skillsListed: skillsListed
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean),
-      isCompleted,
-      certificateUrl,
-      status,
+      title: form.title.trim(),
+      provider: form.provider.trim(),
+      duration: form.duration.trim(),
+      description: form.description.trim(),
+      skillsListed: form.skillsListedText
+        ? form.skillsListedText.split(',').map((s) => s.trim()).filter(Boolean)
+        : [],
+      certificateUrl: form.certificateUrl.trim(),
+      isCompleted: Boolean(form.isCompleted),
     };
 
-    try {
-      const url = editingId
-        ? `/api/collection?name=trainings&id=${editingId}`
-        : '/api/collection?name=trainings';
-      const method = editingId ? 'PUT' : 'POST';
-
-      const res = await authFetch(url, {
-        method,
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || 'Failed to save training');
-      }
-
-      await mutate();
-      closeModal();
-    } catch (err) {
-      console.error('Save Training Error:', err);
-      setErrorMessage(err.message || 'Operation failed');
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this training?')) return;
-
-    try {
-      const res = await authFetch(`/api/collection?name=trainings&id=${id}`, {
-        method: 'DELETE',
-      });
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || 'Failed to delete training');
-      }
-
-      await mutate();
-    } catch (err) {
-      alert(`Delete Error: ${err.message}`);
-    }
+    await saveItem(payload);
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-border">
         <div>
-          <p className="text-slate-400 text-sm">
-            Manage your training programs, courses, and professional development activities.
+          <h1 className="text-2xl font-light tracking-tight text-foreground">Trainings & Bootcamps (Dormant)</h1>
+          <p className="text-sm text-muted mt-1">
+            Manage technical training programs and bootcamp records. Note: Trainings section is dormant on the light public site.
           </p>
         </div>
 
-        <button
-          onClick={openCreateModal}
-          className="flex items-center gap-2.5 px-6 py-3.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-purple-500/20 cursor-pointer"
-        >
-          <Plus size={18} />
-          <span>Add Training</span>
-        </button>
+        <Button onClick={openCreate} className="self-start sm:self-auto">
+          <Plus size={16} />
+          <span>Add training</span>
+        </Button>
       </div>
 
-      {/* Grid View */}
+      {/* Global Alerts */}
+      {error && <Alert variant="error">{error}</Alert>}
+      {success && <Alert variant="success">{success}</Alert>}
+
       {isLoading ? (
-        <div className="grid md:grid-cols-2 gap-6 animate-pulse">
-          {[1, 2].map((i) => (
-            <div key={i} className="h-64 rounded-lg bg-slate-900/40 border border-slate-800" />
-          ))}
-        </div>
-      ) : trainings.length === 0 ? (
-        <div className="text-center py-20 border border-slate-800 rounded-lg bg-slate-900/20">
-          <BookOpen className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-          <h3 className="text-lg font-bold text-slate-300">No Trainings Found</h3>
-          <p className="text-slate-500 text-xs mt-1">Click "Add Training" above to record your courses.</p>
-        </div>
+        <LoadingState message="Loading trainings…" />
+      ) : !Array.isArray(trainings) || trainings.length === 0 ? (
+        <EmptyState
+          title="No training records found"
+          description="Trainings collection is currently empty."
+          action={
+            <Button onClick={openCreate} variant="secondary">
+              <Plus size={16} />
+              <span>Add training</span>
+            </Button>
+          }
+        />
       ) : (
-        <div className="grid md:grid-cols-2 gap-6">
-          {trainings.map((training) => (
-            <m.div
-              key={training.id || training._id}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="group relative rounded-lg bg-slate-900/60 border border-slate-800 hover:border-purple-500/40 p-6 flex flex-col justify-between transition-all duration-300 backdrop-blur-md shadow-lg"
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {trainings.map((trn) => (
+            <div
+              key={trn.id || trn._id}
+              className="rounded-lg border border-border bg-surface p-5 flex flex-col justify-between hover:border-foreground/30 transition-colors"
             >
               <div>
-                {/* Header row: Status & Duration */}
-                <div className="flex items-center justify-between mb-4">
-                  <span
-                    className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider font-mono ${
-                      training.isCompleted
-                        ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                        : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                    }`}
-                  >
-                    {training.isCompleted ? <CheckCircle2 size={12} /> : <Clock size={12} />}
-                    {training.isCompleted ? 'Completed' : training.status || 'In Progress'}
-                  </span>
-
-                  {training.duration && (
-                    <span className="text-slate-400 text-xs font-mono flex items-center gap-1.5">
-                      <Calendar size={13} className="text-slate-500" />
-                      {training.duration}
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <span className="text-xs font-medium text-muted">{trn.provider}</span>
+                  {trn.duration && (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] bg-surface-muted border border-border text-muted">
+                      {trn.duration}
                     </span>
                   )}
                 </div>
 
-                <h3 className="text-lg font-bold text-white mb-1 leading-snug">{training.title}</h3>
-                <p className="text-purple-400/80 font-bold uppercase text-[10px] tracking-widest mb-3">
-                  {training.provider || 'Provider'}
-                </p>
-
-                {training.description && (
-                  <p className="text-slate-400 text-sm leading-relaxed mb-4 line-clamp-3">{training.description}</p>
+                <h3 className="text-sm font-medium text-foreground">{trn.title}</h3>
+                {trn.description && (
+                  <p className="text-xs text-muted mt-2 line-clamp-3 leading-relaxed">
+                    {trn.description}
+                  </p>
                 )}
 
-                {/* Skills Tags */}
-                {training.skillsListed && training.skillsListed.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mb-4">
-                    {training.skillsListed.slice(0, 6).map((skill, i) => (
+                {Array.isArray(trn.skillsListed) && trn.skillsListed.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-1">
+                    {trn.skillsListed.slice(0, 3).map((s, i) => (
                       <span
                         key={i}
-                        className="px-2.5 py-1 rounded-lg bg-slate-800/60 border border-slate-700/50 text-[10px] font-mono text-cyan-300/80"
+                        className="px-2 py-0.5 rounded-full text-[10px] bg-surface-muted border border-border text-muted"
                       >
-                        {skill}
+                        {s}
                       </span>
                     ))}
                   </div>
                 )}
               </div>
 
-              {/* Actions Footer */}
-              <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                {training.certificateUrl ? (
-                  <a
-                    href={training.certificateUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-xs font-bold text-cyan-400 hover:underline flex items-center gap-1.5"
-                  >
-                    <span>View Certificate</span>
-                    <ExternalLink size={13} />
-                  </a>
-                ) : (
-                  <div />
-                )}
+              <div className="flex items-center justify-between pt-3 mt-4 border-t border-border">
+                <span className="text-[11px] text-muted flex items-center gap-1">
+                  <CheckCircle2 size={13} className="text-foreground" />
+                  <span>{trn.isCompleted ? 'Completed' : 'In Progress'}</span>
+                </span>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
+                  {trn.certificateUrl && (
+                    <a
+                      href={trn.certificateUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-1.5 text-muted hover:text-foreground rounded transition-colors"
+                      title="View certificate"
+                    >
+                      <ExternalLink size={14} />
+                    </a>
+                  )}
                   <button
-                    onClick={() => openEditModal(training)}
-                    className="p-2 rounded-lg bg-slate-800/60 border border-slate-700 hover:border-cyan-400 text-cyan-300 transition-colors cursor-pointer"
-                    title="Edit Training"
+                    type="button"
+                    onClick={() => openEdit(trn)}
+                    className="p-1.5 text-muted hover:text-foreground rounded transition-colors"
+                    title="Edit training"
                   >
                     <Edit2 size={14} />
                   </button>
                   <button
-                    onClick={() => handleDelete(training.id || training._id)}
-                    className="p-2 rounded-lg bg-slate-800/60 border border-slate-700 hover:border-red-500 text-red-400 transition-colors cursor-pointer"
-                    title="Delete Training"
+                    type="button"
+                    onClick={() => requestDelete(trn)}
+                    className="p-1.5 text-muted hover:text-red-600 rounded transition-colors"
+                    title="Delete training"
                   >
                     <Trash2 size={14} />
                   </button>
                 </div>
               </div>
-            </m.div>
+            </div>
           ))}
         </div>
       )}
 
-      {/* Modal Dialog */}
-      <AnimatePresence>
-        {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
-            <m.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-lg p-6 md:p-8 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto"
-            >
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-                <h3 className="text-lg font-bold text-white uppercase font-mono">
-                  {editingId ? 'Edit Training' : 'Add New Training'}
-                </h3>
-                <button onClick={closeModal} className="p-2 text-slate-400 hover:text-white rounded-lg bg-slate-800/50">
-                  <X size={18} />
-                </button>
-              </div>
+      {/* Add / Edit Modal */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        title={editingItem ? 'Edit training' : 'Add new training'}
+        description="Enter training program details, provider, and duration."
+      >
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Field label="Training / Track title" required>
+            <Input
+              value={form.title}
+              onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
+              placeholder="e.g. Applied Data Science, Deep Learning & MLOps Track"
+              required
+            />
+          </Field>
 
-              {errorMessage && (
-                <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-mono font-bold">
-                  {errorMessage}
-                </div>
-              )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Field label="Provider / Organization" required>
+              <Input
+                value={form.provider}
+                onChange={(e) => setForm((prev) => ({ ...prev, provider: e.target.value }))}
+                placeholder="e.g. DEPI, Google Developer Groups"
+                required
+              />
+            </Field>
 
-              <form onSubmit={handleSave} className="space-y-4">
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold uppercase text-slate-400 font-mono">Training Title</label>
-                  <input
-                    type="text"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    required
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none"
-                    placeholder="Deep Learning Specialization"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold uppercase text-slate-400 font-mono">Provider / Platform</label>
-                  <input
-                    type="text"
-                    value={provider}
-                    onChange={(e) => setProvider(e.target.value)}
-                    required
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 text-white text-sm focus:border-purple-400 focus:outline-none"
-                    placeholder="Coursera / Udemy / DeepLearning.AI"
-                  />
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold uppercase text-slate-400 font-mono">Duration</label>
-                    <input
-                      type="text"
-                      value={duration}
-                      onChange={(e) => setDuration(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none"
-                      placeholder="3 months / 40 hours"
-                    />
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold uppercase text-slate-400 font-mono">Status</label>
-                    <select
-                      value={status}
-                      onChange={(e) => setStatus(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none"
-                    >
-                      <option value="Actively Relevant">Actively Relevant</option>
-                      <option value="In Progress">In Progress</option>
-                      <option value="Completed">Completed</option>
-                      <option value="Paused">Paused</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold uppercase text-slate-400 font-mono">Description</label>
-                  <textarea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    rows={3}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 text-white text-sm focus:border-purple-400 focus:outline-none resize-none"
-                    placeholder="Comprehensive deep learning specialization covering CNNs, RNNs, and Transformers..."
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold uppercase text-slate-400 font-mono">Skills Covered (comma-separated)</label>
-                  <input
-                    type="text"
-                    value={skillsListed}
-                    onChange={(e) => setSkillsListed(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none"
-                    placeholder="Python, TensorFlow, Neural Networks"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold uppercase text-slate-400 font-mono">Certificate URL (optional)</label>
-                  <input
-                    type="url"
-                    value={certificateUrl}
-                    onChange={(e) => setCertificateUrl(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 text-white text-sm focus:border-cyan-400 focus:outline-none"
-                    placeholder="https://coursera.org/verify/..."
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="flex items-center gap-3 p-3 rounded-lg bg-slate-950 border border-slate-800 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={isCompleted}
-                      onChange={(e) => setIsCompleted(e.target.checked)}
-                      className="w-4 h-4 rounded text-purple-600 focus:ring-purple-500"
-                    />
-                    <span className="text-xs font-bold text-slate-300">Mark as Completed</span>
-                  </label>
-                </div>
-
-                <div className="pt-4 flex items-center justify-end gap-3 border-t border-slate-800">
-                  <button
-                    type="button"
-                    onClick={closeModal}
-                    className="px-5 py-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="px-6 py-3 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-wider disabled:opacity-50"
-                  >
-                    {submitting ? 'Saving...' : editingId ? 'Update Training' : 'Add Training'}
-                  </button>
-                </div>
-              </form>
-            </m.div>
+            <Field label="Duration" hint="e.g. 6 Months, 40 Hours">
+              <Input
+                value={form.duration}
+                onChange={(e) => setForm((prev) => ({ ...prev, duration: e.target.value }))}
+                placeholder="6 Months"
+              />
+            </Field>
           </div>
-        )}
-      </AnimatePresence>
+
+          <Field label="Program description">
+            <Textarea
+              value={form.description}
+              onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
+              placeholder="Intensive professional training in deep neural network development and production deployment..."
+              rows={3}
+            />
+          </Field>
+
+          <Field label="Skills / Topics covered" hint="Comma-separated">
+            <Input
+              value={form.skillsListedText}
+              onChange={(e) => setForm((prev) => ({ ...prev, skillsListedText: e.target.value }))}
+              placeholder="PyTorch, Docker, MLOps, CI/CD"
+            />
+          </Field>
+
+          <Field label="Certificate / Credential link (optional)">
+            <Input
+              value={form.certificateUrl}
+              onChange={(e) => setForm((prev) => ({ ...prev, certificateUrl: e.target.value }))}
+              placeholder="https://..."
+            />
+          </Field>
+
+          <div className="flex items-center gap-2 pt-1">
+            <input
+              type="checkbox"
+              id="isCompleted"
+              checked={form.isCompleted}
+              onChange={(e) => setForm((prev) => ({ ...prev, isCompleted: e.target.checked }))}
+              className="rounded border-border text-foreground focus:ring-0"
+            />
+            <label htmlFor="isCompleted" className="text-xs text-foreground cursor-pointer">
+              Mark as successfully completed track
+            </label>
+          </div>
+
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
+            <Button type="button" variant="secondary" onClick={closeModal} disabled={saving}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={saving || !form.title.trim() || !form.provider.trim()}>
+              {saving ? 'Saving…' : editingItem ? 'Save changes' : 'Add training'}
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={Boolean(deleteTarget)}
+        title="Delete training"
+        message={`Are you sure you want to delete training "${deleteTarget?.title}"?`}
+        confirmLabel={deleting ? 'Deleting…' : 'Delete training'}
+        isDestructive
+        onConfirm={confirmDelete}
+        onCancel={cancelDelete}
+      />
     </div>
   );
-};
-
-export default ManageTrainings;
+}

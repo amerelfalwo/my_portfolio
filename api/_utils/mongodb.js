@@ -1,7 +1,5 @@
 import mongoose from 'mongoose';
 
-const MONGO_URI = process.env.MONGO_URI;
-const DB_NAME = process.env.MONGO_DB_NAME || 'portfolio';
 
 /**
  * Global cache object to persist connection across hot reloads in development
@@ -18,25 +16,28 @@ if (!cached) {
  * @returns {Promise<mongoose.Connection>}
  */
 export async function connectDb() {
+  const uri = process.env.MONGO_URI || process.env.MONGODB_URI;
+  const dbName = process.env.MONGO_DB_NAME || 'portfolio';
+
   if (cached.conn && mongoose.connection.readyState === 1) {
     return cached.conn;
   }
 
   if (!cached.promise || mongoose.connection.readyState === 0 || mongoose.connection.readyState === 3) {
-    if (!MONGO_URI) {
+    if (!uri) {
       throw new Error('Please define the MONGO_URI environment variable inside .env or Vercel settings.');
     }
 
     const opts = {
-      dbName: DB_NAME,
+      dbName: dbName,
       bufferCommands: false,
-      serverSelectionTimeoutMS: 8000,
-      connectTimeoutMS: 15000,
+      serverSelectionTimeoutMS: 3000,
+      connectTimeoutMS: 5000,
       socketTimeoutMS: 45000,
       maxPoolSize: 10,
     };
 
-    cached.promise = mongoose.connect(MONGO_URI, opts).then((m) => m.connection);
+    cached.promise = mongoose.connect(uri, opts).then((m) => m.connection);
   }
 
   try {

@@ -1,7 +1,19 @@
 import { useState, useRef } from 'react';
-import { UploadCloud, X, Image as ImageIcon, Loader2, Link2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { UploadCloud, X, Link2, AlertCircle, Loader2 } from 'lucide-react';
+import { Button, Input } from './ui';
 
-const ImageUpload = ({ value, onUploadComplete, label = 'Image Asset' }) => {
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'];
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+
+const ImageUpload = ({
+  value,
+  currentImage,
+  onUploadComplete,
+  onImageChange,
+  label = 'Image asset',
+}) => {
+  const activeValue = value !== undefined ? value : (currentImage || '');
+  const handleComplete = onUploadComplete || onImageChange || (() => {});
   const [isUploading, setIsUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [error, setError] = useState(null);
@@ -12,14 +24,28 @@ const ImageUpload = ({ value, onUploadComplete, label = 'Image Asset' }) => {
   const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
   const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
+  const validateFile = (file) => {
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      throw new Error('Unsupported file type. Please upload a PNG, JPEG, WebP, or SVG.');
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      throw new Error('File exceeds 5MB limit. Please upload a smaller image.');
+    }
+  };
+
   const handleFileUpload = async (file) => {
     if (!file) return;
     setError(null);
 
-    // Validate Cloudinary env variables
+    try {
+      validateFile(file);
+    } catch (valErr) {
+      setError(valErr.message);
+      return;
+    }
+
     if (!cloudName || !uploadPreset) {
-      console.warn('Cloudinary env variables missing. Falling back to URL input.');
-      setError('Cloudinary credentials missing in .env. Enter image URL manually below.');
+      setError('Cloudinary upload keys not configured. Please paste a direct image URL below.');
       setShowUrlFallback(true);
       return;
     }
@@ -39,17 +65,17 @@ const ImageUpload = ({ value, onUploadComplete, label = 'Image Asset' }) => {
       const data = await res.json();
 
       if (!res.ok || data.error) {
-        throw new Error(data.error?.message || 'Failed to upload image to Cloudinary.');
+        throw new Error(data.error?.message || 'Failed to upload image.');
       }
 
       if (data.secure_url) {
-        onUploadComplete(data.secure_url);
+        handleComplete(data.secure_url);
       } else {
-        throw new Error('No secure URL returned from Cloudinary');
+        throw new Error('No secure URL returned from upload provider.');
       }
     } catch (err) {
-      console.error('Cloudinary Upload Error:', err);
-      setError(err.message || 'Upload failed. Try direct URL fallback.');
+      console.error('Image Upload Error:', err);
+      setError(err.message || 'Upload failed. Try entering a direct image URL.');
       setShowUrlFallback(true);
     } finally {
       setIsUploading(false);
@@ -78,125 +104,111 @@ const ImageUpload = ({ value, onUploadComplete, label = 'Image Asset' }) => {
   const handleManualUrlSubmit = (e) => {
     e.preventDefault();
     if (manualUrl.trim()) {
-      onUploadComplete(manualUrl.trim());
+      handleComplete(manualUrl.trim());
       setManualUrl('');
       setError(null);
     }
   };
 
-  const clearImage = () => {
-    onUploadComplete('');
-  };
-
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 text-start">
       <div className="flex items-center justify-between">
-        <label className="text-[10px] font-bold uppercase text-slate-400 font-mono tracking-wider">
+        <label className="text-sm font-medium text-foreground">
           {label}
         </label>
         <button
           type="button"
           onClick={() => setShowUrlFallback(!showUrlFallback)}
-          className="text-[10px] text-cyan-400 hover:underline flex items-center gap-1 font-mono"
+          className="text-xs text-muted hover:text-foreground transition-colors flex items-center gap-1 cursor-pointer"
         >
           <Link2 size={12} />
-          <span>{showUrlFallback ? 'Upload File' : 'Paste Direct URL'}</span>
+          <span>{showUrlFallback ? 'Upload file' : 'Direct URL'}</span>
         </button>
       </div>
 
-      {/* Error Notice */}
       {error && (
-        <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[11px] font-mono flex items-center gap-2">
+        <div className="p-2.5 rounded-lg bg-red-50 border border-red-200 text-red-600 text-xs flex items-center gap-2">
           <AlertCircle size={14} className="shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
-      {/* Image Preview Active State */}
-      {value ? (
-        <div className="relative group rounded-lg bg-slate-950 border border-slate-800 overflow-hidden p-2 flex items-center gap-4">
+      {/* Preview Card */}
+      {activeValue ? (
+        <div className="rounded-lg bg-surface border border-border p-3 flex items-center gap-4">
           <img
-            src={value}
+            src={activeValue}
             alt="Preview"
-            className="w-16 h-16 object-cover rounded-lg border border-slate-800"
-            onError={(e) => { e.target.style.display = 'none'; }}
+            className="w-16 h-16 object-cover rounded-lg border border-border bg-surface-muted"
+            onError={(e) => { e.currentTarget.style.display = 'none'; }}
           />
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-1.5 text-emerald-400 text-xs font-bold font-mono">
-              <CheckCircle2 size={14} />
-              <span>Image Attached</span>
-            </div>
-            <p className="text-[11px] text-slate-400 font-mono truncate mt-0.5">{value}</p>
+            <p className="text-xs font-medium text-foreground">Attached image</p>
+            <p className="text-xs text-muted truncate mt-0.5">{activeValue}</p>
           </div>
-
           <button
             type="button"
-            onClick={clearImage}
-            className="p-2 rounded-lg bg-slate-800/80 hover:bg-red-500/20 hover:border-red-500/40 text-slate-400 hover:text-red-400 border border-slate-700 transition-all cursor-pointer mr-1"
-            title="Remove Image"
+            onClick={() => handleComplete('')}
+            className="p-1.5 rounded-lg border border-border text-muted hover:text-red-600 hover:bg-red-50 hover:border-red-200 transition-colors cursor-pointer"
+            title="Remove image"
           >
-            <X size={16} />
+            <X size={15} />
           </button>
         </div>
       ) : showUrlFallback ? (
-        /* Manual URL Fallback Input */
-        <div className="flex items-center gap-2">
-          <input
+        /* Manual URL input */
+        <div className="flex gap-2">
+          <Input
             type="url"
             value={manualUrl}
             onChange={(e) => setManualUrl(e.target.value)}
-            placeholder="https://images.unsplash.com/..."
-            className="flex-1 bg-slate-950 border border-slate-800 rounded-lg py-3 px-4 text-white text-xs font-mono focus:border-cyan-400 focus:outline-none"
+            placeholder="https://example.com/image.webp"
+            className="flex-1"
           />
-          <button
-            type="button"
-            onClick={handleManualUrlSubmit}
-            disabled={!manualUrl.trim()}
-            className="px-4 py-3 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs font-mono uppercase disabled:opacity-40 transition-all cursor-pointer"
-          >
-            Apply
-          </button>
+          <Button variant="secondary" onClick={handleManualUrlSubmit}>
+            Set URL
+          </Button>
         </div>
       ) : (
-        /* Dropzone / Upload Area */
+        /* Dropzone */
         <div
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
           onDragOver={handleDrag}
           onDrop={handleDrop}
           onClick={() => fileInputRef.current?.click()}
-          className={`relative cursor-pointer rounded-lg border-2 border-dashed transition-all p-6 flex flex-col items-center justify-center text-center ${
+          className={`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-colors ${
             dragActive
-              ? 'border-cyan-400 bg-cyan-500/10'
-              : 'border-slate-800 hover:border-slate-700 bg-slate-950/60'
+              ? 'border-foreground bg-surface-muted'
+              : 'border-border hover:border-foreground/40 bg-surface'
           }`}
         >
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*"
-            onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])}
+            accept="image/png,image/jpeg,image/webp,image/svg+xml"
+            onChange={(e) => {
+              if (e.target.files && e.target.files[0]) {
+                handleFileUpload(e.target.files[0]);
+              }
+            }}
             className="hidden"
           />
 
           {isUploading ? (
-            <div className="flex flex-col items-center gap-2 py-2">
-              <Loader2 className="w-8 h-8 text-cyan-400 animate-spin" />
-              <span className="text-xs font-bold text-slate-300 font-mono">Uploading to Cloudinary...</span>
+            <div className="flex flex-col items-center gap-2">
+              <Loader2 className="w-5 h-5 animate-spin text-foreground" />
+              <p className="text-xs text-muted">Uploading image...</p>
             </div>
           ) : (
-            <div className="flex flex-col items-center gap-2">
-              <div className="w-10 h-10 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
-                <UploadCloud size={20} />
-              </div>
-              <div>
-                <p className="text-xs font-bold text-slate-200">
-                  Click to upload or drag & drop image
-                </p>
-                <p className="text-[10px] text-slate-500 font-mono mt-0.5">
-                  Direct unsigned upload (PNG, JPG, WEBP, GIF up to 10MB)
-                </p>
-              </div>
+            <div className="flex flex-col items-center gap-1.5">
+              <UploadCloud className="w-6 h-6 text-muted" />
+              <p className="text-xs font-medium text-foreground">
+                Click to upload or drag and drop
+              </p>
+              <p className="text-[11px] text-muted">
+                PNG, JPEG, WebP or SVG up to 5MB
+              </p>
             </div>
           )}
         </div>
