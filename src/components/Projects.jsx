@@ -22,7 +22,10 @@ const getProjectFallbackImage = (project) => {
 
 const Projects = memo(() => {
   const { projects: liveProjects } = useProjects();
-  const allProjects = (liveProjects && liveProjects.length > 0) ? liveProjects : fallbackProjects;
+  const allProjects = useMemo(() => {
+    const list = (liveProjects && liveProjects.length > 0) ? [...liveProjects] : [...fallbackProjects];
+    return list.sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+  }, [liveProjects]);
 
   const [activeCategory, setActiveCategory] = useState('ALL');
   const [displayCount, setDisplayCount] = useState(INITIAL_DISPLAY_COUNT);

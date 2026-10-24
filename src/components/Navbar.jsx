@@ -7,10 +7,10 @@ import { profile } from '../data/profile';
 const spring = { type: 'spring', stiffness: 260, damping: 25 };
 
 const NAV_LINKS = [
-  { name: 'About Me', href: '#about' },
-  { name: 'Projects', href: '#projects' },
-  { name: 'Skills', href: '#skills' },
-  { name: 'Certificates', href: '#education' },
+  { name: 'About', href: '/#about' },
+  { name: 'Projects', href: '/#projects' },
+  { name: 'Skills', href: '/#skills' },
+  { name: 'Certificates', href: '/#education' },
 ];
 
 const Navbar = () => {
@@ -48,10 +48,10 @@ const Navbar = () => {
       }`}
     >
       <div className="page-container h-16 sm:h-20 flex items-center justify-between">
-        {/* Brand / Logo Mark next to Name */}
+        {/* Brand / Logo Mark */}
         <a
-          href="#"
-          className="flex items-center gap-2.5 group text-start"
+          href="/#"
+          className="flex items-center group"
           aria-label={`${profile.name} Home`}
         >
           <img
@@ -60,9 +60,6 @@ const Navbar = () => {
             className="h-8 w-auto rounded-lg transition-transform group-hover:scale-105"
             onError={(e) => { e.currentTarget.style.display = 'none'; }}
           />
-          <span className="text-sm sm:text-base font-medium tracking-tight text-foreground">
-            {profile.name}
-          </span>
         </a>
 
         {/* Desktop Nav Links per Reference Image 2 */}
@@ -81,7 +78,7 @@ const Navbar = () => {
         {/* Desktop Right CTA: "Contact ↗" */}
         <div className="hidden md:flex items-center">
           <a
-            href="#contact"
+            href="/#contact"
             className="text-xs sm:text-sm font-normal text-foreground underline underline-offset-4 hover:text-muted transition-colors duration-200 inline-flex items-center gap-1"
           >
             <span>Contact</span>
@@ -160,7 +157,7 @@ const Navbar = () => {
                 </a>
 
                 <a
-                  href="#contact"
+                  href="/#contact"
                   className="w-full inline-flex items-center justify-center gap-1.5 bg-foreground text-surface rounded-full py-2.5 text-sm font-medium hover:opacity-90 transition-opacity"
                   onClick={() => setIsOpen(false)}
                 >

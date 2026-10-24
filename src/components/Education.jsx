@@ -1,10 +1,11 @@
 import { useState, useMemo, memo } from 'react';
 import { X, Award, ExternalLink, ShieldCheck, CheckCircle2 } from 'lucide-react';
-import { useCertificates } from '../hooks/useData';
+import { useCertificates, useEducationDegree } from '../hooks/useData';
 import { certifications as fallbackCertifications } from '../data/certifications';
 
 const Education = memo(() => {
   const { certificates: fetchedCerts } = useCertificates();
+  const { education } = useEducationDegree();
   const [selectedCert, setSelectedCert] = useState(null);
 
   const certifications = useMemo(() => {
@@ -13,6 +14,19 @@ const Education = memo(() => {
     }
     return fallbackCertifications;
   }, [fetchedCerts]);
+
+  const degreeInfo = useMemo(() => {
+    const uni = education?.university || 'Mansoura University';
+    const sub = education?.major || education?.location || 'Information Technology (IT) Major';
+    return {
+      degree: education?.degree || 'Bachelor of Science in Computer and Information Sciences',
+      subline: `${uni} • ${sub}`,
+      honors: education?.honors || 'Very Good Honors',
+      period: education?.period || '2022 — 2026',
+      description: education?.description || 'Capstone: ThyraX — Thyroid Cancer Clinical Decision Support System (Biomedical Deep Learning & Multimodal AI, Score: Distinction).',
+      badge: education?.badge || 'Verified Degree',
+    };
+  }, [education]);
 
   const formatDate = (dateStr) => {
     if (!dateStr) return '';
@@ -135,28 +149,28 @@ const Education = memo(() => {
           <div className="bg-surface rounded-lg border border-border p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
               <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[11px] font-medium bg-surface-muted text-foreground mb-3">
-                <span>Very Good Honors</span>
+                <span>{degreeInfo.honors}</span>
                 <span className="text-muted">•</span>
-                <span>2022 — 2026</span>
+                <span>{degreeInfo.period}</span>
               </div>
 
               <h3 className="text-lg sm:text-xl font-medium text-foreground tracking-tight">
-                Bachelor of Science in Computer and Information Sciences
+                {degreeInfo.degree}
               </h3>
               
               <p className="text-xs sm:text-sm text-muted mt-1 font-normal">
-                Mansoura University • Information Technology (IT) Major
+                {degreeInfo.subline}
               </p>
 
               <p className="text-xs text-muted/80 mt-3 font-normal max-w-2xl leading-relaxed">
-                <span className="font-medium text-foreground">Capstone:</span> ThyraX — Thyroid Cancer Clinical Decision Support System (Biomedical Deep Learning &amp; Multimodal AI, Score: Distinction).
+                {degreeInfo.description}
               </p>
             </div>
 
             <div className="shrink-0 flex items-center gap-2">
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border text-xs font-medium text-foreground bg-surface-muted/60">
                 <ShieldCheck className="w-3.5 h-3.5 text-foreground" />
-                <span>Verified Degree</span>
+                <span>{degreeInfo.badge}</span>
               </span>
             </div>
           </div>

@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Footer from './components/Footer';
 import GlobalBackground from './components/GlobalBackground';
+import PageLoader from './components/PageLoader';
 
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -25,8 +26,12 @@ const DashboardLayout = React.lazy(() => import('./pages/admin/DashboardLayout')
 const ManageProjects = React.lazy(() => import('./pages/admin/ManageProjects'));
 const ManageSkills = React.lazy(() => import('./pages/admin/ManageSkills'));
 const ManageCertificates = React.lazy(() => import('./pages/admin/ManageCertificates'));
-const ManageSettings = React.lazy(() => import('./pages/admin/ManageSettings'));
 const ManageEducation = React.lazy(() => import('./pages/admin/ManageEducation'));
+const ManageAbout = React.lazy(() => import('./pages/admin/ManageAbout'));
+const ManageSettings = React.lazy(() => import('./pages/admin/ManageSettings'));
+const ManageServices = React.lazy(() => import('./pages/admin/ManageServices'));
+const ManageTrainings = React.lazy(() => import('./pages/admin/ManageTrainings'));
+const ManageInbox = React.lazy(() => import('./pages/admin/ManageInbox'));
 
 import LazySection from './components/LazySection';
 
@@ -40,6 +45,7 @@ const SectionLoader = () => (
 function Portfolio() {
   return (
     <div className="relative min-h-screen overflow-x-hidden">
+      <PageLoader />
       <GlobalBackground />
       <Navbar />
       <main className="relative z-10">
@@ -109,7 +115,11 @@ function App() {
           <Route path="skills" element={<ManageSkills />} />
           <Route path="certificates" element={<ManageCertificates />} />
           <Route path="education" element={<ManageEducation />} />
+          <Route path="about" element={<ManageAbout />} />
           <Route path="settings" element={<ManageSettings />} />
+          <Route path="services" element={<ManageServices />} />
+          <Route path="trainings" element={<ManageTrainings />} />
+          <Route path="inbox" element={<ManageInbox />} />
         </Route>
 
         {/* Fallback */}

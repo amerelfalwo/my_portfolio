@@ -1,4 +1,5 @@
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
+import { useSkills } from '../hooks/useData';
 import { getToolIconUrl } from '../utils/getToolIcon';
 
 const STATIC_GROUPS = [
@@ -56,7 +57,66 @@ const STATIC_GROUPS = [
 ];
 
 const Skills = memo(() => {
-  const groups = STATIC_GROUPS;
+  const { skills: liveSkills } = useSkills();
+
+  const groups = useMemo(() => {
+    if (!Array.isArray(liveSkills) || liveSkills.length === 0) {
+      return STATIC_GROUPS;
+    }
+
+    const categoryMap = {
+      'ai-ml': {
+        id: 'ai-ml',
+        title: 'AI, Deep Learning & Computer Vision',
+        tools: [],
+      },
+      'genai': {
+        id: 'genai',
+        title: 'Generative AI & Agentic Workflows',
+        tools: [],
+      },
+      'backend-systems': {
+        id: 'backend-systems',
+        title: 'Backend & Systems Engineering',
+        tools: [],
+      },
+      'frontend-web': {
+        id: 'frontend-web',
+        title: 'Web & Frontend Development',
+        tools: [],
+      },
+    };
+
+    const normalizeCat = (cat, name) => {
+      const c = (cat || '').toLowerCase();
+      const n = (name || '').toLowerCase();
+      if (['ai_ml', 'deep_learning', 'computer_vision', 'data_science', 'ai-ml'].includes(c)) return 'ai-ml';
+      if (['genai', 'nlp_ai', 'gen-ai', 'nlp'].includes(c)) return 'genai';
+      if (['frontend', 'frontend-web', 'ui'].includes(c)) return 'frontend-web';
+      if (['react', 'next.js', 'javascript', 'typescript', 'tailwind', 'html', 'css', 'vue'].some(t => n.includes(t))) return 'frontend-web';
+      return 'backend-systems';
+    };
+
+    // Sort live skills by importance or order
+    const sorted = [...liveSkills].sort((a, b) => (b.importance ?? 1) - (a.importance ?? 1));
+
+    sorted.forEach((skill) => {
+      const targetGroup = normalizeCat(skill.category, skill.name);
+      if (categoryMap[targetGroup]) {
+        // avoid duplicates
+        const exists = categoryMap[targetGroup].tools.some(t => t.name.toLowerCase() === skill.name.toLowerCase());
+        if (!exists) {
+          categoryMap[targetGroup].tools.push({
+            name: skill.name,
+            icon: skill.icon,
+          });
+        }
+      }
+    });
+
+    const result = Object.values(categoryMap).filter((g) => g.tools.length > 0);
+    return result.length > 0 ? result : STATIC_GROUPS;
+  }, [liveSkills]);
 
   return (
     <section id="skills" className="py-24 sm:py-32 relative bg-transparent border-t border-border/60">

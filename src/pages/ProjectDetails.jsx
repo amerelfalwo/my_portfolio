@@ -1,16 +1,12 @@
 import { useEffect, useMemo } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { m } from 'framer-motion';
-import { 
-  ArrowLeft, ExternalLink, Github, Terminal, Layers, 
-  CheckCircle2, Sparkles, Cpu, Shield, ArrowUpRight,
-  Database, Calendar, Code2
-} from 'lucide-react';
+import { useParams, Link } from 'react-router-dom';
+import { ExternalLink } from 'lucide-react';
 import { useProjects } from '../hooks/useData';
-import GlobalBackground from '../components/GlobalBackground';
+import { projects as fallbackProjects } from '../data/projects';
+import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
-// Fallback images matching tech domain if no imageUrl provided
+// Fallback image helper matching tech domain if no imageUrl provided
 const getProjectFallback = (project) => {
   const p = ((project?.id || '') + ' ' + (project?.title || '') + ' ' + (project?.category || '')).toLowerCase();
 
@@ -33,282 +29,288 @@ const getProjectFallback = (project) => {
 
 const ProjectDetails = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const { projects: apiProjects, isLoading } = useProjects();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
 
-  // Find project dynamically from API data
-  const project = useMemo(() => {
-    if (!id || !apiProjects || apiProjects.length === 0) return null;
+  const MONGO_ID_ORDER = [
+  '6ad9ac7eb1b2b6ec8a3d9936',
+  '6ad9ac7eb1b2b6ec8a3d9937',
+  '6ad9ac7eb1b2b6ec8a3d9938',
+  '6ad9ac7eb1b2b6ec8a3d9939',
+  '6ad9ac7eb1b2b6ec8a3d993a',
+  '6ad9ac7eb1b2b6ec8a3d993b',
+  '6ad9ac7eb1b2b6ec8a3d993c',
+  '6ad9ac7eb1b2b6ec8a3d993d',
+  '6ad9ac7eb1b2b6ec8a3d993e',
+  '6ad9ac7eb1b2b6ec8a3d993f',
+  '6ad9ac7eb1b2b6ec8a3d9940',
+  '6ad9ac7eb1b2b6ec8a3d9941',
+  '6ad9ac7eb1b2b6ec8a3d9942',
+  '6ad9ac7eb1b2b6ec8a3d9943',
+  '6ad9ac7eb1b2b6ec8a3d9944',
+  '6ad9ac7eb1b2b6ec8a3d9945',
+  '6ad9ac7eb1b2b6ec8a3d9946',
+  '6ad9ac7eb1b2b6ec8a3d9947',
+  '6ad9ac7eb1b2b6ec8a3d9948',
+];
 
-    // 1. Direct ID or slug match from API
-    const match = apiProjects.find(p => 
-      p.id === id || 
-      p._id === id || 
+// Find project dynamically from API data or static fallback data
+  const project = useMemo(() => {
+    if (!id) return null;
+    const pool = (apiProjects && apiProjects.length > 0) ? apiProjects : fallbackProjects;
+
+    // 1. Direct match by id, _id, or title slug in active pool
+    let match = pool.find(p =>
+      p.id === id ||
+      p._id === id ||
       p.title?.toLowerCase().replace(/[^a-z0-9]+/g, '-') === id
     );
 
-    if (match) {
-      return {
-        ...match,
-        tags: match.tags || match.caseStudy?.stack || match.techStack || []
-      };
+    // 2. Fallback to static list if not found in active pool
+    if (!match && pool !== fallbackProjects) {
+      match = fallbackProjects.find(p =>
+        p.id === id ||
+        p._id === id ||
+        p.title?.toLowerCase().replace(/[^a-z0-9]+/g, '-') === id
+      );
     }
 
-    // 2. Fallback search by title keyword
-    const fuzzy = apiProjects.find(p => p.title?.toLowerCase().includes(id.toLowerCase()));
-    if (fuzzy) {
-      return {
-        ...fuzzy,
-        tags: fuzzy.tags || fuzzy.caseStudy?.stack || fuzzy.techStack || []
-      };
+    // 3. Fallback match by MongoDB ID index in fallbackProjects
+    if (!match) {
+      const mongoIdx = MONGO_ID_ORDER.indexOf(id.toLowerCase());
+      if (mongoIdx !== -1 && fallbackProjects[mongoIdx]) {
+        match = fallbackProjects[mongoIdx];
+      }
     }
 
-    return null;
+    // 4. Keyword/fuzzy title match
+    if (!match) {
+      match = pool.find(p => p.title?.toLowerCase().includes(id.toLowerCase())) ||
+              fallbackProjects.find(p => p.title?.toLowerCase().includes(id.toLowerCase()));
+    }
+
+    if (!match) return null;
+
+    return {
+      ...match,
+      tags: match.tags || match.caseStudy?.stack || match.techStack || []
+    };
   }, [id, apiProjects]);
 
   if (!project && isLoading) {
     return (
-      <div className="min-h-screen bg-[#06060e] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-purple-500/30 border-t-purple-400 rounded-full animate-spin" />
+      <div className="min-h-screen bg-background text-foreground flex flex-col">
+        <Navbar />
+        <main className="flex-1 flex items-center justify-center pt-24 pb-16">
+          <p className="text-sm text-muted">Loading project details…</p>
+        </main>
+        <Footer />
       </div>
     );
   }
 
   if (!project) {
     return (
-      <div className="min-h-screen bg-[#06060e] text-white flex flex-col items-center justify-center p-6">
-        <GlobalBackground />
-        <h2 className="text-3xl font-black mb-4">Project Not Found</h2>
-        <p className="text-slate-400 mb-8">The project you are looking for does not exist or was moved.</p>
-        <Link
-          to="/"
-          className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-sm transition-all"
-        >
-          Return to Portfolio
-        </Link>
+      <div className="min-h-screen bg-background text-foreground flex flex-col">
+        <Navbar />
+        <main className="flex-1 flex flex-col items-center justify-center text-center px-4 pt-28 pb-20">
+          <h1 className="text-3xl md:text-4xl font-light text-foreground tracking-tight mb-3">
+            Project not found
+          </h1>
+          <p className="text-sm text-muted max-w-md mb-8">
+            The project you are looking for does not exist or has been moved.
+          </p>
+          <Link
+            to="/#projects"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-foreground text-surface text-sm font-medium hover:opacity-90 transition-opacity"
+          >
+            <span className="inline-block rtl:-scale-x-100" aria-hidden="true">←</span>
+            <span>Back to projects</span>
+          </Link>
+        </main>
+        <Footer />
       </div>
     );
   }
 
-  const rawImg = (project?.imageUrl || project?.image || '').trim();
+  const rawImg = (project.imageUrl || project.image || '').trim();
   const imageSrc = rawImg || getProjectFallback(project);
-  const techStack = project.tags || project.caseStudy?.stack || [];
+  const techStack = Array.isArray(project.tags) ? project.tags : [];
+  const metrics = Array.isArray(project.metrics) ? project.metrics : [];
+  const caseStudy = project.caseStudy || null;
 
   return (
-    <div className="relative min-h-screen bg-[#06060e] text-slate-100 overflow-x-hidden selection:bg-purple-500/30 font-sans">
-      <GlobalBackground />
+    <div className="min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-foreground/10">
+      <Navbar />
 
-      {/* ── Top Header Navigation Bar ── */}
-      <header className="sticky top-0 z-50 bg-[#06060e]/80 backdrop-blur-2xl border-b border-purple-500/10 px-6 md:px-12 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-slate-300 hover:text-white transition-all text-xs font-bold uppercase tracking-wider cursor-pointer group"
-          >
-            <ArrowLeft size={16} className="text-purple-400 group-hover:-translate-x-1 transition-transform" />
-            <span>Back to Projects</span>
-          </button>
+      <main className="flex-1 pt-24 sm:pt-28 pb-20">
+        <div className="page-container">
 
-          <Link to="/" className="text-lg font-black tracking-widest uppercase text-white hover:text-purple-300 transition-colors">
-            AMIR<span className="text-purple-400">.</span>AURA
-          </Link>
-        </div>
-      </header>
+          {/* Simple text link: ← Back to projects */}
+          <div className="mb-8">
+            <Link
+              to="/#projects"
+              className="inline-flex items-center gap-2 text-sm text-muted hover:text-foreground transition-colors"
+            >
+              <span className="inline-block rtl:-scale-x-100" aria-hidden="true">←</span>
+              <span>Back to projects</span>
+            </Link>
+          </div>
 
-      {/* ── Main Content Container ── */}
-      <main className="relative z-10 max-w-5xl mx-auto px-6 py-12 md:py-20">
-        
-        {/* Category & Badge */}
-        <div className="flex flex-wrap items-center gap-3 mb-6">
-          <span className="px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 font-mono text-[11px] font-bold uppercase tracking-widest">
-            {project.categoryLabel || project.category || 'Engineering Solution'}
-          </span>
-          {project.badge && (
-            <span className="px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 font-mono text-[11px] font-bold uppercase tracking-widest">
-              {project.badge}
+          {/* Category & Badge Tags */}
+          <div className="flex flex-wrap items-center gap-2 mb-4">
+            <span className="rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted font-normal">
+              {project.categoryLabel || project.category || 'Engineering project'}
             </span>
-          )}
-        </div>
+            {project.badge && (
+              <span className="rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted font-normal">
+                {project.badge}
+              </span>
+            )}
+          </div>
 
-        {/* Project Title */}
-        <m.h1 
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tight text-white uppercase leading-tight mb-6"
-        >
-          {project.title}
-        </m.h1>
+          {/* Title: sentence case, text-4xl md:text-5xl font-light tracking-tight */}
+          <h1 className="text-4xl md:text-5xl font-light tracking-tight text-foreground max-w-4xl leading-[1.15] mb-5">
+            {project.title}
+          </h1>
 
-        {/* Project Short Summary */}
-        <m.p 
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-slate-300 text-base md:text-xl font-medium leading-relaxed mb-8 max-w-3xl"
-        >
-          {project.description || project.summary}
-        </m.p>
+          {/* Description */}
+          <p className="text-base text-muted max-w-2xl leading-relaxed mb-8">
+            {project.description || project.summary}
+          </p>
 
-        {/* Action Buttons: Live Demo & GitHub */}
-        <m.div 
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.15 }}
-          className="flex flex-wrap items-center gap-4 mb-12"
-        >
-          {project.liveUrl && (
-            <a
-              href={project.liveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-7 py-3.5 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs md:text-sm uppercase tracking-wider flex items-center gap-2.5 shadow-[0_0_25px_rgba(147,51,234,0.35)] hover:shadow-[0_0_35px_rgba(147,51,234,0.5)] hover:scale-105 transition-all cursor-pointer"
-            >
-              <span>Live Deployment</span>
-              <ExternalLink size={16} />
-            </a>
-          )}
-
-          {project.repoUrl && (
-            <a
-              href={project.repoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-7 py-3.5 rounded-2xl bg-slate-900/90 border border-purple-500/30 hover:border-cyan-400/50 text-white font-bold text-xs md:text-sm uppercase tracking-wider flex items-center gap-2.5 transition-all hover:scale-105 cursor-pointer shadow-lg"
-            >
-              <Github size={16} className="text-purple-400" />
-              <span>Source Repository</span>
-            </a>
-          )}
-        </m.div>
-
-        {/* ── Hero Image / Preview Banner ── */}
-        <m.div 
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="relative w-full rounded-3xl overflow-hidden bg-[#0c081e] border border-purple-500/40 shadow-[0_0_50px_rgba(168,85,247,0.25)] mb-16 group"
-        >
-          <img
-            src={imageSrc}
-            alt={project.title}
-            className="w-full h-auto max-h-[560px] object-cover object-top transition-transform duration-700 group-hover:scale-[1.02]"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#06060e] via-transparent to-transparent opacity-40 pointer-events-none" />
-        </m.div>
-
-        {/* ── Key Metrics Section (If Available) ── */}
-        {Array.isArray(project.metrics) && project.metrics.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-16">
-            {project.metrics.map((metric, idx) => (
-              <div 
-                key={idx}
-                className="p-5 rounded-2xl bg-[#0c081e]/80 border border-purple-500/20 backdrop-blur-xl"
+          {/* Action Buttons: Live Demo & View Source */}
+          <div className="flex flex-wrap items-center gap-3 mb-10">
+            {project.liveUrl && (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full bg-foreground text-surface px-5 py-2.5 text-sm font-medium hover:opacity-90 transition-opacity inline-flex items-center gap-2"
               >
-                <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-400 mb-1">
-                  {metric.label}
-                </p>
-                <p className="text-xl md:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-300">
-                  {metric.value}
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* ── Comprehensive Case Study ── */}
-        {project.caseStudy && (
-          <div className="space-y-8 mb-16">
-            <h2 className="text-2xl md:text-3xl font-black uppercase text-white tracking-tight flex items-center gap-3">
-              <span className="h-6 w-1.5 bg-gradient-to-b from-purple-500 to-cyan-400 rounded-full" />
-              <span>Engineering Architecture & Case Study</span>
-            </h2>
-
-            {project.caseStudy.problem && (
-              <div className="p-6 md:p-8 rounded-3xl bg-[#0c081e]/90 border border-slate-800/80 hover:border-purple-500/30 transition-colors">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-2.5 h-2.5 rounded-full bg-red-400 animate-pulse" />
-                  <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-red-400">
-                    The Problem & Technical Challenge
-                  </h3>
-                </div>
-                <p className="text-slate-300 text-sm md:text-base leading-relaxed">
-                  {project.caseStudy.problem}
-                </p>
-              </div>
+                <span>Live deployment</span>
+                <ExternalLink size={14} className="rtl:-scale-x-100" aria-hidden="true" />
+              </a>
             )}
 
-            {project.caseStudy.approach && (
-              <div className="p-6 md:p-8 rounded-3xl bg-[#0c081e]/90 border border-slate-800/80 hover:border-purple-500/30 transition-colors">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
-                  <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-cyan-400">
-                    The Architectural Approach & Implementation
-                  </h3>
-                </div>
-                <p className="text-slate-300 text-sm md:text-base leading-relaxed">
-                  {project.caseStudy.approach}
-                </p>
-              </div>
-            )}
-
-            {project.caseStudy.result && (
-              <div className="p-6 md:p-8 rounded-3xl bg-[#0c081e]/90 border border-slate-800/80 hover:border-purple-500/30 transition-colors">
-                <div className="flex items-center gap-2 mb-3">
-                  <CheckCircle2 size={16} className="text-emerald-400" />
-                  <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-emerald-400">
-                    Production Outcomes & Benchmarks
-                  </h3>
-                </div>
-                <p className="text-slate-300 text-sm md:text-base leading-relaxed">
-                  {project.caseStudy.result}
-                </p>
-              </div>
+            {project.repoUrl && (
+              <a
+                href={project.repoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full border border-border bg-surface px-5 py-2.5 text-sm font-medium text-foreground hover:bg-surface-muted transition-colors inline-flex items-center gap-2"
+              >
+                <span>View source</span>
+                <ExternalLink size={14} className="rtl:-scale-x-100" aria-hidden="true" />
+              </a>
             )}
           </div>
-        )}
 
-        {/* ── Technologies & Tools ── */}
-        {techStack.length > 0 && (
-          <div className="mb-20">
-            <h2 className="text-2xl font-black uppercase text-white tracking-tight mb-4 flex items-center gap-3">
-              <span className="h-6 w-1.5 bg-gradient-to-b from-purple-500 to-cyan-400 rounded-full" />
-              <span>Technologies & Stack</span>
-            </h2>
-            <div className="flex flex-wrap gap-2.5">
-              {techStack.map((tech, idx) => (
-                <span
-                  key={idx}
-                  className="px-4 py-2 rounded-xl bg-[#0c081e] border border-purple-500/30 text-xs md:text-sm font-mono font-bold text-slate-200 shadow-sm"
-                >
-                  {tech}
-                </span>
+          {/* Cover image: aspect-[16/9] rounded-lg border border-border */}
+          <div className="aspect-[16/9] w-full rounded-lg border border-border overflow-hidden bg-surface-muted mb-12">
+            <img
+              src={imageSrc}
+              alt={project.title}
+              className="w-full h-full object-cover object-top"
+              onError={(e) => {
+                if (!e.currentTarget.dataset.fallbackTried) {
+                  e.currentTarget.dataset.fallbackTried = 'true';
+                  e.currentTarget.src = getProjectFallback(project);
+                }
+              }}
+            />
+          </div>
+
+          {/* Key Facts / Metrics Definition Grid */}
+          {metrics.length > 0 && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 py-8 border-y border-border mb-12">
+              {metrics.map((metric, idx) => (
+                <div key={idx} className="flex flex-col gap-1 text-start">
+                  <span className="text-sm text-muted font-normal">{metric.label}</span>
+                  <span className="text-base text-foreground font-medium">{metric.value}</span>
+                </div>
               ))}
             </div>
+          )}
+
+          {/* Case Study Blocks: three plain blocks separated by border-t border-border */}
+          {caseStudy && (caseStudy.problem || caseStudy.approach || caseStudy.result) && (
+            <div className="space-y-0 mb-12">
+              {caseStudy.problem && (
+                <div className="py-8 border-t border-border text-start">
+                  <h2 className="text-lg font-medium text-foreground mb-3">
+                    The problem
+                  </h2>
+                  <p className="text-base text-muted leading-relaxed max-w-3xl">
+                    {caseStudy.problem}
+                  </p>
+                </div>
+              )}
+
+              {caseStudy.approach && (
+                <div className="py-8 border-t border-border text-start">
+                  <h2 className="text-lg font-medium text-foreground mb-3">
+                    The approach
+                  </h2>
+                  <p className="text-base text-muted leading-relaxed max-w-3xl">
+                    {caseStudy.approach}
+                  </p>
+                </div>
+              )}
+
+              {caseStudy.result && (
+                <div className="py-8 border-t border-border text-start">
+                  <h2 className="text-lg font-medium text-foreground mb-3">
+                    The outcome
+                  </h2>
+                  <p className="text-base text-muted leading-relaxed max-w-3xl">
+                    {caseStudy.result}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Technologies: neutral chips (same style as Skills chips, text only) */}
+          {techStack.length > 0 && (
+            <div className="py-8 border-t border-border text-start mb-8">
+              <h2 className="text-lg font-medium text-foreground mb-4">
+                Technologies
+              </h2>
+              <div className="flex flex-wrap gap-2">
+                {techStack.map((tech, idx) => (
+                  <span
+                    key={idx}
+                    className="rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted font-normal"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Bottom CTA: flat block, bg-surface-muted rounded-lg, centered */}
+          <div className="rounded-lg bg-surface-muted border border-border/60 p-8 sm:p-12 text-center mt-12 mb-6">
+            <h3 className="text-2xl sm:text-3xl font-light text-foreground tracking-tight mb-3">
+              Interested in building something similar?
+            </h3>
+            <p className="text-sm sm:text-base text-muted max-w-xl mx-auto mb-6">
+              Let's discuss how deep learning pipelines, RAG systems, or robust software architectures can empower your product.
+            </p>
+            <a
+              href="/#contact"
+              className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-full bg-foreground text-surface text-sm font-medium hover:opacity-90 transition-opacity"
+            >
+              <span>Get in touch</span>
+              <span className="inline-block rtl:-scale-x-100" aria-hidden="true">↗</span>
+            </a>
           </div>
-        )}
 
-        {/* ── Bottom Call To Action ── */}
-        <div className="p-8 md:p-12 rounded-3xl bg-gradient-to-br from-purple-950/40 via-[#0c081e] to-cyan-950/20 border border-purple-500/30 text-center relative overflow-hidden">
-          <h3 className="text-2xl md:text-3xl font-black text-white uppercase mb-3">
-            Interested in Building Something Similar?
-          </h3>
-          <p className="text-slate-400 text-sm md:text-base max-w-xl mx-auto mb-6">
-            Let's discuss how deep learning pipelines, RAG systems, or robust software architectures can empower your product.
-          </p>
-          <a
-            href="/#contact"
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs uppercase tracking-widest shadow-[0_0_30px_rgba(147,51,234,0.3)] hover:scale-105 transition-all"
-          >
-            <span>Get In Touch</span>
-            <ArrowUpRight size={16} />
-          </a>
         </div>
-
       </main>
 
       <Footer />

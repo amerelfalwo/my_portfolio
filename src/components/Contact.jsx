@@ -2,6 +2,7 @@ import { useState, useEffect, memo } from 'react';
 import { m } from 'framer-motion';
 import { Send, Phone, Github, Linkedin, Mail, Briefcase, Facebook, Instagram, Twitter } from 'lucide-react';
 import { getContactRelay, addMessage } from '../api';
+import { useSettings } from '../hooks/useData';
 
 const Contact = memo(() => {
   const [formData, setFormData] = useState({
@@ -67,13 +68,15 @@ const Contact = memo(() => {
     }
   };
 
+  const { settings } = useSettings();
+
   const getSocialList = () => {
-    const gh = contactData?.github || contactData?.githubUrl || contactData?.socialLinks?.github || 'https://github.com/amerelfalwo';
-    const li = contactData?.linkedin || contactData?.linkedinUrl || contactData?.socialLinks?.linkedin || 'https://www.linkedin.com/in/amir-elrefai-b3a3212b8/?isSelfProfile=true';
-    const fb = contactData?.facebook || contactData?.socialLinks?.facebook || 'https://www.facebook.com/amir.elref3i';
-    const ig = contactData?.instagram || contactData?.socialLinks?.instagram || 'https://www.instagram.com/amir.elref3i/';
-    const tw = contactData?.xTwitter || contactData?.twitter || contactData?.socialLinks?.twitter;
-    const kh = contactData?.khamsat;
+    const gh = settings?.githubUrl || settings?.github || settings?.socialLinks?.github || contactData?.github || 'https://github.com/amerelfalwo';
+    const li = settings?.linkedinUrl || settings?.linkedin || settings?.socialLinks?.linkedin || contactData?.linkedin || 'https://www.linkedin.com/in/amir-elrefai-b3a3212b8/?isSelfProfile=true';
+    const fb = settings?.facebook || settings?.socialLinks?.facebook || contactData?.facebook || 'https://www.facebook.com/amir.elref3i';
+    const ig = settings?.instagram || settings?.socialLinks?.instagram || contactData?.instagram || 'https://www.instagram.com/amir.elref3i/';
+    const tw = settings?.twitterUrl || settings?.twitter || settings?.socialLinks?.twitter || contactData?.xTwitter;
+    const kh = settings?.khamsat || contactData?.khamsat;
 
     const s = [
       { name: "LinkedIn", icon: <Linkedin size={18} />, href: li },
@@ -89,7 +92,8 @@ const Contact = memo(() => {
   };
 
   const socials = getSocialList();
-  const phoneRaw = contactData?.phone || '+201023524477';
+  const emailValue = settings?.email || contactData?.email || 'amir.elrefai.dev@gmail.com';
+  const phoneRaw = settings?.phone || contactData?.phone || '+201023524477';
   const phoneClean = phoneRaw.replace(/[^0-9]/g, '');
   const waUrl = `https://wa.me/${phoneClean.startsWith('0') ? '2' + phoneClean : phoneClean}`;
 
@@ -146,7 +150,7 @@ const Contact = memo(() => {
                   ) : (
                     <>
                       <a
-                        href={`mailto:${contactData?.email || 'amer003100@gmail.com'}`}
+                        href={`mailto:${emailValue}`}
                         className="group flex items-center gap-4 p-4 rounded-lg bg-background border border-border hover:border-foreground transition-all"
                       >
                         <div className="w-11 h-11 rounded-lg bg-surface border border-border flex items-center justify-center text-foreground group-hover:bg-foreground group-hover:text-background transition-colors shrink-0">
@@ -154,7 +158,7 @@ const Contact = memo(() => {
                         </div>
                         <div className="min-w-0 flex-1">
                           <p className="text-xs font-medium text-muted">Email</p>
-                          <p className="text-sm font-semibold text-foreground truncate">{contactData?.email || 'amer003100@gmail.com'}</p>
+                          <p className="text-sm font-semibold text-foreground truncate">{emailValue}</p>
                         </div>
                       </a>
 
@@ -169,7 +173,7 @@ const Contact = memo(() => {
                         </div>
                         <div className="min-w-0 flex-1">
                           <p className="text-xs font-medium text-muted">Phone / WhatsApp</p>
-                          <p className="text-sm font-semibold text-foreground truncate">{contactData?.phone || '+20 102 352 4477'}</p>
+                          <p className="text-sm font-semibold text-foreground truncate">{phoneRaw}</p>
                         </div>
                       </a>
                     </>

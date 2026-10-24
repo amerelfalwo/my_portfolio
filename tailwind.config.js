@@ -24,6 +24,7 @@ export default {
       },
       fontFamily: {
         sans: ['Inter', 'Noto Sans Arabic', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['Outfit', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
       },
     },
   },
